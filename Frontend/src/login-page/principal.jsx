@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import './App.css'
+import './login.css'
 
-function App() {
+function LoginPrincipal() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -10,7 +10,7 @@ function App() {
 
   return (
     <>
-      <div className="login-holder">
+      <div className="login-container">
         <h1 id="login-title">Login as school principal</h1>
         <input type="text" placeholder="Username" className="login-input" id="login-input1" />
         <div className="password">
@@ -29,4 +29,4 @@ function App() {
   )
 }
 
-export default App;
+export default LoginPrincipal;

@@ -1,0 +1,29 @@
+.main-container {
+    margin-inline: 5px;
+}
+
+.login-button-holder {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+}
+
+.main-buttons {
+    width: 150px;
+    padding-block: 10px;
+    margin-top: 20px;
+    align-self: center;
+    background-color: #C5C5CE;
+    border-radius: 1rem;
+}
+
+.main-buttons:hover {
+    background-color: #477FD7;
+    transition: 0.7s;
+}
+
+.main-buttons:focus {
+    outline: none;
+    background-color: #2650EA;
+}

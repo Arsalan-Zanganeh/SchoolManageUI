@@ -1,0 +1,95 @@
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    text-align: center;
+}
+  
+.login-container {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    height: 640px;
+    border-color: rgb(19, 19, 223);
+    border-radius: 3rcap;
+    border-style: none;
+    box-shadow: 0px 0px 20px #1313DF;
+    margin-inline: 5px;
+    justify-self: center;
+}
+  
+#login-title {
+    padding-top: 40px;
+}
+  
+.login-input {
+    font-size: medium;
+    border-radius: 2rem;
+    border-style: none;
+    padding-left: 20px;
+    padding-block: 12px;
+    margin-block: 20px;
+    margin-left: 5%;
+    width: 400px;
+    box-shadow: 0px 0px 7px #929193;
+}
+  
+.login-input:focus {
+    box-shadow: 0px 0px 7px #d49708
+}
+  
+#login-input1 {
+    width: 430px !important;
+}
+  
+.password {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+  
+.eye-button {
+    background-color: #AFAFAF;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 5px;
+    height: 55%;
+    width: 40px;
+}
+  
+.eye-button:hover {
+    background-color: deepskyblue;
+    transition: 0.4s;
+}
+  
+#eye-icon {
+    margin-inline: 2px;
+}
+  
+.login-button {
+    width: 25%;
+    padding-block: 10px;
+    margin-top: 20px;
+    align-self: center;
+    background-color: #C5C5CE;
+    border-radius: 1rem;
+}
+  
+.login-button:hover {
+    background-color: #477FD7;
+    transition: 0.7s;
+}
+  
+.login-input:focus, .eye-button:focus, .login-button:focus {
+    outline: none;
+}
+  
+.login-button:focus {
+    background-color: #2650EA;
+}
+  
