@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import './login.css'
+import { useEffect } from 'react';
 
 function LoginPrincipal() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+  useEffect(() => {
+    document.body.classList.add('signup-background');
+
+    return () => {
+      document.body.classList.remove('signup-background');
+    };
+  }, []);
 
   return (
     <>

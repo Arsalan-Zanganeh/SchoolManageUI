@@ -1,17 +1,25 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import './login.css'
+import { useEffect } from 'react';
 
 function LoginTeacher() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+  useEffect(() => {
+    document.body.classList.add('signup-background');
+
+    return () => {
+      document.body.classList.remove('signup-background');
+    };
+  }, []);
 
   return (
     <>
       <div className="login-container">
-        <h1 id="login-title">Login as school principal</h1>
+        <h1 id="login-title">Login as teacher</h1>
         <input type="text" placeholder="Username" className="login-input" id="login-input1" />
         <div className="password">
           <input 

@@ -1,5 +1,14 @@
+body {
+    background-color: white;
+    color: black; 
+    font-family: Arial, sans-serif;
+}
+
 .main-container {
-    margin-inline: 5px;
+    margin-inline: auto;
+    text-align: center;
+    padding: 20px;
+    max-width: 600px;
 }
 
 .login-button-holder {
@@ -26,4 +35,43 @@
 .main-buttons:focus {
     outline: none;
     background-color: #2650EA;
+}
+@media (max-width: 768px) {
+    .main-container {
+        padding: 10px;
+        max-width: 90%; 
+    }
+
+    h1 {
+        font-size: 1.25rem;
+    }
+
+    .main-buttons {
+        width: 130px;
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .main-container {
+        padding: 10px;
+        max-width: 95%; 
+    }
+
+    h1 {
+        font-size: 1rem;
+    }
+
+    .main-buttons {
+        width: 100%;
+        padding: 10px;
+        font-size: 0.875rem;
+    }
+
+    .login-button-holder {
+        flex-direction: column;
+        gap: 15px;
+    }
 }
