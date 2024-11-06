@@ -14,11 +14,11 @@ function Navigation() {
     !isLoginRoute && (
       <div className="main-container">
         <div>
-          <h1>Not joined? please sign up!</h1>
+          <h1 className="main-login-signup-title">Not joined? please sign up!</h1>
           <Link to="/signup"><button className="main-buttons">Sign Up</button></Link>
         </div>
         <div>
-          <h1>Login as...</h1>
+          <h1 className="main-login-signup-title">Login as...</h1>
           <div className="login-button-holder">
             <Link to="/principal-login"><button className="main-buttons">Login as Principal</button></Link>
             <Link to="/student-login"><button className="main-buttons">Login as Student</button></Link>

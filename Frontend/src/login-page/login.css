@@ -3,6 +3,7 @@
     margin: 0 auto;
     text-align: center;
 }
+
 body.signup-background { 
     background: linear-gradient(135deg, #D3CCE3, #E9E4F0);
 }
@@ -17,7 +18,8 @@ body.signup-background {
     border-radius: 3rcap;
     border-style: none;
     box-shadow: 0px 0px 20px #1313DF;
-    margin-inline: 5px;
+    margin: 10px auto;
+    padding-bottom: 30px;
     justify-self: center;
 }
   
@@ -32,23 +34,29 @@ body.signup-background {
     padding-left: 20px;
     padding-block: 12px;
     margin-block: 20px;
-    margin-left: 5%;
-    width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    max-width: 400px;
     box-shadow: 0px 0px 7px #929193;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
-  
+
 .login-input:focus {
-    box-shadow: 0px 0px 7px #d49708
+    border-color: #5e3a89;
+    box-shadow: 0 0 0 3px rgba(94, 58, 137, 0.5); 
 }
   
 #login-input1 {
-    width: 430px !important;
+    width: 90% !important;
+    max-width: 100% !important;
 }
   
 .password {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
 }
   
 .eye-button {
@@ -60,8 +68,8 @@ body.signup-background {
     align-items: center;
     justify-content: center;
     padding: 0;
-    margin: 5px;
-    height: 55%;
+    margin: 2px;
+    height: 40px;
     width: 40px;
 }
   
@@ -75,7 +83,7 @@ body.signup-background {
 }
   
 .login-button {
-    width: 25%;
+    width: 50%;
     padding-block: 10px;
     margin-top: 20px;
     align-self: center;
@@ -88,11 +96,52 @@ body.signup-background {
     transition: 0.7s;
 }
   
-.login-input:focus, .eye-button:focus, .login-button:focus {
+.eye-button:focus, .login-button:focus {
     outline: none;
 }
   
 .login-button:focus {
     background-color: #2650EA;
 }
-  
+
+@media (max-width: 768px) {
+    .login-container {
+        width: 90%;
+        height: auto;
+    }
+
+    .login-input, #login-input1, .login-button {
+        width: 90%;
+        max-width: 100%;
+        margin-inline: 10px;
+    }
+
+    #login-input1 {
+        max-width: 95%;
+        margin-right: 20px;
+        overflow: hidden;
+    }
+
+    .password {
+        margin-inline: 5px
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        width: 97%;
+    }
+
+    .login-input, #login-input1, .login-button {
+        max-width: 95%;
+        width: 95%;
+    }
+
+    #login-input1 {
+        overflow: hidden;
+    }
+
+    .password {
+        margin-inline: 5px
+    }
+}
