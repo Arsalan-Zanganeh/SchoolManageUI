@@ -8,9 +8,9 @@ import re
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username','first_name','last_name','National_ID',
-                  'Phone_Number', 'School_Name', 'Province', 'City', 'Address',
-                  'email', 'School_Type', 'Education_Level', 'password', 'password2']
+        fields = ['id','first_name','last_name', 'National_ID', 'Phone_Number', 'password',
+                  'password2', 'School_Name', 'School_Type', 'Education_Level', 'Province',
+                  'City', 'Address']
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -19,9 +19,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         token['full_name'] = user.profile.full_name
-        token['username'] = user.username
-        token['National_ID'] = user.National_ID
-        token['email'] = user.email
         token['bio'] = user.profile.bio
         token['image'] = str(user.profile.image)
         token['verified'] = user.profile.verified
@@ -34,9 +31,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username','first_name','last_name','National_ID',
-                  'Phone_Number', 'School_Name', 'Province', 'City', 'Address',
-                  'email', 'School_Type', 'Education_Level', 'password', 'password2']
+        fields = ['id','first_name','last_name', 'National_ID', 'Phone_Number', 'password',
+                  'password2', 'School_Name', 'School_Type', 'Education_Level', 'Province',
+                  'City', 'Address']
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -55,10 +52,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
+            # username=validated_data['username'],
+            # email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
+            username=validated_data['National_ID'],
             National_ID=validated_data['National_ID'],
             Phone_Number=validated_data['Phone_Number'],
             School_Name=validated_data['School_Name'],
