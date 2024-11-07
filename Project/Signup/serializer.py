@@ -8,9 +8,9 @@ import re
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username','first_name','last_name','National_ID',
-                  'Phone_Number', 'School_Name', 'Province', 'City', 'Address',
-                  'email', 'School_Type', 'Education_Level', 'password', 'password2']
+        fields = ['id','first_name','last_name', 'National_ID', 'Phone_Number', 'password',
+                  'password2', 'School_Name', 'School_Type', 'Education_Level', 'Province',
+                  'City', 'Address']
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -19,9 +19,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         token['full_name'] = user.profile.full_name
-        token['username'] = user.username
-        token['National_ID'] = user.National_ID
-        token['email'] = user.email
         token['bio'] = user.profile.bio
         token['image'] = str(user.profile.image)
         token['verified'] = user.profile.verified
@@ -34,31 +31,62 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username','first_name','last_name','National_ID',
-                  'Phone_Number', 'School_Name', 'Province', 'City', 'Address',
-                  'email', 'School_Type', 'Education_Level', 'password', 'password2']
+        fields = ['id','first_name','last_name', 'National_ID', 'Phone_Number', 'password',
+                  'password2', 'School_Name', 'School_Type', 'Education_Level', 'Province',
+                  'City', 'Address']
 
     def validate(self, attrs):
+   
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError(
-                {'password': 'Password fields does not match.'}
+                {'password': 'Password fields do not match.'}
             )
-        if not re.match('^[0-9]+$', attrs['National_ID']):
-            serializers.ValidationError(
-                {'National_ID': 'National ID field must contain only numbers.'}
-            )
-        if len(attrs['National_ID']) != 10:
+        if not re.match('^[0-9]{10}$', attrs['National_ID']):
             raise serializers.ValidationError(
-                {'National_ID': 'National ID field must contain 10 numbers.'}
+                {'National_ID': 'National ID must contain exactly 10 digits.'}
             )
+        if not re.match('^[0-9]{11}$', attrs['Phone_Number']):
+            raise serializers.ValidationError(
+                {'Phone_Number': 'Phone number must contain exactly 11 digits.'}
+            )
+        if not attrs.get('first_name'):
+            raise serializers.ValidationError(
+                {'first_name': 'First name cannot be empty.'}
+            )
+        if not attrs.get('last_name'):
+            raise serializers.ValidationError(
+                {'last_name': 'Last name cannot be empty.'}
+            )
+        if not attrs.get('School_Type'):
+            raise serializers.ValidationError(
+                {'School_Type': 'School type must be selected.'}
+            )
+        if not attrs.get('Education_Level'):
+            raise serializers.ValidationError(
+                {'Education_Level': 'Education level must be selected.'}
+            )
+        if not attrs.get('Province'):
+            raise serializers.ValidationError(
+                {'Province': 'Province cannot be empty.'}
+            )
+        if not attrs.get('City'):
+            raise serializers.ValidationError(
+                {'City': 'City cannot be empty.'}
+            )
+        if not attrs.get('Address'):
+            raise serializers.ValidationError(
+                {'Address': 'Address cannot be empty.'}
+            )
+
         return attrs
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
+            # username=validated_data['username'],
+            # email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
+            username=validated_data['National_ID'],
             National_ID=validated_data['National_ID'],
             Phone_Number=validated_data['Phone_Number'],
             School_Name=validated_data['School_Name'],
