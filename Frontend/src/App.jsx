@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import SignUp from './signup-page/signup'
-import LoginPrincipal from './login-page/Principal';
+import LoginPrincipal from './login-page/principal';
 import LoginStudent from './login-page/Student';
 import LoginTeacher from './login-page/Teacher';
 import PrivateRoute from "./utils/PrivateRoute"
@@ -23,6 +23,7 @@ function Navigation() {
           <h1 className="main-login-signup-title">Login as...</h1>
           <div className="login-button-holder">
             <Link to="/principal-login"><button className="main-buttons">Login as Principal</button></Link>
+            <Link to="/welcome-page"></Link>
             <Link to="/student-login"><button className="main-buttons">Login as Student</button></Link>
             <Link to="/teacher-login"><button className="main-buttons">Login as Teacher</button></Link>
           </div>

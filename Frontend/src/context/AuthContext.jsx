@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import * as jwt_decode from "jwt-decode"; 
+import {jwtDecode} from "jwt-decode"; 
 import { useNavigate } from "react-router-dom"; 
 import Swal from 'sweetalert2';
 
@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(() =>
         localStorage.getItem("authTokens")
-            ? jwt_decode(localStorage.getItem("authTokens"))
+            ? jwtDecode(localStorage.getItem("authTokens"))
             : null
     );
 
@@ -24,14 +24,14 @@ export const AuthProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
-    const loginUser = async (email, password) => {
+    const loginUser = async (nationalid, password) => {
         const response = await fetch("http://127.0.0.1:8000/Signup/token/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                email,
+            body: JSON.stringify({     
+                National_ID: nationalid,
                 password,
             }),
         });
@@ -39,11 +39,12 @@ export const AuthProvider = ({ children }) => {
         console.log(data);
 
         if (response.status === 200) {
+            const decodedToken = jwtDecode(data.access);
             console.log("Logged In");
             setAuthTokens(data);
-            setUser(jwt_decode(data.access));
+            setUser(decodedToken);
             localStorage.setItem("authTokens", JSON.stringify(data));
-            navigate("/"); 
+            navigate("/welcome"); // Navigate to the welcome page after login
             Swal.fire({
                 title: "Login Successful",
                 icon: "success",
@@ -67,7 +68,7 @@ export const AuthProvider = ({ children }) => {
             });
         }
     };
-    const [errors, setErrors] = useState({});
+
     const registerUser = async (firstname, lastname, nationalid, phonenumber, password, password2, schoolname, schooltype, edulevel, province, city, address) => {
         const userData = {
             first_name: firstname,
@@ -83,61 +84,75 @@ export const AuthProvider = ({ children }) => {
             City: city,
             Address: address,
         };
-    
+        
         console.log(userData);
         
-        const response = await fetch("http://127.0.0.1:8000/Signup/register/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(userData),
-        });
-    
-        const data = await response.json();
-        console.log(data);
-    
-        if (response.status === 201) {
-            navigate("/login");
-            Swal.fire({
-                title: "Registration Successful, Login Now",
-                icon: "success",
-                toast: true,
-                timer: 6000,
-                position: 'top-right',
-                timerProgressBar: true,
-                showConfirmButton: false,
-            });
-        } else if (response.status === 400) {  
-            let errorMessage = "";
-            for (const [key, value] of Object.entries(data)) {
-                errorMessage += `${key}: ${value.join(", ")}\n`;  
-            }
-            Swal.fire({
-                title: "Registration Error",
-                html: `<div style="word-wrap: break-word; white-space: pre-wrap; max-width: 100%;">${errorMessage}</div>`, 
-                icon: "error",
-                toast: false,
-                position: 'center', 
-                showConfirmButton: true,
-                width: '90%', 
-                timer : null ,
-                customClass: {
-                    popup: 'responsive-swal-popup',
+        try {
+            const response = await fetch("http://127.0.0.1:8000/Signup/register/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
+                body: JSON.stringify(userData),
             });
-        } else {
+    
+            const data = await response.json();
+            console.log(data);
+    
+            if (response.status === 201) {
+                navigate("/login");
+                Swal.fire({
+                    title: "Registration Successful, Login Now",
+                    icon: "success",
+                    toast: true,
+                    timer: 6000,
+                    position: 'top-right',
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+            } else if (response.status === 400) {
+                let errorMessage = "";
+                for (const [key, value] of Object.entries(data)) {
+                    errorMessage += `${key}: ${value.join(", ")}\n`;
+                }
+                Swal.fire({
+                    title: "Registration Error",
+                    html: `<div style="word-wrap: break-word; white-space: pre-wrap; max-width: 100%;">${errorMessage}</div>`,
+                    icon: "error",
+                    toast: false,
+                    position: 'center',
+                    showConfirmButton: true,
+                    width: '90%',
+                    timer: null,
+                    customClass: {
+                        popup: 'responsive-swal-popup',
+                    },
+                });
+            } else {
+                Swal.fire({
+                    title: "An Error Occurred",
+                    text: "Server Error. Please try again later.",
+                    icon: "error",
+                    timer: 6000,
+                    position: 'top-right',
+                    timerProgressBar: true,
+                    showConfirmButton: true,
+                });
+            }
+        } catch (error) {
             Swal.fire({
                 title: "An Error Occurred",
-                text: "Server Error. Please try again later.",
+                text: "Could not connect to the server. Please try again later.",
                 icon: "error",
                 timer: 6000,
                 position: 'top-right',
                 timerProgressBar: true,
                 showConfirmButton: true,
             });
+            console.error("Error during registration:", error);
         }
     };
+    
     const logoutUser = () => {
         setAuthTokens(null);
         setUser(null);
@@ -159,14 +174,14 @@ export const AuthProvider = ({ children }) => {
         setUser,
         authTokens,
         setAuthTokens,
-        registerUser,
         loginUser,
+        registerUser,
         logoutUser,
     };
 
     useEffect(() => {
         if (authTokens) {
-            setUser(jwt_decode(authTokens.access));
+            setUser(jwtDecode(authTokens.access));
         }
         setLoading(false);
     }, [authTokens, loading]);

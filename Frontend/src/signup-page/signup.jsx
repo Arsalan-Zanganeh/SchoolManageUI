@@ -179,6 +179,9 @@ function SignUp() {
           <button type="button" className="reset-button" onClick={resetForm}>Reset</button>
         </div>
       </form>
+      <p className="login-link">
+        Have an account? <Link to="/principal-login">Log In</Link>
+      </p>
     </div>
   );
 }
