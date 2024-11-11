@@ -1,11 +1,10 @@
 import './signup.css';
-import { useState, useContext , useEffect } from 'react';
-import AuthContext from '../context/AuthContext'; 
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function SignUp() {
-  const { registerUser } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [nationalid, setNationalid] = useState('');
@@ -19,31 +18,73 @@ function SignUp() {
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    if (!firstname || !lastname || !nationalid || !phonenumber || !password || !password2 || !schoolname || !schooltype || !edulevel || !province || !city || !address) {
+      Swal.fire('Error', 'All fields are required', 'error');
+      return;
+    }
+  
+    try {
+      const submit = await fetch("http://127.0.0.1:8000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: firstname,
+          last_name: lastname,
+          National_ID: nationalid,
+          Phone_Number: phonenumber,
+          password,
+          password2,
+          School_Name: schoolname,
+          School_Type: schooltype,
+          Education_Level: edulevel,
+          Province: province,
+          City: city,
+          Address: address,
+        }),
+      });
+      if (!submit.ok) {
+        const errorData = await submit.json();
+  
+        if (errorData) {
+          let errorMessage = '';
+          for (const key in errorData) {
+            if (errorData.hasOwnProperty(key)) {
+              errorMessage += `${key}: ${errorData[key].join(', ')}\n`;
+            }
+          }
+          Swal.fire({
+            title: 'Error',
+            text: errorMessage || 'Registration failed. Please check the details and try again.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        } else {
+          Swal.fire('Error', 'An unknown error occurred. Please try again later.', 'error');
+        }
+      } else {
+        Swal.fire('Success', 'Registration successful!', 'success');
+        navigate('/principal-login');
+      }
+  
+    } catch (error) 
+    {
+      Swal.fire('Error', 'Server error or network issue. Please try again.', 'error');
+      console.error('Error:', error);
+    }
+  };
+  
+
   useEffect(() => {
     document.body.classList.add('signup-background');
-
     return () => {
       document.body.classList.remove('signup-background');
     };
   }, []);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    registerUser(
-      firstname, 
-      lastname, 
-      nationalid, 
-      phonenumber, 
-      password, 
-      password2, 
-      schoolname, 
-      schooltype, 
-      edulevel, 
-      province, 
-      city, 
-      address
-    );
-  };
 
   const resetForm = () => {
     setFirstname('');
@@ -64,21 +105,20 @@ function SignUp() {
     <div className="signup-form-container">
       <h1 className="form-title">Sign Up</h1>
       <form className="signup-form" onSubmit={handleSubmit}>
-        
         <div className="form-section">
           <h2 className="section-title">School Manager Information</h2>
           <div className="form-group">
             <input
               type="text"
               placeholder="First Name"
-              className='signup-input'
+              className="signup-input"
               value={firstname}
               onChange={(e) => setFirstname(e.target.value)}
             />
             <input
               type="text"
               placeholder="Last Name"
-              className='signup-input'
+              className="signup-input"
               value={lastname}
               onChange={(e) => setLastname(e.target.value)}
             />
@@ -87,14 +127,14 @@ function SignUp() {
             <input
               type="text"
               placeholder="National ID"
-              className='signup-input'
+              className="signup-input"
               value={nationalid}
               onChange={(e) => setNationalid(e.target.value)}
             />
             <input
               type="text"
               placeholder="Phone Number"
-              className='signup-input'
+              className="signup-input"
               value={phonenumber}
               onChange={(e) => setPhonenumber(e.target.value)}
             />
@@ -103,14 +143,14 @@ function SignUp() {
             <input
               type="password"
               placeholder="Password"
-              className='signup-input'
+              className="signup-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <input
               type="password"
               placeholder="Confirm Password"
-              className='signup-input'
+              className="signup-input"
               value={password2}
               onChange={(e) => setPassword2(e.target.value)}
             />
@@ -123,7 +163,7 @@ function SignUp() {
             <input
               type="text"
               placeholder="School Name"
-              className='signup-input'
+              className="signup-input"
               value={schoolname}
               onChange={(e) => setSchoolname(e.target.value)}
             />
@@ -151,14 +191,14 @@ function SignUp() {
             <input
               type="text"
               placeholder="Province"
-              className='signup-input'
+              className="signup-input"
               value={province}
               onChange={(e) => setProvince(e.target.value)}
             />
             <input
               type="text"
               placeholder="City"
-              className='signup-input'
+              className="signup-input"
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
@@ -167,7 +207,7 @@ function SignUp() {
             <textarea
               placeholder="Enter School Address"
               rows="3"
-              className='signup-input'
+              className="signup-input"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             ></textarea>
@@ -175,8 +215,12 @@ function SignUp() {
         </div>
 
         <div className="form-buttons">
-          <button type="submit" className="submit-button">Submit</button>
-          <button type="button" className="reset-button" onClick={resetForm}>Reset</button>
+          <button type="submit" className="submit-button">
+            Submit
+          </button>
+          <button type="button" className="reset-button" onClick={resetForm}>
+            Reset
+          </button>
         </div>
       </form>
       <p className="login-link">

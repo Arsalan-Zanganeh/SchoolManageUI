@@ -1,11 +1,12 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import './login.css';
-import AuthContext from '../context/AuthContext';
+import axios from 'axios';
 
-function Loginpage() {
-  const { loginUser } = useContext(AuthContext);
+function Loginpage({ onLogin }) {
+  const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [National_ID, setNational_ID] = useState('');
   const [password, setPassword] = useState('');
@@ -14,11 +15,46 @@ function Loginpage() {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    National_ID.length > 0 && loginUser(National_ID, password);
-    console.log(National_ID);
-    console.log(password);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/login", {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({
+          National_ID,
+          password,
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        Swal.fire({
+          title: 'Success',
+          text: 'Login successful!',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+        onLogin(data); 
+        navigate('/dashboard');
+      } else {
+        const errorData = await response.json();
+        Swal.fire({
+          title: 'Error',
+          text: errorData.detail || 'Invalid username or password. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Network error or server is unavailable. Please try again later.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
   };
 
   useEffect(() => {
