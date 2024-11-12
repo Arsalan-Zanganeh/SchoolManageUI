@@ -1,38 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = ({ user, onLogout }) => {
   const navigate = useNavigate();
   const [name, setName] = useState(user ? user.first_name : '');
-  const token = user?.jwt; 
-  console.log(token)
+  const [lastName, setLastName] = useState(user ? user.last_name : '');
+  const token = user?.jwt;
+
+  const fetchUserData = useCallback(async () => {
+    try {
+      const userResponse = await fetch('http://127.0.0.1:8000/api/user', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        setName(userData.first_name);
+        setLastName(userData.last_name);
+      } else {
+        console.error('Failed to fetch user data');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userResponse = await fetch('http://127.0.0.1:8000/api/user', {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          credentials: 'include',
-        });
-
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          setName(userData.first_name);
-        } else {
-          throw new Error('Failed to fetch user data');
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
     if (token) {
       fetchUserData();
     }
-  }, [token]);
+  }, [token, fetchUserData]);
+
 
   const handleLogout = () => {
     onLogout();
@@ -40,10 +41,12 @@ const Dashboard = ({ user, onLogout }) => {
   };
 
   return (
-    <div>
-      <h1>Welcome, {name || 'Principal'}!</h1>
-      <p>This is your dashboard.</p>
-      <button onClick={handleLogout}>Logout</button>
+    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <h1>Welcome, {name} {lastName}!</h1>
+      <p>This is your dashboard. You can view and manage your account here.</p>
+      <button onClick={handleLogout} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
+        Logout
+      </button>
     </div>
   );
 };
