@@ -5,6 +5,7 @@ import LoginPrincipal from './login-page/principal';
 import LoginStudent from './login-page/Student';
 import LoginTeacher from './login-page/Teacher';
 import Dashboard from './Dashboard/Dashboard';
+import SignUpStudent from './Dashboard/add-student/add-student';
 import axios from 'axios';
 import './App.css';
 
@@ -55,6 +56,8 @@ function App() {
           path="/dashboard"
           element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/principal-login" />}
         />
+        <Route path="/dashboard/add-student"
+          element={user ? <SignUpStudent user={user} onLogout={handleLogout} /> : <Navigate to="/principal-login" />}/>
       </Routes>
     </Router>
   );

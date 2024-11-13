@@ -39,6 +39,9 @@ const Dashboard = ({ user, onLogout }) => {
     onLogout();
     navigate('/principal-login');
   };
+  const addStu = () => {
+    navigate('/dashboard/add-student');
+  };
 
   return (
     <div style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -46,6 +49,9 @@ const Dashboard = ({ user, onLogout }) => {
       <p>This is your dashboard. You can view and manage your account here.</p>
       <button onClick={handleLogout} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
         Logout
+      </button>
+      <button onClick={addStu} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
+        add student
       </button>
     </div>
   );
