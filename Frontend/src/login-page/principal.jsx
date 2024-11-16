@@ -1,33 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { usePrincipal } from '../context/PrincipalContext';  
 import './login.css';
-import axios from 'axios';
 
-function Loginpage({ onLogin }) {
+function Loginpage() {
   const navigate = useNavigate();
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const { loginPrincipal } = usePrincipal(); 
   const [National_ID, setNational_ID] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/login", {
+      const response = await fetch("http://127.0.0.1:8000/api/login/", {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
-        body: JSON.stringify({
-          National_ID,
-          password,
-        }),
+        body: JSON.stringify({ National_ID, password }),
       });
-  
       if (response.ok) {
         const data = await response.json();
         Swal.fire({
@@ -36,7 +32,7 @@ function Loginpage({ onLogin }) {
           icon: 'success',
           confirmButtonText: 'OK',
         });
-        onLogin(data); 
+        loginPrincipal(data);  
         navigate('/dashboard');
       } else {
         const errorData = await response.json();
@@ -66,33 +62,38 @@ function Loginpage({ onLogin }) {
 
   return (
     <div className="login-container">
-      <h1 id="login-title">Login as school principal</h1>
+      <h1 id="login-title">Login as School Principal</h1>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="National ID"
-          className="login-input"
-          id="login-input1"
-          value={National_ID}
-          onChange={(e) => setNational_ID(e.target.value)}
-        />
-        <div className="password">
+        <div className="login-fields">
           <input
-            type={passwordVisible ? "text" : "password"}
+            type="text"
+            placeholder="National ID"
+            className="login-input"
+            id="login-input1"
+            value={National_ID}
+            onChange={(e) => setNational_ID(e.target.value)}
+          />
+          <input
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             className="login-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="button" onClick={togglePasswordVisibility} className="eye-button">
-            {passwordVisible ? <FaEyeSlash id="eye-icon" /> : <FaEye id="eye-icon" />}
-          </button>
+        </div>
+        <div className="password-toggle">
+          <label>
+            <input 
+              type="checkbox" 
+              checked={showPassword} 
+              onChange={togglePasswordVisibility} 
+              className="show-password-checkbox" 
+            />
+            Show Password
+          </label>
         </div>
         <button type="submit" className="login-button">Log in</button>
       </form>
-      <p className="signup-link">
-        New Principal? <Link to="/signup">Sign up</Link>
-      </p>
     </div>
   );
 }

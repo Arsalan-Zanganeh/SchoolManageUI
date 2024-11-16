@@ -1,0 +1,181 @@
+body.signup-background { 
+    background: linear-gradient(135deg, #D3CCE3, #E9E4F0);
+  }
+  .signup-form-container {
+    max-width: 50rem; 
+    margin: auto;
+    padding: 1.25rem; 
+    background-color: #f9f9f9;
+    border-radius: 0.5rem; 
+    box-shadow: 0px 0px 1.25rem #1313DF; 
+    font-family: Arial, sans-serif;
+    margin-block: 10px;
+  }
+    
+  .form-title {
+    text-align: center;
+    font-size: 1.5rem; 
+    color: #5e3a89;
+    margin-bottom: 1.25rem; 
+  }
+    
+  .signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9375rem; 
+  }
+  
+  .signup-input {
+    font-size: medium;
+    border-radius: 2rem !important;
+    border-style: none;
+    padding-left: 20px;
+    padding-block: 12px;
+    box-shadow: 0px 0px 7px #929193;
+  }
+  
+  .form-section {
+    padding: 0.9375rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem; 
+  }
+    
+  .section-title {
+    font-size: 1.125rem; 
+    color: #5e3a89;
+    margin-bottom: 0.625rem; 
+  }
+    
+  .form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem; 
+  }
+    
+  .form-group input, 
+  .form-group select, 
+  .form-group textarea {
+    flex: 1;
+    padding: 0.625rem;
+    font-size: 1rem; 
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    margin-bottom: 0.625rem; 
+    transition: border-color 0.3s, box-shadow 0.3s; 
+  }
+  
+  .form-group input:focus, 
+  .form-group select:focus, 
+  .form-group textarea:focus {
+    border-color: #5e3a89;
+    box-shadow: 0 0 0 3px rgba(94, 58, 137, 0.5); 
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+  }
+    
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.625rem;
+  }
+    
+  .submit-button {
+    background-color: #5e3a89;
+    color: white;
+    padding: 0.05rem 1.25rem;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+    
+  .reset-button {
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 1rem; 
+    cursor: pointer;
+    font-size: 1rem; 
+  }
+  
+  .submit-button:hover {
+    background-color: #2f1653;
+    transition: 0.7s;
+  }
+  
+  .reset-button:hover {
+    background-color: #a4a4a4;
+    transition: 0.7s;
+  }
+  
+  .submit-button:focus, .reset-button:focus {
+    outline: none;
+  }
+  
+  @media (max-width: 768px) {
+    .signup-form-container {
+      max-width: 100%;
+      padding: 1rem;
+      box-shadow: none;
+    }
+  
+    .form-section {
+      padding: 0.75rem;
+    }
+  
+    .form-group {
+      flex-direction: column;
+    }
+  
+    .form-buttons {
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+  
+    .submit-button, .reset-button {
+      width: 100%;
+    }
+  }
+  
+  
+  @media (max-width: 480px) {
+    .signup-form-container {
+      max-width: 95%;
+      padding: 0.875rem;
+      border-radius: 0.25rem;
+    }
+  
+    .form-title {
+      font-size: 1.25rem;
+    }
+  
+    .section-title {
+      font-size: 1rem;
+    }
+  
+    .form-group input, .form-group select, .form-group textarea {
+      font-size: 0.9375rem;
+      padding: 0.5rem;
+    }
+  
+    .form-buttons {
+      gap: 0.5rem;
+    }
+    
+    .submit-button, .reset-button {
+      font-size: 0.875rem;
+    }
+  }
+  
+  input:-webkit-autofill, 
+  textarea:-webkit-autofill, 
+  select:-webkit-autofill {
+    background-color: #0c0505 !important; 
+    color: #333 !important;
+    -webkit-box-shadow: 0 0 0px 1000px #080707 inset; 
+    transition: background-color 5000s ease-in-out 0s; 
+  }
+  

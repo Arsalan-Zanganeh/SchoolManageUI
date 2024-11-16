@@ -1,31 +1,31 @@
 import './signup.css';
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-function SignUp() {
-  const navigate = useNavigate();
+function SignUpTeacher() {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [nationalid, setNationalid] = useState('');
-  const [phonenumber, setPhonenumber] = useState('');
+  const [phonenumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+  const [address, setAddress] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!firstname || !lastname || !nationalid || !phonenumber || !password || !password2) {
+  
+    if (!firstname || !lastname || !nationalid || !phonenumber || !password || !password2 || !address) {
       Swal.fire('Error', 'All fields are required', 'error');
       return;
     }
-
+  
     try {
-      const submit = await fetch("http://127.0.0.1:8000/api/register/", {
+      const submit = await fetch("http://127.0.0.1:8000/api/add_teacher/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: 'include',
         body: JSON.stringify({
           first_name: firstname,
           last_name: lastname,
@@ -33,11 +33,13 @@ function SignUp() {
           Phone_Number: phonenumber,
           password,
           password2,
+          Address: address,
         }),
       });
 
       if (!submit.ok) {
         const errorData = await submit.json();
+  
         if (errorData) {
           let errorMessage = '';
           for (const key in errorData) {
@@ -56,9 +58,9 @@ function SignUp() {
         }
       } else {
         Swal.fire('Success', 'Registration successful!', 'success');
-        navigate('/principal-login');
+        // navigate('/teacher-login');
       }
-
+  
     } catch (error) {
       Swal.fire('Error', 'Server error or network issue. Please try again.', 'error');
       console.error('Error:', error);
@@ -76,17 +78,18 @@ function SignUp() {
     setFirstname('');
     setLastname('');
     setNationalid('');
-    setPhonenumber('');
+    setPhoneNumber('');
     setPassword('');
     setPassword2('');
+    setAddress('');
   };
 
   return (
     <div className="signup-form-container">
-      <h1 className="form-title">Sign Up</h1>
+      <h1 className="form-title">Sign Up as Teacher</h1>
       <form className="signup-form" onSubmit={handleSubmit}>
         <div className="form-section">
-          <h2 className="section-title">School Manager Information</h2>
+          <h2 className="section-title">Teacher Information</h2>
           <div className="form-group">
             <input
               type="text"
@@ -116,7 +119,7 @@ function SignUp() {
               placeholder="Phone Number"
               className="signup-input"
               value={phonenumber}
-              onChange={(e) => setPhonenumber(e.target.value)}
+              onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </div>
           <div className="form-group">
@@ -135,6 +138,15 @@ function SignUp() {
               onChange={(e) => setPassword2(e.target.value)}
             />
           </div>
+          <div className="form-group">
+            <textarea
+              placeholder="Enter Home Address"
+              rows="3"
+              className="signup-input"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            ></textarea>
+          </div>
         </div>
 
         <div className="form-buttons">
@@ -146,11 +158,8 @@ function SignUp() {
           </button>
         </div>
       </form>
-      <p className="login-link">
-        Have an account? <Link to="/principal-login">Log In</Link>
-      </p>
     </div>
   );
 }
 
-export default SignUp;
+export default SignUpTeacher;

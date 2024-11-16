@@ -6,27 +6,37 @@
 
 body.signup-background { 
     background: linear-gradient(135deg, #D3CCE3, #E9E4F0);
+    overflow-x: hidden; 
 }
   
 .login-container {
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
-    width: 500px;
-    height: 640px;
+    width: 100%;  
+    max-width: 500px; 
+    height: auto;
     border-color: rgb(19, 19, 223);
-    border-radius: 3rcap;
+    border-radius: 3rem;
     border-style: none;
     box-shadow: 0px 0px 20px #1313DF;
     margin: 10px auto;
-    padding-bottom: 30px;
+    padding: 40px 30px 30px 30px;
     justify-self: center;
+    box-sizing: border-box; 
 }
-  
+
 #login-title {
-    padding-top: 40px;
+    padding-bottom: 20px;
 }
-  
+
+.login-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
 .login-input {
     font-size: medium;
     border-radius: 2rem;
@@ -34,54 +44,28 @@ body.signup-background {
     padding-left: 20px;
     padding-block: 12px;
     margin-block: 20px;
-    margin-left: auto;
-    margin-right: auto;
     width: 90%;
     max-width: 400px;
     box-shadow: 0px 0px 7px #929193;
     transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box; 
 }
 
 .login-input:focus {
     border-color: #5e3a89;
     box-shadow: 0 0 0 3px rgba(94, 58, 137, 0.5); 
 }
-  
-#login-input1 {
-    width: 90% !important;
-    max-width: 100% !important;
-}
-  
-.password {
+
+.password-toggle {
     display: flex;
-    flex-direction: row;
-    align-items: center;
     justify-content: center;
+    margin-top: 10px;
 }
-  
-.eye-button {
-    background-color: #AFAFAF;
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    margin: 2px;
-    height: 40px;
-    width: 40px;
+
+.show-password-checkbox {
+    margin-right: 10px;
 }
-  
-.eye-button:hover {
-    background-color: deepskyblue;
-    transition: 0.4s;
-}
-  
-#eye-icon {
-    margin-inline: 2px;
-}
-  
+
 .login-button {
     width: 50%;
     padding-block: 10px;
@@ -89,59 +73,50 @@ body.signup-background {
     align-self: center;
     background-color: #C5C5CE;
     border-radius: 1rem;
+    border: none;
+    cursor: pointer;
 }
-  
+
 .login-button:hover {
     background-color: #477FD7;
     transition: 0.7s;
 }
-  
-.eye-button:focus, .login-button:focus {
-    outline: none;
-}
-  
+
 .login-button:focus {
     background-color: #2650EA;
 }
 
+.signup-link {
+    margin-top: 20px;
+}
+
 @media (max-width: 768px) {
     .login-container {
-        width: 90%;
+        width: 90%; 
+        max-width: 100%; 
         height: auto;
     }
 
-    .login-input, #login-input1, .login-button {
-        width: 90%;
+    .login-input, .login-button {
+        width: 90%; 
         max-width: 100%;
-        margin-inline: 10px;
     }
 
-    #login-input1 {
-        max-width: 95%;
-        margin-right: 20px;
-        overflow: hidden;
-    }
-
-    .password {
-        margin-inline: 5px
+    .login-fields {
+        gap: 10px;
     }
 }
 
 @media (max-width: 480px) {
     .login-container {
-        width: 97%;
+        width: 97%; 
     }
 
-    .login-input, #login-input1, .login-button {
-        max-width: 95%;
+    .login-input, .login-button {
         width: 95%;
     }
 
-    #login-input1 {
-        overflow: hidden;
-    }
-
-    .password {
-        margin-inline: 5px
+    .login-fields {
+        gap: 15px;
     }
 }

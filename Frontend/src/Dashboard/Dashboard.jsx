@@ -1,17 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePrincipal } from '../context/PrincipalContext';
 
-const Dashboard = ({ user, onLogout }) => {
+const Dashboard = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState(user ? user.first_name : '');
-  const [lastName, setLastName] = useState(user ? user.last_name : '');
-  const token = user?.jwt;
+  const { principal, logoutPrincipal } = usePrincipal();
+  const [name, setName] = useState(principal ? principal.first_name : '');
+  const [lastName, setLastName] = useState(principal ? principal.last_name : '');
+
+  const token = principal?.jwt;
 
   const fetchUserData = useCallback(async () => {
     try {
       const userResponse = await fetch('http://127.0.0.1:8000/api/user', {
         headers: {
           'Content-Type': 'application/json',
+          // Authorization: `Bearer ${token}`, //
         },
         credentials: 'include',
       });
@@ -26,7 +30,7 @@ const Dashboard = ({ user, onLogout }) => {
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (token) {
@@ -34,25 +38,43 @@ const Dashboard = ({ user, onLogout }) => {
     }
   }, [token, fetchUserData]);
 
-
   const handleLogout = () => {
-    onLogout();
+    logoutPrincipal(); // Clear context state
     navigate('/principal-login');
   };
-  const addStu = () => {
+
+  const addStudent = () => {
     navigate('/dashboard/add-student');
+  };
+
+  const addTeacher = () => {
+    navigate('/dashboard/add-teacher'); 
   };
 
   return (
     <div style={{ textAlign: 'center', marginTop: '20px' }}>
       <h1>Welcome, {name} {lastName}!</h1>
       <p>This is your dashboard. You can view and manage your account here.</p>
+      
       <button onClick={handleLogout} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
         Logout
       </button>
-      <button onClick={addStu} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
-        add student
-      </button>
+
+      <div style={{ marginTop: '20px' }}>
+        <button 
+          onClick={addStudent} 
+          style={{ padding: '10px 20px', marginTop: '10px', cursor: 'pointer', marginRight: '10px' }}
+        >
+          Add Student
+        </button>
+
+        <button 
+          onClick={addTeacher} 
+          style={{ padding: '10px 20px', marginTop: '10px', cursor: 'pointer' }}
+        >
+          Add Teacher
+        </button>
+      </div>
     </div>
   );
 };
