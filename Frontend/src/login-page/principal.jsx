@@ -32,8 +32,8 @@ function Loginpage() {
           icon: 'success',
           confirmButtonText: 'OK',
         });
-        loginPrincipal(data);  
-        navigate('/dashboard');
+        loginPrincipal(data); 
+        navigate('/admin-school');  
       } else {
         const errorData = await response.json();
         Swal.fire({

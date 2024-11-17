@@ -12,7 +12,7 @@ const Dashboard = () => {
 
   const fetchUserData = useCallback(async () => {
     try {
-      const userResponse = await fetch('http://127.0.0.1:8000/api/user', {
+      const userResponse = await fetch('http://127.0.0.1:8000/api/user/', {
         headers: {
           'Content-Type': 'application/json',
           // Authorization: `Bearer ${token}`, //

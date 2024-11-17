@@ -2,17 +2,20 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import SignUp from './signup-page/signup';
 import LoginPrincipal from './login-page/principal';
-import LoginStudent from './login-page/Student';
+import LoginStudent from './login-page/student';
 import LoginTeacher from './login-page/Teacher';
 import Dashboard from './Dashboard/Dashboard';
 import StuDashboard from './Dashboard/StudentDashboard';
 import TeacherDashboard from './Dashboard/TeacherDashboard';
 import SignUpStudent from './Dashboard/add-student/add-student';
 import SignUpTeacher from './Dashboard/add-teacher/add-teacher';
+import AdminSchoolPage from './Dashboard/AdminSchoolPage'; 
+import SchoolDashboard from './Dashboard/SchoolDashboard'; 
 import { PrincipalProvider } from './context/PrincipalContext';
 import { StudentProvider } from './context/StudentContext';
 import { TeacherProvider } from './context/TeacherContext'; 
 import PrivateRoute from './components/PrivateRoute';
+import { SchoolProvider } from './context/SchoolContext';  
 import './App.css';
 
 function Navigation() {
@@ -42,54 +45,72 @@ function App() {
       <PrincipalProvider>
         <StudentProvider>
           <TeacherProvider>
-            <Navigation />
-            <Routes>
-              <Route path="/" element={<div>Welcome to the homepage!</div>} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/principal-login" element={<LoginPrincipal />} />
-              <Route path="/student-login" element={<LoginStudent />} />
-              <Route path="/teacher-login" element={<LoginTeacher />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <PrivateRoute role="principal">
-                    <Dashboard />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/dashboard/add-student"
-                element={
-                  <PrivateRoute role="principal">
-                    <SignUpStudent />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/dashboard/add-teacher"
-                element={
-                  <PrivateRoute role="principal">
-                    <SignUpTeacher />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/student-dashboard"
-                element={
-                  <PrivateRoute role="student">
-                    <StuDashboard />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/teacher-dashboard"
-                element={
-                  <PrivateRoute role="teacher">
-                    <TeacherDashboard />
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
+            <SchoolProvider>
+              <Navigation />
+              <Routes>
+                <Route path="/" element={<div>Welcome to the homepage!</div>} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/principal-login" element={<LoginPrincipal />} />
+                <Route path="/student-login" element={<LoginStudent />} />
+                <Route path="/teacher-login" element={<LoginTeacher />} />
+                <Route
+                  path="/admin-school"
+                  element={
+                    <PrivateRoute role="principal">
+                      <AdminSchoolPage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <PrivateRoute role="principal">
+                      <Dashboard />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/school/:schoolId/add-student"
+                  element={
+                    <PrivateRoute role="principal">
+                      <SignUpStudent />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/school/:schoolId/add-teacher"
+                  element={
+                    <PrivateRoute role="principal">
+                      <SignUpTeacher />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/student-dashboard"
+                  element={
+                    <PrivateRoute role="student">
+                      <StuDashboard />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/teacher-dashboard"
+                  element={
+                    <PrivateRoute role="teacher">
+                      <TeacherDashboard />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/school/:schoolId"
+                  element={
+                    <PrivateRoute role="principal">
+                      <SchoolDashboard />
+                    </PrivateRoute>
+                  }
+                />
+              </Routes>
+            </SchoolProvider> 
           </TeacherProvider>
         </StudentProvider>
       </PrincipalProvider>
