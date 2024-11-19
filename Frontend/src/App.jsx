@@ -9,9 +9,11 @@ import StuDashboard from './Dashboard/StudentDashboard';
 import TeacherDashboard from './Dashboard/TeacherDashboard';
 import SignUpStudent from './Dashboard/add-student/add-student';
 import SignUpTeacher from './Dashboard/add-teacher/add-teacher';
+import AddClass from './Dashboard/add-class/AddClass';
 import AdminSchoolPage from './Dashboard/AdminSchoolPage'; 
 import SchoolDashboard from './Dashboard/SchoolDashboard';
-import ProfileAdmin from './Dashboard/ProfileAdmin'; // Import the ProfileAdmin component
+import ProfileAdmin from './Dashboard/ProfileAdmin';
+import ManageStudents from './Dashboard/ManageStudents'; // Import ManageStudents component
 import { PrincipalProvider } from './context/PrincipalContext';
 import { StudentProvider } from './context/StudentContext';
 import { TeacherProvider } from './context/TeacherContext'; 
@@ -115,6 +117,23 @@ function App() {
                   element={
                     <PrivateRoute role="principal">
                       <SchoolDashboard />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/school/:schoolId/classes"
+                  element={
+                    <PrivateRoute role="principal">
+                      <AddClass />
+                    </PrivateRoute>
+                  }
+                />
+                {/* اضافه کردن مسیر برای مدیریت دانش‌آموزان */}
+                <Route
+                  path="/dashboard/school/:schoolId/classes/manage_students/:clsId"
+                  element={
+                    <PrivateRoute role="principal">
+                      <ManageStudents />
                     </PrivateRoute>
                   }
                 />

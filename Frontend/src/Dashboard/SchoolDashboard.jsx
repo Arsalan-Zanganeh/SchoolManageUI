@@ -11,7 +11,9 @@ const SchoolDashboard = () => {
   const [school, setSchool] = useState(null); 
   const [principalInfo, setPrincipalInfo] = useState(null); 
 
-
+  const viewClasses = () => {
+    navigate(`/dashboard/school/${schoolId}/classes`);
+  };
   const fetchSchoolData = useCallback(async () => {
     if (!schoolToken) {
       console.log('No school token available');
@@ -92,6 +94,7 @@ const SchoolDashboard = () => {
           )}
           <button onClick={addStudent}>Add Student</button>
           <button onClick={addTeacher}>Add Teacher</button>
+          <button onClick={viewClasses}>Classes</button>
         </>
       ) : (
         <p>Loading school data...</p>
