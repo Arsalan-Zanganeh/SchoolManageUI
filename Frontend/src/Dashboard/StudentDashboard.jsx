@@ -1,15 +1,43 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AppBar, Tabs, Tab, Box, Typography  } from '@mui/material';
 import { useStudent } from '../context/StudentContext';
+import './dashboard.css';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const { student, logoutStudent } = useStudent();
   const [name, setName] = useState(student ? student.first_name : '');
   const [lastName, setLastName] = useState(student ? student.last_name : '');
-
   const token = student?.jwt;
+  const [value, setValue] = React.useState(0);
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const showclasses = () => {
+    navigate('./student-classes');
+  };
   const fetchStudentData = useCallback(async () => {
     try {
       const response = await fetch('http://127.0.0.1:8000/student/user/', {
@@ -45,12 +73,34 @@ const StudentDashboard = () => {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      <h1>Welcome, {name} {lastName}!</h1>
-      <p>This is your student dashboard. You can view your information here.</p>
-      
-      <button onClick={handleLogout} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
+      <div className="tab-container">
+      <AppBar position="static">
+        <Tabs value={value} onChange={handleChange}>
+          <Tab label="Home" />
+          <Tab label="Profile" />
+          <Tab label="Classes" />
+        </Tabs>
+      </AppBar>
+
+      <TabPanel value={value} index={0}>
+        <h2>Home</h2>
+        <p>Welcome, {name} {lastName}!</p>
+        <button onClick={handleLogout} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
         Logout
       </button>
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <h2>Profile</h2>
+        <p>Manage your profile here.</p>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <h2>Classes</h2>
+        <p>You can see your classes in here.</p>
+        <button onClick={showclasses} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
+        Class List
+      </button>
+      </TabPanel>
+      </div>      
     </div>
   );
 };
