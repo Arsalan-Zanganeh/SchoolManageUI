@@ -10,6 +10,8 @@ import TeacherDashboard from './Dashboard/TeacherDashboard';
 import SignUpStudent from './Dashboard/add-student/add-student';
 import SignUpTeacher from './Dashboard/add-teacher/add-teacher';
 import AdminSchoolPage from './Dashboard/AdminSchoolPage'; 
+import StudentClassList from './Dashboard/show-classes/student'
+import TeacherClassList from './Dashboard/show-classes/teacher'
 import SchoolDashboard from './Dashboard/SchoolDashboard';
 import ProfileAdmin from './Dashboard/ProfileAdmin'; // Import the ProfileAdmin component
 import { PrincipalProvider } from './context/PrincipalContext';
@@ -103,10 +105,26 @@ function App() {
                   }
                 />
                 <Route
+                  path="/student-dashboard/student-classes"
+                  element={
+                    <PrivateRoute role="student">
+                      <StudentClassList />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
                   path="/teacher-dashboard"
                   element={
                     <PrivateRoute role="teacher">
                       <TeacherDashboard />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/teacher-dashboard/teacher-classes"
+                  element={
+                    <PrivateRoute role="teacher">
+                      <TeacherClassList />
                     </PrivateRoute>
                   }
                 />
