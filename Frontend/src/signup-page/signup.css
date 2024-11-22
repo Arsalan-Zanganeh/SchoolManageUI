@@ -29,6 +29,7 @@ body.signup-background {
   border-style: none;
   padding-left: 20px;
   padding-block: 12px;
+  color: black !important;
   box-shadow: 0px 0px 7px #929193;
 }
 

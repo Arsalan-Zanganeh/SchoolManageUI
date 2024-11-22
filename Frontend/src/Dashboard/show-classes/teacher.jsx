@@ -66,7 +66,7 @@ const TeacherClassList = () => {
 
   const fetchClassesData = useCallback(async () => {
     try {
-      const fetchclassresponse = await fetch("http://127.0.0.1:8080/teacher/classes/", {
+      const fetchclassresponse = await fetch("http://127.0.0.1:8000/teacher/classes/", {
         headers: {
           'Content-Type': 'application/json',
            //Authorization: `Bearer ${token}`,

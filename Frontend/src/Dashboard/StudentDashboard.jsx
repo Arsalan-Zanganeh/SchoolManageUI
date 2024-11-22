@@ -40,7 +40,7 @@ const StudentDashboard = () => {
   };
   const fetchStudentData = useCallback(async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8080/student/user/', {
+      const response = await fetch('http://127.0.0.1:8000/student/user/', {
         headers: {
           'Content-Type': 'application/json',
         //   Authorization: `Bearer ${token}`,

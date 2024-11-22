@@ -38,7 +38,7 @@ const AddClass = () => {
   
   const fetchClasses = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8080/api/classes/`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/classes/`, {
         credentials: "include",
       });
       if (response.ok) {
@@ -60,7 +60,7 @@ const AddClass = () => {
 
   const handleAddClass = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8080/api/add_class/`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/add_class/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -111,7 +111,7 @@ const AddClass = () => {
       };
   
       const response = await fetch(
-        `http://127.0.0.1:8080/api/edit_class/`,
+        `http://127.0.0.1:8000/api/edit_class/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -137,7 +137,7 @@ const AddClass = () => {
   
   const handleDeleteClass = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8080/api/delete_class/`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/delete_class/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -207,11 +207,11 @@ const AddClass = () => {
               setNewClassData({ ...newClassData, Session1Day: e.target.value })
             }
           >
-            <MenuItem value="Saturday">Saturday</MenuItem>
-            <MenuItem value="Sunday">Sunday</MenuItem>
-            <MenuItem value="Monday">Monday</MenuItem>
-            <MenuItem value="Tuesday">Tuesday</MenuItem>
-            <MenuItem value="Wednesday">Wednesday</MenuItem>
+            <MenuItem value="saturday">Saturday</MenuItem>
+            <MenuItem value="sunday">Sunday</MenuItem>
+            <MenuItem value="monday">Monday</MenuItem>
+            <MenuItem value="tuesday">Tuesday</MenuItem>
+            <MenuItem value="wednesday">Wednesday</MenuItem>
           </Select>
         </FormControl>
         <FormControl required>
