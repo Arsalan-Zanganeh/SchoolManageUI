@@ -20,6 +20,10 @@ const AdminSchoolPage = () => {
     Postal_Code: "",
   });
 
+  const handleProfile = () => {
+    navigate('/dashboard/profile-admin');
+};
+
   const fetchSchools = useCallback(async () => {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/school/", {
@@ -190,6 +194,9 @@ const AdminSchoolPage = () => {
 
   return (
     <div className="admin-school-container">
+      <button onClick={handleProfile} style={{ padding: '10px 10px', cursor: 'pointer', fontFamily: 'Arial',backgroundColor: '#ff8000', position: 'absolute', top: '50px', left: '50px' }}>
+              Show Profile
+      </button>
       <h1>Manage Schools</h1>
       <form onSubmit={handleAddSchool} className="add-school-form">
         <h2>Add a New School</h2>

@@ -15,6 +15,11 @@ import StudentClassList from './Dashboard/show-classes/student'
 import TeacherClassList from './Dashboard/show-classes/teacher'
 import SchoolDashboard from './Dashboard/SchoolDashboard';
 import ProfileAdmin from './Dashboard/ProfileAdmin';
+import ProfileStudent from './Dashboard/ProfileStudent';
+import ProfileTeacher from './Dashboard/ProfileTeacher';
+import EditProfileAdmin from './Dashboard/EditProfileAdmin';
+import EditProfileStudent from './Dashboard/EditProfileStudent';
+import EditProfileTeacher from './Dashboard/EditProfileTeacher';
 import ManageStudents from './Dashboard/ManageStudents'; // Import ManageStudents component
 import { PrincipalProvider } from './context/PrincipalContext';
 import { StudentProvider } from './context/StudentContext';
@@ -79,6 +84,46 @@ function App() {
                   element={
                     <PrivateRoute role="principal">
                       <ProfileAdmin />
+                    </PrivateRoute>
+                  }
+                />
+                 <Route
+                  path="/dashboard/profile-student"
+                  element={
+                    <PrivateRoute role="student">
+                      <ProfileStudent />
+                    </PrivateRoute>
+                  }
+                />
+                 <Route
+                  path="/dashboard/profile-teacher"
+                  element={
+                    <PrivateRoute role="teacher">
+                      <ProfileTeacher />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/edit-admin"
+                  element={
+                    <PrivateRoute role="principal">
+                      <EditProfileAdmin />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/edit-student"
+                  element={
+                    <PrivateRoute role="student">
+                      <EditProfileStudent />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard/edit-teacher"
+                  element={
+                    <PrivateRoute role="teacher">
+                      <EditProfileTeacher />
                     </PrivateRoute>
                   }
                 />

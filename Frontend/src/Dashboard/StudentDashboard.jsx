@@ -72,12 +72,16 @@ const StudentDashboard = () => {
     navigate('/student-login');
   };
 
+  const handleProfile = () => {
+    navigate('/dashboard/profile-student');
+  };
+
   return (
     <div style={{ textAlign: 'center', marginTop: '20px' }} className='stu-dashboard'>
       <div className="tab-container">
         <AppBar position="static">
           <Tabs value={value} onChange={handleChange} className='stu-dashboard-nav'>
-            <Tab label={<CgProfile size={22}/>}></Tab>
+            <Tab label={<CgProfile size={22}/>}  onClick={handleProfile} ></Tab>
             <Tab label="Home"/>
             <Tab label="Classes"/>
             <Tab label="Log Out" onClick={handleLogout}></Tab>
