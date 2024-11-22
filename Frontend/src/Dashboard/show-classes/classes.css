@@ -1,0 +1,118 @@
+/* App.css */
+
+body.classes-list {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #e0f7fa, #80deea, #26c6da);
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .student-classes {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .class-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+  }
+  
+  .class-box {
+    border: 2px solid #004d99;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 77, 153, 0.2);
+    max-width: 200px;
+    background-color: #ffffff;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .class-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 77, 153, 0.3);
+  }
+  
+  .class-box h2 {
+    color: #004d99;
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #004d99;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  button:hover {
+    background-color: #003366;
+    transform: scale(1.05);
+  }
+  
+  .weekly-schedule {
+    margin-top: 20px;
+    padding: 20px;
+    border-top: 2px solid #004d99;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 77, 153, 0.2);
+    overflow-x: auto;
+  }
+  
+  .timetable {
+    width: 100%;
+    border-collapse: collapse;
+    
+  }
+  
+  .timetable th, .timetable td {
+    border: 1px solid #004d99;
+    padding: 10px;
+    text-align: center;
+    word-break: break-word;
+  }
+  
+  .timetable th {
+    background-color: #004d99;
+    color: #ffffff;
+  }
+  
+  .timetable td {
+    background-color: #f0f7fa;
+  }
+  
+  .timetable tr:nth-child(even) td {
+    background-color: #e0f0f4;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .class-grid {
+      gap: 10px;
+    }
+  
+    .class-box {
+      width: 100%;
+      max-width: none;
+    }
+  
+    .timetable th, .timetable td {
+      padding: 5px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    button {
+      width: 100%;
+      padding: 10px;
+    }
+  }
+  
