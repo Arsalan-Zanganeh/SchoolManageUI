@@ -1,4 +1,3 @@
 # School Management
 ### How to run project:
-## frontend: npm run dev
-## backend: python manage.py runserver
+## After installing Node.js and Vite (for React) and React modules, run : `npm run dev`
