@@ -14,7 +14,7 @@ const TeacherClassList = () => {
     setShowSchedule(!showSchedule);
   };
   const generateTimeTable = () => {
-    const days = ['Saturday','Sunday','Monday', 'Tuesday', 'Wednesday'];
+    const days = ['saturday','sunday','monday', 'tuesday', 'wednesday'];
     const periods = ['8:00 to 9:00', '9:15 to 10:15', '10:30 to 11:30', '11:45 to 12:45', '13:00 to 14:00'];
     const timeTable = {};
 
