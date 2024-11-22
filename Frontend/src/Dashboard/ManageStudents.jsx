@@ -11,7 +11,7 @@ const ManageStudents = () => {
   const fetchStudents = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8080/api/class_student/`, 
+        `http://127.0.0.1:8000/api/class_student/`, 
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -40,7 +40,7 @@ const ManageStudents = () => {
   const handleAddStudent = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8080/api/add_class_student/`, 
+        `http://127.0.0.1:8000/api/add_class_student/`, 
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -69,7 +69,7 @@ const ManageStudents = () => {
   const handleRemoveStudent = async (studentId) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8080/api/delete_class_student/`,
+        `http://127.0.0.1:8000/api/delete_class_student/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

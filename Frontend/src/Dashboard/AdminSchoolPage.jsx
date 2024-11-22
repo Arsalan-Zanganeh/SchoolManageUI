@@ -22,7 +22,7 @@ const AdminSchoolPage = () => {
 
   const fetchSchools = useCallback(async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/school/", {
+      const response = await fetch("http://127.0.0.1:8000/api/school/", {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
@@ -63,7 +63,7 @@ const AdminSchoolPage = () => {
   const handleAddSchool = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/add_school/", {
+      const response = await fetch("http://127.0.0.1:8000/api/add_school/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newSchool),
@@ -114,7 +114,7 @@ const AdminSchoolPage = () => {
   const handleNavigateToDashboard = async (schoolId, Postal_Code) => {
     try {
       const loginResponse = await fetch(
-        `http://127.0.0.1:8080/api/login_school/`,
+        `http://127.0.0.1:8000/api/login_school/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -149,7 +149,7 @@ const AdminSchoolPage = () => {
     try 
     {
       const adminLogoutResponse = await fetch(
-        "http://127.0.0.1:8080/api/logout_school/",
+        "http://127.0.0.1:8000/api/logout_school/",
         {
           method: "POST",
           credentials: "include",
@@ -159,7 +159,7 @@ const AdminSchoolPage = () => {
         throw new Error("Failed to logout admin");
       }
       const schoolLogoutResponse = await fetch(
-        "http://127.0.0.1:8080/api/logout/",
+        "http://127.0.0.1:8000/api/logout/",
         {
           method: "POST",
           credentials: "include",

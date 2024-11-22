@@ -26,7 +26,7 @@ function SignUpStudent() {
     }
   
     try {
-      const submit = await fetch("http://127.0.0.1:8080/api/add_student/", {
+      const submit = await fetch("http://127.0.0.1:8000/api/add_student/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

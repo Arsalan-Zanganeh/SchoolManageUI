@@ -43,6 +43,7 @@ body.signup-background {
     padding-left: 20px;
     padding-block: 12px;
     margin-block: 20px;
+    color: black !important; 
     width: 90%;
     max-width: 400px;
     box-shadow: 0px 0px 7px #929193;

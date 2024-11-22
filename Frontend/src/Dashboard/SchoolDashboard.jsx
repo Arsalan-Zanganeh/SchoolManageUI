@@ -22,7 +22,7 @@ const SchoolDashboard = () => {
     }
     try {
       console.log('Sending request to fetch school data...');
-      const response = await fetch('http://127.0.0.1:8080/api/school/', {
+      const response = await fetch('http://127.0.0.1:8000/api/school/', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -49,7 +49,7 @@ const SchoolDashboard = () => {
     }
     try {
       console.log('Sending request to fetch principal data...');
-      const response = await fetch('http://127.0.0.1:8080/api/user/', {
+      const response = await fetch('http://127.0.0.1:8000/api/user/', {
         headers: {
           'Content-Type': 'application/json',
         },

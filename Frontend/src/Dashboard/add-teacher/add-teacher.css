@@ -16,6 +16,7 @@
 .add-teacher-input {
   background-color: #ffffff !important;
   flex: 1;
+  color: black !important;
   border-radius: 2rem;
   border-style: none;
   padding-left: 10px;
