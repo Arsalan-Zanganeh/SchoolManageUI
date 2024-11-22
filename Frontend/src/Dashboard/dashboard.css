@@ -1,66 +1,64 @@
-/* App.css */
-.table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-  }
-  
-  tr:hover {
-    background-color: #f1f1f1;
-  }
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
 
 .tab-container {
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    width: 100%;  
-    max-width: 500px; 
-    height: auto;
-    border-color: rgb(19, 19, 223);
-    border-radius: 3rem;
-    border-style: none;
-    box-shadow: 0px 0px 20px #1313DF;
-    margin: 10px auto;
-    padding: 40px 30px 30px 30px;
-    justify-self: center;
-    box-sizing: border-box; 
-}
-.main-buttons {
-  width: 150px;
-  height: 60px;
-  padding-block: 10px;
-  margin-top: 20px;
-  align-self: center;
-  background-color: #C5C5CE;
-  border-radius: 1rem;
-}
-@media (max-width: 768px) {
-  .tab-container {
-      width: 90%; 
-      max-width: 100%; 
-      height: auto;
-  }
-
-  .table {
-      width: 90%; 
-  }
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  color: white;
 }
 
-@media (max-width: 480px) {
-  .tab-container {
-      width: 97%; 
-  }
+.tab-container h2 {
+  margin: 0;
+}
 
-  .table {
-      width: 95%;
-  }
+.stu-dashboard {
+  width: 100%;
+}
+
+.stu-dashboard-nav {
+  background-color: rgb(105, 155, 247);
+  color: #000000;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 50px);
+  padding: 20px;
+}
+
+h2, p {
+  text-align: center;
+  color: #000000;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
 }

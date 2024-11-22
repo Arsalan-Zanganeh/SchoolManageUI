@@ -77,19 +77,17 @@ const TeacherDashboard = () => {
     <div style={{ textAlign: 'center', marginTop: '20px' }}>
     <div className="tab-container">
     <AppBar position="static">
-      <Tabs value={value} onChange={handleChange}>
+      <Tabs value={value} onChange={handleChange} className='stu-dashboard-nav'>
         <Tab label="Home" />
         <Tab label="Profile" />
         <Tab label="Classes" />
+        <Tab label="Log Out" onClick={handleLogout}></Tab>
       </Tabs>
     </AppBar>
 
     <TabPanel value={value} index={0}>
       <h2>Home</h2>
       <p>Welcome, {name} {lastName}!</p>
-      <button onClick={handleLogout} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
-      Logout
-    </button>
     </TabPanel>
     <TabPanel value={value} index={1}>
       <h2>Profile</h2>

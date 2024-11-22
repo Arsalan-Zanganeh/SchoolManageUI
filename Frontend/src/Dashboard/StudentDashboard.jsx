@@ -72,34 +72,31 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+    <div style={{ textAlign: 'center', marginTop: '20px' }} className='stu-dashboard'>
       <div className="tab-container">
-      <AppBar position="static">
-        <Tabs value={value} onChange={handleChange}>
-          <Tab label="Home" />
-          <Tab label="Profile" />
-          <Tab label="Classes" />
-        </Tabs>
-      </AppBar>
-
-      <TabPanel value={value} index={0}>
-        <h2>Home</h2>
-        <p>Welcome, {name} {lastName}!</p>
-        <button onClick={handleLogout} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
-        Logout
-      </button>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <h2>Profile</h2>
-        <p>Manage your profile here.</p>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <h2>Classes</h2>
-        <p>You can see your classes in here.</p>
-        <button onClick={showclasses} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
-        Class List
-      </button>
-      </TabPanel>
+        <AppBar position="static">
+          <Tabs value={value} onChange={handleChange} className='stu-dashboard-nav'>
+            <Tab label="Home" className='stu-dashboard-nav-btn'/>
+            <Tab label="Profile" className='stu-dashboard-nav-btn'/>
+            <Tab label="Classes" className='stu-dashboard-nav-btn'/>
+            <Tab label="Log Out" onClick={handleLogout}></Tab>
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          <h2>Home</h2>
+          <p>Welcome, {name} {lastName}!</p>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <h2>Profile</h2>
+          <p>Manage your profile here.</p>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <h2>Classes</h2>
+          <p>You can see your classes in here.</p>
+          <button onClick={showclasses} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
+            Class List
+          </button>
+        </TabPanel>
       </div>      
     </div>
   );

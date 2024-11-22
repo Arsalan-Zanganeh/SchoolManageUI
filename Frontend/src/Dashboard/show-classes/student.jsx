@@ -111,10 +111,10 @@ const StudentClassList = () => {
           </div>
         ))}
       </div>
-      <button onClick={backToHome}>
+      <button onClick={backToHome} className='show-cls-btn'>
         Back to Home
       </button>
-      <button onClick={handleShowSchedule}>
+      <button onClick={handleShowSchedule} className='show-cls-btn'>
         {showSchedule ? 'Hide Weekly Schedule' : 'Show Weekly Schedule'}
       </button>
       {showSchedule && (

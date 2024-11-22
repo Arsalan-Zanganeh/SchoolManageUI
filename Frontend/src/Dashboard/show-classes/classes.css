@@ -56,6 +56,10 @@ body.classes-list {
     background-color: #003366;
     transform: scale(1.05);
   }
+
+  .show-cls-btn {
+    margin-inline: 5px;
+  }
   
   .weekly-schedule {
     margin-top: 20px;
