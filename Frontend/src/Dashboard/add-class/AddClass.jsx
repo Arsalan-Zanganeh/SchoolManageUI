@@ -38,7 +38,7 @@ const AddClass = () => {
   
   const fetchClasses = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/classes/`, {
+      const response = await fetch(`http://127.0.0.1:8080/api/classes/`, {
         credentials: "include",
       });
       if (response.ok) {
@@ -60,7 +60,7 @@ const AddClass = () => {
 
   const handleAddClass = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/add_class/`, {
+      const response = await fetch(`http://127.0.0.1:8080/api/add_class/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -111,7 +111,7 @@ const AddClass = () => {
       };
   
       const response = await fetch(
-        `http://127.0.0.1:8000/api/edit_class/`,
+        `http://127.0.0.1:8080/api/edit_class/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -135,11 +135,9 @@ const AddClass = () => {
     }
   };
   
-  
-
   const handleDeleteClass = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/delete_class/`, {
+      const response = await fetch(`http://127.0.0.1:8080/api/delete_class/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -163,7 +161,6 @@ const AddClass = () => {
     }
   };
   
-
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" textAlign="center" mb={3}>
@@ -262,7 +259,7 @@ const AddClass = () => {
             <MenuItem value="13:00 to 14:00">13:00 to 14:00</MenuItem>
           </Select>
         </FormControl>
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" className="add-cl-submit">
           Add Class
         </Button>
       </Box>

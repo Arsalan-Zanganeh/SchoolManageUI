@@ -38,7 +38,7 @@ const TeacherDashboard = () => {
 
   const fetchTeacherData = useCallback(async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/teacher/user', {
+      const response = await fetch('http://127.0.0.1:8080/teacher/user', {
         headers: {
           'Content-Type': 'application/json',
         //   Authorization: `Bearer ${token}`, // 

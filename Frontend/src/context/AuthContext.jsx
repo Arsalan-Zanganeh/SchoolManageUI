@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const loginUser = async (nationalid, password) => {
-        const response = await fetch("http://127.0.0.1:8000/Signup/token/", {
+        const response = await fetch("http://127.0.0.1:8080/Signup/token/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
         console.log(userData);
         
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/register/", {
+            const response = await fetch("http://127.0.0.1:8080/api/register/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

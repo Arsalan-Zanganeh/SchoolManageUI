@@ -19,7 +19,7 @@ function LoginTeacher() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8000/teacher/login/", {
+      const response = await fetch("http://127.0.0.1:8080/teacher/login/", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -70,7 +70,7 @@ function LoginTeacher() {
         <div className="login-fields">
           <input
             type="text"
-            placeholder="National_ID"
+            placeholder="National ID"
             className="login-input"
             id="login-input1"
             value={National_ID}

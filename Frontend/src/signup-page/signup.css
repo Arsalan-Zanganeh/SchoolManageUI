@@ -6,16 +6,13 @@ body.signup-background {
   margin: auto;
   padding: 1.25rem; 
   background-color: #f9f9f9;
-  border-radius: 0.5rem; 
-  box-shadow: 0px 0px 1.25rem #1313DF; 
+  border-radius: 3rem; 
   font-family: Arial, sans-serif;
   margin-block: 10px;
 }
   
 .form-title {
   text-align: center;
-  font-size: 1.5rem; 
-  color: #5e3a89;
   margin-bottom: 1.25rem; 
 }
   
@@ -26,24 +23,27 @@ body.signup-background {
 }
 
 .signup-input {
+  background-color: #ffffff !important;
   font-size: medium;
   border-radius: 2rem !important;
   border-style: none;
   padding-left: 20px;
   padding-block: 12px;
   box-shadow: 0px 0px 7px #929193;
-  background-color: #000; 
-  color: #fff; 
 }
 
+.signup-input:focus {
+  box-shadow: 0px 0px 12px #712cb7 !important;
+  transition: 0.5s;
+}
 
-input:-webkit-autofill, 
-textarea:-webkit-autofill, 
-select:-webkit-autofill {
-  background-color: #000 !important;
-  color: #fff !important; 
-  -webkit-box-shadow: 0 0 0px 1000px #000 inset !important; 
-  transition: background-color 5000s ease-in-out 0s;
+.signup-input:-webkit-autofill,
+.signup-input:-webkit-autofill:hover,
+.signup-input:-webkit-autofill:focus,
+.signup-input:-webkit-autofill:active { 
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: black !important;
+  -webkit-box-shadow: 0px 0px 7px #929193 !important;
 }
 
 .form-section {
@@ -53,7 +53,7 @@ select:-webkit-autofill {
 }
   
 .section-title {
-  font-size: 1.125rem; 
+  font-size: 1.5rem; 
   color: #5e3a89;
   margin-bottom: 0.625rem; 
 }
@@ -74,8 +74,6 @@ select:-webkit-autofill {
   border-radius: 0.25rem;
   margin-bottom: 0.625rem; 
   transition: border-color 0.3s, box-shadow 0.3s; 
-  background-color: #000; 
-  color: #fff;
 }
 
 .form-group input:focus, 
@@ -83,18 +81,18 @@ select:-webkit-autofill {
 .form-group textarea:focus {
   border-color: #5e3a89;
   box-shadow: 0 0 0 3px rgba(94, 58, 137, 0.5); 
-  background-color: #000; 
-  color: #fff; 
 }
 
-.form-group textarea {
+.form-group, textarea {
   resize: vertical;
 }
   
 .form-buttons {
   display: flex;
   justify-content: space-between;
+  align-self: center;
   margin-top: 0.625rem;
+  width: 50%;
 }
   
 .submit-button {

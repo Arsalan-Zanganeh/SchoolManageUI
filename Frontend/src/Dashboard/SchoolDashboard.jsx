@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSchool } from '../context/SchoolContext'; 
 import { usePrincipal } from '../context/PrincipalContext'; 
+import './SchoolDashboard.css'
 
 const SchoolDashboard = () => {
   const { schoolId } = useParams(); 
@@ -21,7 +22,7 @@ const SchoolDashboard = () => {
     }
     try {
       console.log('Sending request to fetch school data...');
-      const response = await fetch('http://127.0.0.1:8000/api/school/', {
+      const response = await fetch('http://127.0.0.1:8080/api/school/', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -48,7 +49,7 @@ const SchoolDashboard = () => {
     }
     try {
       console.log('Sending request to fetch principal data...');
-      const response = await fetch('http://127.0.0.1:8000/api/user/', {
+      const response = await fetch('http://127.0.0.1:8080/api/user/', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -92,9 +93,11 @@ const SchoolDashboard = () => {
           ) : (
             <p>Loading principal data...</p>
           )}
-          <button onClick={addStudent}>Add Student</button>
-          <button onClick={addTeacher}>Add Teacher</button>
-          <button onClick={viewClasses}>Classes</button>
+          <div className='school-dashboard-btns-container'>
+            <button onClick={addStudent} className='school-dashboard-btns'>Add Student</button>
+            <button onClick={addTeacher} className='school-dashboard-btns'>Add Teacher</button>
+            <button onClick={viewClasses} className='school-dashboard-btns'>Classes</button>
+          </div>
         </>
       ) : (
         <p>Loading school data...</p>

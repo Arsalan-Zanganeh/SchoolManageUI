@@ -1,6 +1,6 @@
-import './signup.css';
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import './add-teacher.css';
 
 function SignUpTeacher() {
   const [firstname, setFirstname] = useState('');
@@ -20,7 +20,7 @@ function SignUpTeacher() {
     }
   
     try {
-      const submit = await fetch("http://127.0.0.1:8000/api/add_teacher/", {
+      const submit = await fetch("http://127.0.0.1:8080/api/add_teacher/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,71 +85,71 @@ function SignUpTeacher() {
   };
 
   return (
-    <div className="signup-form-container">
-      <h1 className="form-title">Sign Up as Teacher</h1>
-      <form className="signup-form" onSubmit={handleSubmit}>
-        <div className="form-section">
-          <h2 className="section-title">Teacher Information</h2>
-          <div className="form-group">
+    <div className="add-teacher-container">
+      <h1 className="add-teacher-title">Add new teacher</h1>
+      <form className="add-teacher-form" onSubmit={handleSubmit}>
+        <div className="add-form-section">
+          <h2 className="section-title">Teacher's Information</h2>
+          <div className="add-teacher-form-group">
             <input
               type="text"
               placeholder="First Name"
-              className="signup-input"
+              className="add-teacher-input"
               value={firstname}
               onChange={(e) => setFirstname(e.target.value)}
             />
             <input
               type="text"
               placeholder="Last Name"
-              className="signup-input"
+              className="add-teacher-input"
               value={lastname}
               onChange={(e) => setLastname(e.target.value)}
             />
           </div>
-          <div className="form-group">
+          <div className="add-teacher-form-group">
             <input
               type="text"
               placeholder="National ID"
-              className="signup-input"
+              className="add-teacher-input"
               value={nationalid}
               onChange={(e) => setNationalid(e.target.value)}
             />
             <input
               type="text"
               placeholder="Phone Number"
-              className="signup-input"
+              className="add-teacher-input"
               value={phonenumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </div>
-          <div className="form-group">
+          <div className="add-teacher-form-group">
             <input
               type="password"
               placeholder="Password"
-              className="signup-input"
+              className="add-teacher-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <input
               type="password"
               placeholder="Confirm Password"
-              className="signup-input"
+              className="add-teacher-input"
               value={password2}
               onChange={(e) => setPassword2(e.target.value)}
             />
           </div>
-          <div className="form-group">
+          <div className="add-teacher-form-group">
             <textarea
               placeholder="Enter Home Address"
               rows="3"
-              className="signup-input"
+              className="add-teacher-input"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             ></textarea>
           </div>
         </div>
 
-        <div className="form-buttons">
+        <div className="form-buttons add-stu-teacher-buttons">
           <button type="submit" className="submit-button">
             Submit
           </button>
