@@ -210,11 +210,11 @@ const AddClass = () => {
               setNewClassData({ ...newClassData, Session1Day: e.target.value })
             }
           >
-            <MenuItem value="saturday">Saturday</MenuItem>
-            <MenuItem value="sunday">Sunday</MenuItem>
-            <MenuItem value="monday">Monday</MenuItem>
-            <MenuItem value="tuesday">Tuesday</MenuItem>
-            <MenuItem value="wednesday">Wednesday</MenuItem>
+            <MenuItem value="Saturday">Saturday</MenuItem>
+            <MenuItem value="Sunday">Sunday</MenuItem>
+            <MenuItem value="Monday">Monday</MenuItem>
+            <MenuItem value="Tuesday">Tuesday</MenuItem>
+            <MenuItem value="Wednesday">Wednesday</MenuItem>
           </Select>
         </FormControl>
         <FormControl required>

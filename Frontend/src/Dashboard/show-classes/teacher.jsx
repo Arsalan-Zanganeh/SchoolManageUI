@@ -1,12 +1,68 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTeacher } from '../../context/TeacherContext';
+import './classes.css';
 
-const StudentClassList = () => {
+const TeacherClassList = () => {
   const navigate = useNavigate();
-  const { teacher, logoutStudent } = useTeacher();
+  const { teacher, _ } = useTeacher();
   const [classes, getClasses] = useState([]);
+  const [showSchedule, setShowSchedule] = useState(false);
   const token = teacher?.jwt;
+
+  const handleShowSchedule = () => {
+    setShowSchedule(!showSchedule);
+  };
+  const generateTimeTable = () => {
+    const days = ['Saturday','Sunday','Monday', 'Tuesday', 'Wednesday'];
+    const periods = ['8:00 to 9:00', '9:15 to 10:15', '10:30 to 11:30', '11:45 to 12:45', '13:00 to 14:00'];
+    const timeTable = {};
+
+    days.forEach(day => {
+      timeTable[day] = {};
+      periods.forEach(period => {
+        timeTable[day][period] = '';
+      });
+    });
+
+    // Fill timetable with class data
+    classes.forEach(cls => {
+      const [day, period] = [cls.Session1Day, cls.Session1Time];
+      if (timeTable[day] && timeTable[day][period]) {
+        timeTable[day][period] += ` / ${cls.Topic}`; // If there's already a class, append this class Topic
+      } else {
+        timeTable[day][period] = cls.Topic;
+      }
+      const [day2, period2] = [cls.Session2Day, cls.Session2Time];
+      if (timeTable[day2] && timeTable[day2][period2]) {
+        timeTable[day2][period2] += ` / ${cls.Topic}`; // If there's already a class, append this class Topic
+      } else {
+        timeTable[day2][period2] = cls.Topic;
+      }
+    });
+    return (
+      <table className="timetable">
+        <thead>
+          <tr>
+            <th>Time\Day</th>
+            {days.map(day => <th key={day}>{day}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {periods.map(period => (
+            <tr key={period}>
+              <td>{period}</td>
+              {days.map(day => (
+                <td key={day}>
+                  {timeTable[day][period]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
 
   const fetchClassesData = useCallback(async () => {
     try {
@@ -33,38 +89,41 @@ const StudentClassList = () => {
     if (token) {
       fetchClassesData();
     }
+    document.body.classList.add('classes-list');
+    return () => {
+      document.body.classList.remove('classes-list');
+    };
   }, [token,fetchClassesData]);
 
   const backToHome = () => {
     navigate('/teacher-dashboard');
 };
-  return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <h2>Classes</h2>
-        <p>You can see your classes in here.</p>
-      <table className="class-list">
-        <thead>
-          <tr>
-            <th>Class ID</th>
-            <th>Class Name</th>
-            <th>Teacher</th>
-          </tr>
-        </thead>
-        <tbody>
-          {classes.map(cls => (
-            <tr key={cls.id}>
-              <td>{cls.id}</td>
-              <td>{cls.Topic}</td>
-              <td>{cls.Teacher}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <button onClick={backToHome} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
-        Back to home.
-      </button>
+return (
+  <div className="student-classes">
+    <h1>Your Classes</h1>
+    <div className="class-grid">
+      {classes.map(cls => (
+        <div key={cls.id} className="class-box">
+          <h2>{cls.Topic}</h2>
+          <p>{cls.Session1Day} {cls.Session1Time}</p>
+          <p>{cls.Session2Day} {cls.Session2Time}</p>
+        </div>
+      ))}
     </div>
-  );
+    <button onClick={backToHome}>
+      Back to Home
+    </button>
+    <button onClick={handleShowSchedule}>
+      {showSchedule ? 'Hide Weekly Schedule' : 'Show Weekly Schedule'}
+    </button>
+    {showSchedule && (
+      <div className="weekly-schedule">
+        <h2>Weekly Schedule</h2>
+        {generateTimeTable()}
+      </div>
+    )}
+  </div>
+);
 };
 
-export default StudentClassList;
+export default TeacherClassList;
