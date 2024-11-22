@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AppBar, Tabs, Tab, Box, Typography  } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTeacher } from '../context/TeacherContext';
+import { CgProfile } from "react-icons/cg";
 import './dashboard.css';
 
 function TabPanel(props) {
@@ -78,20 +79,19 @@ const TeacherDashboard = () => {
     <div className="tab-container">
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange} className='stu-dashboard-nav'>
+        <Tab label={<CgProfile size={22}/>}></Tab>
         <Tab label="Home" />
-        <Tab label="Profile" />
         <Tab label="Classes" />
         <Tab label="Log Out" onClick={handleLogout}></Tab>
       </Tabs>
     </AppBar>
-
     <TabPanel value={value} index={0}>
-      <h2>Home</h2>
-      <p>Welcome, {name} {lastName}!</p>
-    </TabPanel>
-    <TabPanel value={value} index={1}>
       <h2>Profile</h2>
       <p>Manage your profile here.</p>
+    </TabPanel>
+    <TabPanel value={value} index={1}>
+      <h2>Home</h2>
+      <p>Welcome, {name} {lastName}!</p>
     </TabPanel>
     <TabPanel value={value} index={2}>
       <h2>Classes</h2>

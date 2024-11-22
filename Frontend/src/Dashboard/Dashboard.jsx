@@ -57,7 +57,7 @@ const Dashboard = () => {
 
     return (
       <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', padding: '20px' }}>
-          <button onClick={handleProfile} style={{ padding: '10px 10px', cursor: 'pointer', fontFamily: 'Arial',backgroundColor: '#ff8080', position: 'absolute', top: '50px', left: '50px' }}>
+          <button onClick={handleProfile} style={{ padding: '10px 10px', cursor: 'pointer', fontFamily: 'Arial',backgroundColor: '#ff8000', position: 'absolute', top: '50px', left: '50px' }}>
               Show Profile
           </button>
           <div style={{ marginLeft: 'auto', textAlign: 'center', marginTop: '20px' }}>

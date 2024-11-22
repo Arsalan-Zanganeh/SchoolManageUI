@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppBar, Tabs, Tab, Box, Typography  } from '@mui/material';
 import { useStudent } from '../context/StudentContext';
+import { CgProfile } from "react-icons/cg";
 import './dashboard.css';
 
 function TabPanel(props) {
@@ -76,19 +77,19 @@ const StudentDashboard = () => {
       <div className="tab-container">
         <AppBar position="static">
           <Tabs value={value} onChange={handleChange} className='stu-dashboard-nav'>
-            <Tab label="Home" className='stu-dashboard-nav-btn'/>
-            <Tab label="Profile" className='stu-dashboard-nav-btn'/>
-            <Tab label="Classes" className='stu-dashboard-nav-btn'/>
+            <Tab label={<CgProfile size={22}/>}></Tab>
+            <Tab label="Home"/>
+            <Tab label="Classes"/>
             <Tab label="Log Out" onClick={handleLogout}></Tab>
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <h2>Home</h2>
-          <p>Welcome, {name} {lastName}!</p>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
           <h2>Profile</h2>
           <p>Manage your profile here.</p>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <h2>Home</h2>
+          <p>Welcome, {name} {lastName}!</p>
         </TabPanel>
         <TabPanel value={value} index={2}>
           <h2>Classes</h2>
