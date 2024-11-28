@@ -26,6 +26,9 @@ import { StudentProvider } from './context/StudentContext';
 import { TeacherProvider } from './context/TeacherContext'; 
 import PrivateRoute from './components/PrivateRoute';
 import { SchoolProvider } from './context/SchoolContext';  
+import HollandTest from './HollandTest/HollandTest'; 
+import HollandQuestion from './HollandTest/HollandQuestions'; 
+import HollandAnalysis from './HollandTest/HollandAnalysis'; 
 import './App.css';
 
 function App() {
@@ -176,6 +179,30 @@ function App() {
                       <ManageStudents />
                     </PrivateRoute>
                   }
+                />
+               <Route
+                    path="/student-dashboard/holland-test"
+                    element={
+                      <PrivateRoute role="student">
+                        <HollandTest />
+                      </PrivateRoute>
+                    }
+                />
+                 <Route
+                    path="/holland-test/questions"
+                    element={
+                      <PrivateRoute role="student">
+                        <HollandQuestion/>
+                      </PrivateRoute>
+                    }
+                />
+                 <Route
+                    path="/holland-test/analysis"
+                    element={
+                      <PrivateRoute role="student">
+                        <HollandAnalysis/>
+                      </PrivateRoute>
+                    }
                 />
               </Routes>
             </SchoolProvider> 
