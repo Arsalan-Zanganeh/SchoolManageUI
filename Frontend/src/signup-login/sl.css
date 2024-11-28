@@ -1,0 +1,29 @@
+/* App.css */
+
+.body-singuplogin {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.background-singuplogin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('./background-pattern.jpg') no-repeat;
+  background-size: cover; /* Ensures the background image covers the entire viewport */
+  opacity: 0.3;
+}
+
+.container-singuplogin {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

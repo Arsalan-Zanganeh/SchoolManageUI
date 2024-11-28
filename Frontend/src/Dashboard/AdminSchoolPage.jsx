@@ -181,7 +181,7 @@ const AdminSchoolPage = () => {
         icon: "success",
         confirmButtonText: "OK",
       });
-      navigate("/principal-login");
+      navigate("/");
     } catch (error) {
       Swal.fire({
         title: "Error",

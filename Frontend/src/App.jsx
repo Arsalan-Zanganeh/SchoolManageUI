@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
-import SignUp from './signup-page/signup';
+import SignUpLogin from './signup-login/signup-login'
 import LoginPrincipal from './login-page/principal';
 import LoginStudent from './login-page/student';
 import LoginTeacher from './login-page/Teacher';
@@ -28,27 +28,6 @@ import PrivateRoute from './components/PrivateRoute';
 import { SchoolProvider } from './context/SchoolContext';  
 import './App.css';
 
-function Navigation() {
-  const location = useLocation();
-  const isHomePage = location.pathname === "/";  
-  return (
-    <div className="main-container">
-      {isHomePage && (
-        <>
-          <h1 className="main-login-signup-title">Not joined? Please sign up!</h1>
-          <Link to="/signup"><button className="main-buttons">Sign Up</button></Link>
-          <h1 className="main-login-signup-title">Login as...</h1>
-          <div className="login-button-holder">
-            <Link to="/principal-login"><button className="main-buttons">Login as Principal</button></Link>
-            <Link to="/student-login"><button className="main-buttons">Login as Student</button></Link>
-            <Link to="/teacher-login"><button className="main-buttons">Login as Teacher</button></Link>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
 function App() {
   return (
     <Router>
@@ -56,10 +35,8 @@ function App() {
         <StudentProvider>
           <TeacherProvider>
             <SchoolProvider>
-              <Navigation />
               <Routes>
-                <Route path="/" element={<div>Welcome to the homepage!</div>} />
-                <Route path="/signup" element={<SignUp />} />
+                <Route path="/" element={<SignUpLogin/>} />
                 <Route path="/principal-login" element={<LoginPrincipal />} />
                 <Route path="/student-login" element={<LoginStudent />} />
                 <Route path="/teacher-login" element={<LoginTeacher />} />
