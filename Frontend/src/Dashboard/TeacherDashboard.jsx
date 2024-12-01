@@ -1,7 +1,7 @@
-// Dashboard/TeacherDashboard.js
 import React, { useState, useEffect, useCallback } from 'react';
-import { AppBar, Tabs, Tab, Box, Typography  } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { AppBar, Tabs, Tab, Box, Typography } from '@mui/material';
+import { slide as Menu } from 'react-burger-menu';
 import { useTeacher } from '../context/TeacherContext';
 import { CgProfile } from "react-icons/cg";
 import './dashboard.css';
@@ -18,7 +18,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
@@ -31,8 +31,9 @@ const TeacherDashboard = () => {
   const [name, setName] = useState(teacher ? teacher.first_name : '');
   const [lastName, setLastName] = useState(teacher ? teacher.last_name : '');
   const token = teacher?.jwt;
-  const [value, setValue] = React.useState(0);
-  
+  const [value, setValue] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -42,7 +43,6 @@ const TeacherDashboard = () => {
       const response = await fetch('http://127.0.0.1:8000/teacher/user', {
         headers: {
           'Content-Type': 'application/json',
-        //   Authorization: `Bearer ${token}`, // 
         },
         credentials: 'include',
       });
@@ -63,48 +63,70 @@ const TeacherDashboard = () => {
     if (token) {
       fetchTeacherData();
     }
-  }, [token, fetchTeacherData]);
 
-  const showclasses = () => {
-    navigate('./teacher-classes');
-  };
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [token, fetchTeacherData]);
 
   const handleLogout = () => {
     logoutTeacher();
-    navigate('/teacher-login');
+    navigate('/');
   };
+
   const handleProfile = () => {
     navigate('/dashboard/profile-teacher');
   };
 
+  const showClasses = () => {
+    navigate('./teacher-classes');
+  };
+
+  const renderTabs = () => (
+    <Tabs value={value} onChange={handleChange} className="stu-dashboard-nav">
+      <Tab label={<CgProfile size={22} />} onClick={handleProfile}></Tab>
+      <Tab label="Home" />
+      <Tab label="Classes" />
+      <Tab label="Log Out" onClick={handleLogout}></Tab>
+    </Tabs>
+  );
+
+  const renderMenu = () => (
+    <Menu right>
+      <a onClick={handleProfile} className="menu-item">Profile</a>
+      <a onClick={() => setValue(1)} className="menu-item">Home</a>
+      <a onClick={() => setValue(2)} className="menu-item">Classes</a>
+      <a onClick={handleLogout} className="menu-item">Log Out</a>
+    </Menu>
+  );
+
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-    <div className="tab-container">
-    <AppBar position="static">
-      <Tabs value={value} onChange={handleChange} className='stu-dashboard-nav'>
-        <Tab label={<CgProfile size={22}/>}  onClick={handleProfile}></Tab>
-        <Tab label="Home" />
-        <Tab label="Classes" />
-        <Tab label="Log Out" onClick={handleLogout}></Tab>
-      </Tabs>
-    </AppBar>
-    <TabPanel value={value} index={0}>
-      <h2>Profile</h2>
-      <p>Manage your profile here.</p>
-    </TabPanel>
-    <TabPanel value={value} index={1}>
-      <h2>Home</h2>
-      <p>Welcome, {name} {lastName}!</p>
-    </TabPanel>
-    <TabPanel value={value} index={2}>
-      <h2>Classes</h2>
-      <p>You can see your classes in here.</p>
-      <button onClick={showclasses} style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}>
-      Class List
-    </button>
-    </TabPanel>
-    </div>      
-  </div>
+    <div style={{ textAlign: 'center', marginTop: '20px' }} className="stu-dashboard">
+      <div className="tab-container">
+        {isMobile ? renderMenu() : renderTabs()}
+        <TabPanel value={value} index={0}>
+          <Typography variant="h2" sx={{ marginTop: 4, marginBottom: 2 }}>Profile</Typography>
+          <Typography variant="body1">Manage your profile here.</Typography>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Typography variant="h2" sx={{ marginTop: 4, marginBottom: 2 }}>Home</Typography>
+          <Typography variant="body1">Welcome, {name} {lastName}!</Typography>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <Typography variant="h2" sx={{ marginTop: 4, marginBottom: 2 }}>Classes</Typography>
+          <Typography variant="body1">You can see your classes in here.</Typography>
+          <button
+            onClick={showClasses}
+            style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}
+          >
+            Class List
+          </button>
+        </TabPanel>
+      </div>
+    </div>
   );
 };
 

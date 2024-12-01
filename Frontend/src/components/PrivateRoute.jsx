@@ -10,13 +10,13 @@ const PrivateRoute = ({ children, role }) => {
   const { teacher } = useTeacher();
 
   if (role === 'principal' && !principal) {
-    return <Navigate to="/principal-login" />;
+    return <Navigate to="/" />;
   }
   if (role === 'student' && !student) {
-    return <Navigate to="/student-login" />;
+    return <Navigate to="/" />;
   }
   if (role === 'teacher' && !teacher) {
-    return <Navigate to="/teacher-login" />;
+    return <Navigate to="/" />;
   }
 
   return children; 
