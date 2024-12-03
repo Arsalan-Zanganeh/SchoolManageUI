@@ -10,17 +10,17 @@ function SignUpStudent() {
   const [nationalid, setNationalid] = useState('');
   const [fatherphone, setFatherPhoneNumber] = useState('');
   const [fatherfname, setFatherFirstName] = useState('');
-  const [fatherlname, setFatherLastName] = useState('');
   const [gradelevel, setGradeLevel] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+  const [Email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [landline, setLandLine] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    if (!firstname || !lastname || !nationalid || !fatherphone || !password || !password2 || !fatherfname || !fatherlname || !address || !landline || !gradelevel) {
+    if (!firstname || !lastname || !nationalid || !fatherphone || !password || !password2 || !fatherfname || !Email || !address || !landline || !gradelevel) {
       Swal.fire('Error', 'All fields are required', 'error');
       return;
     }
@@ -39,8 +39,8 @@ function SignUpStudent() {
           Father_Phone_Number : fatherphone,
           password,
           password2,
+          Email: Email,
           Father_first_name : fatherfname,
-          Father_last_name : fatherlname,
           Grade_Level : gradelevel,
           Address: address,
           LandLine: landline,
@@ -91,9 +91,9 @@ function SignUpStudent() {
     setNationalid('');
     setFatherPhoneNumber('');
     setFatherFirstName('');
-    setFatherLastName('');
     setPassword('');
     setPassword2('');
+    setEmail('');
     setAddress('');
     setLandLine('');
     setGradeLevel('');
@@ -145,13 +145,6 @@ function SignUpStudent() {
             />
             <input
               type="text"
-              placeholder="Father Last Name"
-              className="add-stu-input"
-              value={fatherlname}
-              onChange={(e) => setFatherLastName(e.target.value)}
-            />
-            <input
-              type="text"
               placeholder="Grade Level"
               className="add-stu-input"
               value={gradelevel}
@@ -176,6 +169,14 @@ function SignUpStudent() {
             />       
           </div>
           <div className="add-stu-form-group">
+            <input type="text" 
+            placeholder='Email'
+            className="add-stu-input"
+            value={Email}
+            onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="add-stu-form-group">
             <textarea
               placeholder="Enter Home Address"
               rows="3"
@@ -194,10 +195,10 @@ function SignUpStudent() {
           </div>
         </div>
         <div className="form-buttons add-stu-teacher-buttons">
-          <button type="submit" className="submit-button">
+          <button type="submit" className="submit-button add-stu-teacher-button">
             Submit
           </button>
-          <button type="button" className="reset-button" onClick={resetForm}>
+          <button type="button" className="reset-button add-stu-teacher-button" onClick={resetForm}>
             Reset
           </button>
         </div>

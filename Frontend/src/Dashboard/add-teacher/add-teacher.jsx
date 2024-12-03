@@ -161,10 +161,10 @@ function SignUpTeacher() {
         </div>
 
         <div className="form-buttons add-stu-teacher-buttons">
-          <button type="submit" className="submit-button">
+          <button type="submit" className="submit-button add-stu-teacher-button">
             Submit
           </button>
-          <button type="button" className="reset-button" onClick={resetForm}>
+          <button type="button" className="reset-button add-stu-teacher-button" onClick={resetForm}>
             Reset
           </button>
         </div>

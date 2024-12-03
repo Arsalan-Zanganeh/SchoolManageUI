@@ -39,6 +39,11 @@
   -webkit-box-shadow: 0px 0px 7px #929193 !important;
 }
 
+.add-stu-teacher-button {
+  margin-inline: 20px;
+  border-radius: 0.9rem;
+}
+
 .add-stu-teacher-buttons {
   justify-self: center;
 }
