@@ -26,7 +26,7 @@ const HomePage = ({ onSignUpClick }) => (
 
 const PrincipalSignUpForm = ({ onBackClick }) => {
   const [formData, setFormData] = useState({
-    first_name: '', last_name: '', National_ID: '', Phone_Number: '', password: '', password2: ''
+    first_name: '', last_name: '', National_ID: '', Phone_Number: '', password: '', password2: '', email: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);

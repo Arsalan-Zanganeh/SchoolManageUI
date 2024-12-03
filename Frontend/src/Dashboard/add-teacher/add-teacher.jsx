@@ -7,6 +7,7 @@ function SignUpTeacher() {
   const [lastname, setLastname] = useState('');
   const [nationalid, setNationalid] = useState('');
   const [phonenumber, setPhoneNumber] = useState('');
+  const [Email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [address, setAddress] = useState('');
@@ -31,6 +32,7 @@ function SignUpTeacher() {
           last_name: lastname,
           National_ID: nationalid,
           Phone_Number: phonenumber,
+          Email: Email,
           password,
           password2,
           Address: address,
@@ -79,6 +81,7 @@ function SignUpTeacher() {
     setLastname('');
     setNationalid('');
     setPhoneNumber('');
+    setEmail('');
     setPassword('');
     setPassword2('');
     setAddress('');
@@ -137,6 +140,14 @@ function SignUpTeacher() {
               value={password2}
               onChange={(e) => setPassword2(e.target.value)}
             />
+          <div className="add-teacher-form-group">
+            <input
+              name="" id="" placeholder='Enter Email' rows="3"
+              className="add-teacher-input"
+              value={Email}
+              onChange={(e) => setEmail(e.target.value)}>
+            </input>
+          </div>
           </div>
           <div className="add-teacher-form-group">
             <textarea
