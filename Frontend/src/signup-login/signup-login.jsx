@@ -26,7 +26,7 @@ const HomePage = ({ onSignUpClick }) => (
 
 const PrincipalSignUpForm = ({ onBackClick }) => {
   const [formData, setFormData] = useState({
-    first_name: '', last_name: '', National_ID: '', Phone_Number: '', password: '', password2: '', email: ''
+    first_name: '', last_name: '', National_ID: '', Phone_Number: '',   email: '',  password: '', password2: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -80,7 +80,7 @@ const PrincipalSignUpForm = ({ onBackClick }) => {
       <TextField margin="normal" required fullWidth label="Name" name="first_name" value={formData.first_name} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Last Name" name="last_name" value={formData.last_name} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Phone Number" name="Phone_Number" value={formData.Phone_Number} onChange={handleChange} />
-      <TextField margin="normal" required fullWidth label="Email Address" name="email" autoComplete="email" />
+      <TextField margin="normal" required fullWidth label="Email Address" name="email"  value={formData.email} onChange={handleChange} autoComplete="email" />
       <TextField margin="normal" required fullWidth label="Password" type={showPassword ? 'text' : 'password'} name="password" autoComplete="current-password" value={formData.password} onChange={handleChange}/>
       <TextField margin="normal" required fullWidth label="Confirm Password" type={showPassword ? 'text' : 'password'} name="password2" autoComplete="current-password" value={formData.password2} onChange={handleChange}/>
       <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>Complete Sign Up</Button>

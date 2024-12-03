@@ -29,6 +29,11 @@ import { SchoolProvider } from './context/SchoolContext';
 import HollandTest from './HollandTest/HollandTest'; 
 import HollandQuestion from './HollandTest/HollandQuestions'; 
 import HollandAnalysis from './HollandTest/HollandAnalysis'; 
+import StuClass from './classes/ClassDetail' ;
+import TeacherClass from './classes/TClassDetail' ;
+import AssignmentDetail from './assignment/stuassignment' ;
+import TAssignmentDetail from './assignment/teacherassignment' ;
+import PreviousResults from "./HollandTest/PreviousResults";
 import './App.css';
 
 function App() {
@@ -204,6 +209,47 @@ function App() {
                       </PrivateRoute>
                     }
                 />
+                  <Route
+                  path="/student-dashboard/student-classes/:cid"
+                  element={
+                    <PrivateRoute role="student">
+                      <StuClass />
+                    </PrivateRoute>
+                    }
+              />
+               <Route
+                  path="/teacher-dashboard/teacher-classes/:tcid"
+                  element={
+                    <PrivateRoute role="teacher">
+                      <TeacherClass/>
+                    </PrivateRoute>
+                    }
+              />
+                <Route
+                path="/student-dashboard/student-classes/:cid/assignment/:aid"
+                element={
+                  <PrivateRoute role="student">
+                    <AssignmentDetail />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+              path="/teacher-dashboard/class/:tcid/assignment/:assignmentId"
+              element={
+                <PrivateRoute role="teacher">
+                  <TAssignmentDetail />
+                </PrivateRoute>
+                }
+              />
+              <Route
+              path="/holland-test/previous-results"
+              element={
+                <PrivateRoute role="student">
+                  <PreviousResults />
+                </PrivateRoute>
+              }
+              />
+
               </Routes>
             </SchoolProvider> 
           </TeacherProvider>
