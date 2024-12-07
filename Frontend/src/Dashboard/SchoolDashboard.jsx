@@ -257,6 +257,23 @@ const formatDate = (dateString) => {
     }
   }, [schoolId, schoolToken]);
 
+  const fetchCalendar = useCallback(async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/prinicipal-google-calendar/`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data)
+      } else {
+        Swal.fire("Error", "Failed to fetch classes", "error");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Network error while fetching classes", "error");
+    }
+  },[schoolId]);
+
   const fetchPrincipalData = useCallback(async () => {
     if (!principal?.jwt) return;
     try {
@@ -393,7 +410,7 @@ const formatDate = (dateString) => {
                   </NavigationBox>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" href="https://example.com/page1" >
+                  <NavigationBox elevation={3} onClick={fetchCalendar}>
                     <PermContactCalendar fontSize="large" />
                     <Typography variant="subtitle1">Calendar</Typography>
                   </NavigationBox>

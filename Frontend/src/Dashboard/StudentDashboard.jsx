@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppBar, Tabs, Tab, Box, Typography } from '@mui/material';
 import { slide as Menu } from 'react-burger-menu';
 import { useStudent } from '../context/StudentContext';
-import { MdHome, MdClass, MdNotifications, MdExitToApp } from 'react-icons/md';
+import { MdHome, MdClass, MdNotifications, MdExitToApp, MdHomeWork ,MdCalendarToday } from 'react-icons/md';
 import { CgProfile  } from "react-icons/cg";
 import { Button, List, ListItem, ListItemText, Dialog,  DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import './dashboard.css';
@@ -103,6 +103,30 @@ const StudentDashboard = () => {
   const handleClose = () => {
       setOpen(false);
   };
+
+  const handleAddToCalendar = () => {
+    fetchCalendar();
+  };
+  const fetchCalendar =  useCallback(async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/student-google-calendar/", {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data)
+      } else {
+        console.error('Failed to fetch class list');
+      }
+    } catch (error) {
+      console.error('Error fetching class list:', error);
+    }
+  }, [token]);
+
   const fetchUnreadNotifications = useCallback(async () => {
     try {
       const fetchnotifresponse = await fetch("http://127.0.0.1:8000/api/notifications/", {
@@ -204,8 +228,9 @@ const renderTabs = () => (
         <Tab icon={<CgProfile size={22} />} label="Profile" onClick={handleProfile} />
         <Tab icon={<MdHome size={22} />} label="Home" />
         <Tab icon={<MdClass size={22} />} label="Classes" />
-        <Tab icon={<MdHome size={22} />} label="Consultation Tests" />
+        <Tab icon={<MdHomeWork size={22} />} label="Consultation Tests" />
         <Tab icon={<MdNotifications size={22} />} label= {`Notifications (${nofunseen})`} />
+        <Tab icon={<MdCalendarToday size={22} />} label="School Calendar" />
         <Tab icon={<MdExitToApp size={22} />} label="Log Out" onClick={handleLogout} />
     </Tabs>
 );
@@ -217,6 +242,7 @@ const renderTabs = () => (
       <a onClick={() => setValue(2)} className="menu-item">Classes</a>
       <a onClick={() => setValue(3)} className="menu-item">Consultation Tests</a>
       <a onClick={() => setValue(4)} className="menu-item">Notifications</a>
+      <a onClick={() => setValue(5)} className="menu-item">School Calendar</a>
       <a onClick={handleLogout} className="menu-item">Log Out</a>
     </Menu>
   );
@@ -310,6 +336,18 @@ const renderTabs = () => (
                 </DialogActions>
             </Dialog>
         </div>
+        </TabPanel>
+        <TabPanel value={value} index={5}>
+          <Typography variant="h2" sx={{ marginTop: 4, marginBottom: 2 }}>School Calendar</Typography>
+          <Typography variant="body1">You can see school calendar here:</Typography>
+          <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={handleAddToCalendar} 
+          sx={{ marginTop: 2 }}
+        >
+          See School Calendar
+        </Button>
         </TabPanel>
       </div>
     </div>
