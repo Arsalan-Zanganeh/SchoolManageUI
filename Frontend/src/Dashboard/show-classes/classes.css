@@ -22,10 +22,11 @@ body.classes-list {
   }
   
   .class-box {
-    border: 2px solid #004d99;
-    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 14px;
     padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 77, 153, 0.2);
+    box-shadow: 0 4px 4px rgba(66, 66, 66, 0.7);
     max-width: 200px;
     background-color: #ffffff;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -74,7 +75,7 @@ body.classes-list {
   .timetable {
     width: 100%;
     border-collapse: collapse;
-    
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   }
   
   .timetable th, .timetable td {

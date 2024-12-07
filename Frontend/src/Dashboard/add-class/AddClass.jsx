@@ -162,7 +162,7 @@ const AddClass = () => {
   };
   
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{width:'100%', marginTop:'40px'}}>
       <Typography variant="h4" textAlign="center" mb={3}>
         Manage Classes
       </Typography>
@@ -179,91 +179,110 @@ const AddClass = () => {
           flexDirection: "column",
           gap: 2,
           mb: 4,
-          maxWidth: "500px",
-          margin: "0 auto",
+          width: "100%",
+          margin: "2px auto",
         }}
       >
-        <TextField
-          label="Class Topic"
-          value={newClassData.Topic}
-          onChange={(e) =>
-            setNewClassData({ ...newClassData, Topic: e.target.value })
-          }
-          required
-        />
-        <TextField
-          label="National ID"
-          value={newClassData.National_ID}
-          onChange={(e) =>
-            setNewClassData({ ...newClassData, National_ID: e.target.value })
-          }
-          required
-        />
-        <FormControl required>
-          <InputLabel>Session 1 Day</InputLabel>
-          <Select
-            value={newClassData.Session1Day}
+        <Box sx={{display:'flex', flexDirection:'row', gap:'2px'}}>
+          <TextField
+            sx={{width:'50%'}}
+            label="Class Topic"
+            value={newClassData.Topic}
             onChange={(e) =>
-              setNewClassData({ ...newClassData, Session1Day: e.target.value })
+              setNewClassData({ ...newClassData, Topic: e.target.value })
             }
-          >
-            <MenuItem value="saturday">Saturday</MenuItem>
-            <MenuItem value="sunday">Sunday</MenuItem>
-            <MenuItem value="monday">Monday</MenuItem>
-            <MenuItem value="tuesday">Tuesday</MenuItem>
-            <MenuItem value="wednesday">Wednesday</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl required>
-          <InputLabel>Session 1 Time</InputLabel>
-          <Select
-            value={newClassData.Session1Time}
+            required
+          />
+          <TextField
+            sx={{width:'50%'}}
+            label="National ID"
+            value={newClassData.National_ID}
             onChange={(e) =>
-              setNewClassData({ ...newClassData, Session1Time: e.target.value })
+              setNewClassData({ ...newClassData, National_ID: e.target.value })
             }
-          >
-            <MenuItem value="8:00 to 9:00">8:00 to 9:00</MenuItem>
-            <MenuItem value="9:15 to 10:15">9:15 to 10:15</MenuItem>
-            <MenuItem value="10:30 to 11:30">10:30 to 11:30</MenuItem>
-            <MenuItem value="11:45 to 12:45">11:45 to 12:45</MenuItem>
-            <MenuItem value="13:00 to 14:00">13:00 to 14:00</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl>
-          <InputLabel>Session 2 Day (Optional)</InputLabel>
-          <Select
-            value={newClassData.Session2Day}
-            onChange={(e) =>
-              setNewClassData({ ...newClassData, Session2Day: e.target.value })
-            }
-          >
-            <MenuItem value="saturday">Saturday</MenuItem>
-            <MenuItem value="sunday">Sunday</MenuItem>
-            <MenuItem value="monday">Monday</MenuItem>
-            <MenuItem value="tuesday">Tuesday</MenuItem>
-            <MenuItem value="wednesday">Wednesday</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl>
-          <InputLabel>Session 2 Time (Optional)</InputLabel>
-          <Select
-            value={newClassData.Session2Time}
-            onChange={(e) =>
-              setNewClassData({ ...newClassData, Session2Time: e.target.value })
-            }
-          >
-            <MenuItem value="8:00 to 9:00">8:00 to 9:00</MenuItem>
-            <MenuItem value="9:15 to 10:15">9:15 to 10:15</MenuItem>
-            <MenuItem value="10:30 to 11:30">10:30 to 11:30</MenuItem>
-            <MenuItem value="11:45 to 12:45">11:45 to 12:45</MenuItem>
-            <MenuItem value="13:00 to 14:00">13:00 to 14:00</MenuItem>
-          </Select>
-        </FormControl>
-        <Button variant="contained" type="submit" className="add-cl-submit">
-          Add Class
-        </Button>
-      </Box>
-
+            required
+          />
+        </Box>
+        <Box sx={{display:'flex', flexDirection:'row', gap:'2px'}}>
+          <FormControl required
+          sx={{
+            width:'50%'
+          }}>
+            <InputLabel>Session 1 Day</InputLabel>
+            <Select
+              value={newClassData.Session1Day}
+              onChange={(e) =>
+                setNewClassData({ ...newClassData, Session1Day: e.target.value })
+              }
+            >
+              <MenuItem value="saturday">Saturday</MenuItem>
+              <MenuItem value="sunday">Sunday</MenuItem>
+              <MenuItem value="monday">Monday</MenuItem>
+              <MenuItem value="tuesday">Tuesday</MenuItem>
+              <MenuItem value="wednesday">Wednesday</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl required
+          sx={{
+            width:'50%'
+          }}>
+            <InputLabel>Session 1 Time</InputLabel>
+            <Select
+              value={newClassData.Session1Time}
+              onChange={(e) =>
+                setNewClassData({ ...newClassData, Session1Time: e.target.value })
+              }
+            >
+              <MenuItem value="8:00 to 9:00">8:00 to 9:00</MenuItem>
+              <MenuItem value="9:15 to 10:15">9:15 to 10:15</MenuItem>
+              <MenuItem value="10:30 to 11:30">10:30 to 11:30</MenuItem>
+              <MenuItem value="11:45 to 12:45">11:45 to 12:45</MenuItem>
+              <MenuItem value="13:00 to 14:00">13:00 to 14:00</MenuItem>
+            </Select>
+          </FormControl>
+          </Box>
+          <Box sx={{display:'flex', flexDirection:'row'}}>
+          <FormControl
+          sx={{
+            width:'50%'
+          }}>
+            <InputLabel>Session 2 Day (Optional)</InputLabel>
+            <Select
+              value={newClassData.Session2Day}
+              onChange={(e) =>
+                setNewClassData({ ...newClassData, Session2Day: e.target.value })
+              }
+            >
+              <MenuItem value="saturday">Saturday</MenuItem>
+              <MenuItem value="sunday">Sunday</MenuItem>
+              <MenuItem value="monday">Monday</MenuItem>
+              <MenuItem value="tuesday">Tuesday</MenuItem>
+              <MenuItem value="wednesday">Wednesday</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl
+          sx={{
+            width:'50%'
+          }}>
+            <InputLabel>Session 2 Time (Optional)</InputLabel>
+            <Select
+              value={newClassData.Session2Time}
+              onChange={(e) =>
+                setNewClassData({ ...newClassData, Session2Time: e.target.value })
+              }
+            >
+              <MenuItem value="8:00 to 9:00">8:00 to 9:00</MenuItem>
+              <MenuItem value="9:15 to 10:15">9:15 to 10:15</MenuItem>
+              <MenuItem value="10:30 to 11:30">10:30 to 11:30</MenuItem>
+              <MenuItem value="11:45 to 12:45">11:45 to 12:45</MenuItem>
+              <MenuItem value="13:00 to 14:00">13:00 to 14:00</MenuItem>
+            </Select>
+          </FormControl>
+          </Box>
+          <Button variant="contained" type="submit" className="add-cl-submit" sx={{width:'100%',marginBlock:'20px'}}>
+            Add Class
+          </Button>
+        </Box>
       {/* Class List */}
       <Grid container spacing={3}>
   {classes.map((cls) => (
@@ -287,9 +306,7 @@ const AddClass = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-start",
-            gap: 1,
-            borderTop: "1px solid #ddd",
+            gap: 1,  
             pt: 2,
           }}
         >
@@ -303,29 +320,31 @@ const AddClass = () => {
                     padding: "6px 8px", 
                     fontSize: "0.75rem", 
                     lineHeight: "1.2", 
-                    minWidth: "auto", 
+                    minWidth: "auto",
                     whiteSpace: "nowrap", 
-                    textTransform: "none", 
+                    textTransform: "none",
+                    width:'100%',
                 }}
                 >
                 Edit/Delete
-        </Button>
+          </Button>
 
           <Link
             to={`/dashboard/school/${schoolId}/classes/manage_students/${cls.id}`}
-            style={{ textDecoration: "none", width: "100%" }}
+            style={{ textDecoration: "none", width: "100%",}}
           >
             <Button
               size="small"
               variant="contained"
               color="secondary"
               sx={{
-                padding: "6px 16px",
+                backgroundColor:'#1566ff',
+                padding: "6px 8px",
                 fontSize: "0.875rem",
                 lineHeight: "1.5",
-                
-                width: "90%",
-                textTransform: "none", 
+                minWidth: "auto",
+                width: "100%",
+                textTransform: "none",
               }}
             >
               Manage Students

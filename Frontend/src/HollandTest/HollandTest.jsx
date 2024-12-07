@@ -86,7 +86,6 @@ const HollandTest = () => {
           <Box sx={{ marginTop: { xs: '20px', sm: '40px' }, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'center', sm: 'flex-start' } }}>
             <Button
               variant="contained"
-              color="primary"
               onClick={startTest}
               sx={{
                 padding: { xs: '10px 20px', sm: '12px 24px' },
@@ -94,14 +93,15 @@ const HollandTest = () => {
                 borderRadius: '8px',
                 textTransform: 'none',
                 marginBottom: { xs:'10px', sm:'0'},
-                marginRight:{sm:'10px'}
+                marginRight:{sm:'10px'},
+                color:'#ffffff',
+                backgroundColor:'#1566ff'
               }}
             >
               Start Test
             </Button>
             <Button
               variant="outlined"
-              color="secondary"
               onClick={viewPreviousResults}
               sx={{
                 padding:{ xs:'10px 20px', sm:'12px 24px'},
@@ -109,20 +109,29 @@ const HollandTest = () => {
                 borderRadius:'8px',
                 textTransform:'none',
                 marginBottom:{xs:'10px', sm:'0'},
-                marginRight:{sm:'10px'}
+                marginRight:{sm:'10px'},
+                color:'#1566ff',
+                '&:hover': {
+                  backgroundColor:'#1566ff',
+                  color:'#ffffff'
+                }
               }}
             >
               View Previous Results
             </Button>
             <Button
               variant="outlined"
-              color="secondary"
               onClick={() => navigate('/student-dashboard')}
               sx={{
                 padding:{ xs:'10px 20px', sm:'12px 24px'},
                 fontSize:{xs:'14px', sm:'16px'},
                 borderRadius:'8px',
-                textTransform:'none'
+                textTransform:'none',
+                color:'#1566ff',
+                '&:hover': {
+                  backgroundColor:'#1566ff',
+                  color:'#ffffff'
+                }
               }}
             >
               Back to Dashboard

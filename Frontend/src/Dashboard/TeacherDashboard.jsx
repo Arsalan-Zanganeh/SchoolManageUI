@@ -104,7 +104,7 @@ const TeacherDashboard = () => {
   );
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }} className="stu-dashboard">
+    <div style={{ textAlign: 'center', marginTop: '20px', backgroundColor: '#ffffff' }} className="stu-dashboard">
       <div className="tab-container">
         {isMobile ? renderMenu() : renderTabs()}
         <TabPanel value={value} index={0}>
@@ -120,7 +120,7 @@ const TeacherDashboard = () => {
           <Typography variant="body1">You can see your classes in here.</Typography>
           <button
             onClick={showClasses}
-            style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer' }}
+            style={{ padding: '10px 20px', marginTop: '20px', cursor: 'pointer', backgroundColor: '#1566ff', color: 'white', border: 'none', borderRadius: '5px' }}
           >
             Class List
           </button>

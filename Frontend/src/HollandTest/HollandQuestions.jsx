@@ -388,7 +388,7 @@ const HollandQuestions = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f1f8e9",
+        backgroundColor: "#dce8fd",
         padding: "20px",
       }}
     >
