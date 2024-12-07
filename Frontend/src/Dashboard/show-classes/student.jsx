@@ -1,14 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStudent } from '../../context/StudentContext';
+import { useClass } from '../../context/ClassContext';
+import Swal from 'sweetalert2';
 import './classes.css';
 
 const StudentClassList = () => {
   const navigate = useNavigate();
-  const { student, logoutStudent } = useStudent();
-  const [classes, getClasses] = useState([]);
+  const { student } = useStudent();
+  const { classToken, loginClass } = useClass(); // Use the class context
+
+  const [classes, setClasses] = useState([]);
   const [showSchedule, setShowSchedule] = useState(false);
-  const token = student?.jwt;
+  const studentToken = student?.jwt;
 
   const handleShowSchedule = () => {
     setShowSchedule(!showSchedule);
@@ -30,17 +34,18 @@ const StudentClassList = () => {
     classes.forEach(cls => {
       const [day, period] = [cls.Session1Day, cls.Session1Time];
       if (timeTable[day] && timeTable[day][period]) {
-        timeTable[day][period] += ` / ${cls.Topic}`;
+        timeTable[day][period] += `${cls.Topic}`; // If there's already a class, append this class Topic
       } else {
         timeTable[day][period] = cls.Topic;
       }
       const [day2, period2] = [cls.Session2Day, cls.Session2Time];
       if (timeTable[day2] && timeTable[day2][period2]) {
-        timeTable[day2][period2] += ` / ${cls.Topic}`;
+        timeTable[day2][period2] += `${cls.Topic}`; // If there's already a class, append this class Topic
       } else {
         timeTable[day2][period2] = cls.Topic;
       }
     });
+
     return (
       <table className="timetable">
         <thead>
@@ -65,43 +70,74 @@ const StudentClassList = () => {
     );
   };
 
-  const fetchClassesData = useCallback(async () => {
+  const fetchClassesData = async () => {
     try {
-      const fetchclassresponse = await fetch("http://127.0.0.1:8000/student/classes/", {
+      const response = await fetch("http://127.0.0.1:8000/student/classes/", {
         headers: {
           'Content-Type': 'application/json',
-          // Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${studentToken}`, 
         },
         credentials: 'include',
       });
 
-      if (fetchclassresponse.ok) {
-        const classData = await fetchclassresponse.json();
-        getClasses(classData);
+      if (response.ok) {
+        const classData = await response.json();
+        setClasses(classData);
       } else {
         console.error('Failed to fetch class list');
       }
     } catch (error) {
       console.error('Error fetching class list:', error);
+      Swal.fire('Error', 'Failed to fetch classes', 'error'); 
     }
-  }, [token]);
+  };
 
   useEffect(() => {
-    if (token) {
+    if (studentToken) {
       fetchClassesData();
     }
     document.body.classList.add('classes-list');
     return () => {
       document.body.classList.remove('classes-list');
     };
-  }, [token, fetchClassesData]);
+  }, [studentToken]); // Removed fetchClassesData from dependencies as it is not defined here
 
   const backToHome = () => {
     navigate('/student-dashboard');
   };
 
-  const navigateToClassDetails = (id) => {
-    navigate(`/student-dashboard/student-classes/${id}`);
+  const handleClassClick = async (id) => {
+    try {
+      const loginResponse = await fetch(
+        `http://127.0.0.1:8000/api/student-login-class/`, 
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+          credentials: "include",
+        }
+      );
+
+      if (loginResponse.ok) {
+        const token = await loginResponse.json();
+        loginClass(token); 
+        navigate(`/student-dashboard/student-classes/${id}`); 
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Failed to login to the class. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Network error or server is unavailable. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
   };
 
   return (
@@ -109,22 +145,21 @@ const StudentClassList = () => {
       <h1>Your Classes</h1>
       <div className="class-grid">
         {classes.map(cls => (
-          <div
-            key={cls.id}
+          <div 
+            key={cls.id} 
             className="class-box"
-            onClick={() => navigateToClassDetails(cls.id)}
+            onClick={() => handleClassClick(cls.id)} 
           >
             <h2>{cls.Topic}</h2>
-            <p>Instructor: {cls.Teacher}</p>
             <p>{cls.Session1Day} {cls.Session1Time}</p>
             <p>{cls.Session2Day} {cls.Session2Time}</p>
           </div>
         ))}
       </div>
-      <button onClick={backToHome} className="show-cls-btn">
+      <button onClick={backToHome} className='show-cls-btn'>
         Back to Home
       </button>
-      <button onClick={handleShowSchedule} className="show-cls-btn">
+      <button onClick={handleShowSchedule} className='show-cls-btn'>
         {showSchedule ? 'Hide Weekly Schedule' : 'Show Weekly Schedule'}
       </button>
       {showSchedule && (
@@ -138,3 +173,4 @@ const StudentClassList = () => {
 };
 
 export default StudentClassList;
+

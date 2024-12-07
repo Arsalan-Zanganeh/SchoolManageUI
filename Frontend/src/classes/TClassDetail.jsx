@@ -1,26 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Grid, Divider, Paper, Button, Tabs, Tab, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Box, Typography, Grid, Divider, Paper, Button, Tabs, Tab, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Alert, Container } from '@mui/material';
+import { useClass } from "../context/ClassContext";
+import { useTeacher } from "../context/TeacherContext";
 
 const TeacherClassDetail = () => {
   const { tcid } = useParams();
   const navigate = useNavigate();
+  const { teacher } = useTeacher(); 
+  const { classToken, loginClass } = useClass(); 
+  const teacherToken = teacher?.jwt; 
   const [classes, setClasses] = useState([]);
   const [classDetails, setClassDetails] = useState(null);
-  const [tabValue, setTabValue] = useState(0); // وضعیت تب فعال
-  const [openDialog, setOpenDialog] = useState(false); // وضعیت نمایش پاپ‌آپ
-  const [newAssignment, setNewAssignment] = useState({ title: '', description: '', dueDate: '' }); // اطلاعات تکلیف جدید
-  const [assignments, setAssignments] = useState([
-    { id: 1, title: 'Assignment 1: Create a portfolio website', dueDate: '2024-12-05' },
-    { id: 2, title: 'Assignment 2: Build a React application', dueDate: '2024-12-12' }
-  ]); // لیست تکالیف موجود
+  const [tabValue, setTabValue] = useState(0);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [newAssignment, setNewAssignment] = useState({id: '', Title: '', Description: '', DeadLine: '' });
+  const [assignments, setAssignments] = useState([]);
+  const [publishedHomeworks, setPublishedHomeworks] = useState([]);
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  // گرفتن لیست کلاس‌ها
   useEffect(() => {
     const fetchClasses = async () => {
+      console.log('Fetching classes with token:', teacherToken); 
+      if (!teacherToken) {
+        console.error('No token found');
+        return;
+      }
+
       const response = await fetch("http://127.0.0.1:8000/teacher/classes/", {
+        method: "GET",
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${teacherToken}`,
         },
         credentials: 'include',
       });
@@ -34,44 +46,144 @@ const TeacherClassDetail = () => {
     };
 
     fetchClasses();
-  }, []);
+  }, [teacherToken]);
 
-  // پیدا کردن کلاس مشخص شده با tcid
   useEffect(() => {
     if (classes.length > 0) {
       const foundClass = classes.find((cls) => cls.id === parseInt(tcid));
       setClassDetails(foundClass);
     }
   }, [tcid, classes]);
-
-  // تغییر تب فعال
+  useEffect(() => {
+    const fetchHomeworks = async () => {
+      console.log('Fetching homeworks with token:', teacherToken);
+      
+      if (!teacherToken) {
+        console.error('No token found');
+        return;
+      }
+  
+      const response = await fetch("http://127.0.0.1:8000/api/teacher-all-homeworks/", {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${teacherToken}`,
+        },
+        credentials: 'include',
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+  
+        // حالا می‌توانید ID هر تکلیف را استخراج کنید و برای هر تکلیف ID را ذخیره کنید
+        const unpublishedAssignments = data.filter(hw => !hw.Is_Published).map(hw => ({
+          ...hw, id: hw.id // فرض بر این است که id در data موجود است
+        }));
+        const publishedAssignments = data.filter(hw => hw.Is_Published).map(hw => ({
+          ...hw, id: hw.id
+        }));
+  
+        setAssignments(unpublishedAssignments);
+        setPublishedHomeworks(publishedAssignments);
+      } else {
+        console.error('Failed to fetch homeworks');
+      }
+    };
+  
+    fetchHomeworks();
+  }, [teacherToken]); // توجه داشته باشید که وابستگی به teacherToken اضافه شده است
+  
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  // باز کردن پاپ‌آپ
   const handleClickOpen = () => {
     setOpenDialog(true);
   };
 
-  // بستن پاپ‌آپ
   const handleClose = () => {
     setOpenDialog(false);
   };
 
-  // تغییر مقدار ورودی‌های تکلیف جدید
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewAssignment((prev) => ({ ...prev, [name]: value }));
   };
 
-  // افزودن تکلیف جدید به لیست
-  const handleAddAssignment = () => {
-    const newId = assignments.length + 1;
-    const newAssignmentData = { ...newAssignment, id: newId };
-    setAssignments((prev) => [...prev, newAssignmentData]);
-    setOpenDialog(false);
-    setNewAssignment({ title: '', description: '', dueDate: '' }); // پاک کردن فرم
+  const handleAddAssignment = async () => {
+    setLoading(true);
+    setMessage('');
+
+    if (!teacherToken) {
+      console.error('No token found');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/teacher-add-homework/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${teacherToken}`, // Include the token
+        },
+        credentials: 'include',
+        body: JSON.stringify(newAssignment),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAssignments((prev) => [...prev, data]);
+        setOpenDialog(false);
+        setNewAssignment({ Title: '', Description: '', DeadLine: '' });
+        setMessage('Homework added successfully');
+      } else {
+        setMessage('Failed to add homework');
+      }
+    } catch (error) {
+      setMessage('An error occurred while adding homework');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePublishHomework = async (homeworkId) => {
+    setLoading(true);
+    setMessage('');
+
+    if (!teacherToken) {
+      console.error('No token found');
+      return;
+    }
+
+    console.log('Publishing Homework ID (before request):', homeworkId); 
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/teacher-publish-homework/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ Homework_ID: homeworkId }), // Ensure JSON.stringify is correctly used
+      });
+
+      if (response.ok) {
+        const data = await response.json(); // Fetch response data
+        setAssignments((prev) => prev.filter(assignment => assignment.Homework_ID !== homeworkId));
+        setPublishedHomeworks((prev) => [...prev, data]); // Ensure published homeworks are updated correctly
+        setMessage('Homework published successfully');
+        console.log('Published Homework ID (after request):', homeworkId); // Log after publishing
+      } else {
+        const errorData = await response.json();
+        setMessage(`Failed to publish homework: ${errorData.error}`);
+        console.error('Failed to publish homework', errorData);
+      }
+    } catch (error) {
+      setMessage('An error occurred while publishing homework');
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!classDetails) {
@@ -83,12 +195,8 @@ const TeacherClassDetail = () => {
   }
 
   return (
-    <Box sx={{ padding: 3, maxWidth: '800px', margin: 'auto' }}>
-      {/* اطلاعات کلاس به صورت کارت */}
-      <Paper
-        elevation={3}
-        sx={{ padding: 2, marginBottom: 3, backgroundColor: 'secondary.light', borderRadius: 2 }}
-      >
+    <Container maxWidth="sm" sx={{ border: '2px solid blue', borderRadius: '8px', padding: 2, mt: 5 }}>
+      <Box sx={{ mx: 'auto' }}>
         <Typography variant="h4" color="secondary" gutterBottom>
           {classDetails.Topic}
         </Typography>
@@ -118,9 +226,8 @@ const TeacherClassDetail = () => {
         >
           Back
         </Button>
-      </Paper>
-
-      {/* تب‌های کوئیز و تکالیف */}
+      </Box>
+  
       <Tabs
         value={tabValue}
         onChange={handleTabChange}
@@ -131,9 +238,9 @@ const TeacherClassDetail = () => {
       >
         <Tab label="Quizzes" sx={{ fontWeight: 'bold' }} />
         <Tab label="Assignments" sx={{ fontWeight: 'bold' }} />
+        <Tab label="Published Homeworks" sx={{ fontWeight: 'bold' }} />
       </Tabs>
-
-      {/* محتوای هر تب */}
+  
       {tabValue === 0 && (
         <Box>
           <Typography variant="h5" color="secondary" sx={{ marginBottom: 2 }}>
@@ -159,7 +266,7 @@ const TeacherClassDetail = () => {
           </Card>
         </Box>
       )}
-
+  
       {tabValue === 1 && (
         <Box>
           <Typography variant="h5" color="secondary" sx={{ marginBottom: 2 }}>
@@ -167,17 +274,24 @@ const TeacherClassDetail = () => {
           </Typography>
           {assignments.map((assignment) => (
             <Card
-              key={assignment.id}
+              key={assignment.Homework_ID}
               variant="outlined"
               sx={{ marginBottom: 2, cursor: 'pointer' }}
-              onClick={() => navigate(`/teacher-dashboard/class/${tcid}/assignment/${assignment.id}`)}
             >
               <CardContent>
-                <Typography>{assignment.title} - <strong>Due on {assignment.dueDate}</strong></Typography>
+                <Typography>{assignment.Title} - <strong>Due on {assignment.DeadLine}</strong></Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handlePublishHomework(
+                    assignment.id)} // Pass Homework_ID on click
+                  sx={{ mt: 1 }}
+                >
+                  Publish
+                </Button>
               </CardContent>
             </Card>
           ))}
-          {/* دکمه برای ساخت تکلیف جدید */}
           <Button
             variant="contained"
             color="primary"
@@ -188,8 +302,26 @@ const TeacherClassDetail = () => {
           </Button>
         </Box>
       )}
-
-      {/* پاپ‌آپ ساخت تکلیف جدید */}
+  
+      {tabValue === 2 && (
+        <Box>
+          <Typography variant="h5" color="secondary" sx={{ marginBottom: 2 }}>
+            Published Homeworks
+          </Typography>
+          {publishedHomeworks.map((homework) => (
+            <Card
+              key={homework.Homework_ID}
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+            >
+              <CardContent>
+                <Typography>{homework.Title} - <strong>Due on {homework.DeadLine}</strong></Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      )}
+  
       <Dialog open={openDialog} onClose={handleClose}>
         <DialogTitle>Create New Assignment</DialogTitle>
         <DialogContent>
@@ -199,8 +331,8 @@ const TeacherClassDetail = () => {
             label="Title"
             type="text"
             fullWidth
-            name="title"
-            value={newAssignment.title}
+            name="Title"
+            value={newAssignment.Title}
             onChange={handleInputChange}
             sx={{ marginBottom: 2 }}
           />
@@ -209,8 +341,8 @@ const TeacherClassDetail = () => {
             label="Description"
             type="text"
             fullWidth
-            name="description"
-            value={newAssignment.description}
+            name="Description"
+            value={newAssignment.Description}
             onChange={handleInputChange}
             sx={{ marginBottom: 2 }}
           />
@@ -219,8 +351,8 @@ const TeacherClassDetail = () => {
             label="Due Date"
             type="date"
             fullWidth
-            name="dueDate"
-            value={newAssignment.dueDate}
+            name="DeadLine"
+            value={newAssignment.DeadLine}
             onChange={handleInputChange}
             sx={{ marginBottom: 2 }}
           />
@@ -234,8 +366,8 @@ const TeacherClassDetail = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </Container>
   );
-};
-
+  
+};  
 export default TeacherClassDetail;

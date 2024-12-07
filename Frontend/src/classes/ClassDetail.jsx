@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, Tabs, Tab, Card, CardContent, Grid, Divider, Paper } from '@mui/material';
+import { Box, Typography, Button, Tabs, Tab, Card, CardContent, Grid, Divider, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField, List, ListItem, ListItemText } from '@mui/material';
 
 const ClassDetails = () => {
   const { cid } = useParams(); 
@@ -8,6 +8,11 @@ const ClassDetails = () => {
   const [classList, setClassList] = useState([]); 
   const [classDetails, setClassDetails] = useState(null); 
   const [tabValue, setTabValue] = useState(0); 
+  const [homeworks, setHomeworks] = useState([]); 
+  const [selectedHomework, setSelectedHomework] = useState(null); 
+  const [records, setRecords] = useState([]); 
+  const [openDialog, setOpenDialog] = useState(false); 
+  const [file, setFile] = useState(null); 
 
   useEffect(() => {
     const fetchClassList = async () => {
@@ -21,8 +26,6 @@ const ClassDetails = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log("API Data:", data);
-
           setClassList(data);
 
           const selectedClass = data.find((cls) => cls.id === parseInt(cid));
@@ -38,18 +41,110 @@ const ClassDetails = () => {
     fetchClassList();
   }, [cid]);
 
+  useEffect(() => {
+    if (classDetails) {
+      const fetchHomeworks = async () => {
+        try {
+          const response = await fetch("http://127.0.0.1:8000/api/student-see-homeworks/", {
+            method : "GET",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setHomeworks(data);
+          } else {
+            console.error('Failed to fetch homeworks');
+          }
+        } catch (error) {
+          console.error('Error fetching homeworks:', error);
+        }
+      };
+
+      fetchHomeworks();
+    }
+  }, [classDetails]);
+
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  const handleCardClick = (type, id) => {
-    if (type === 'assignment') {
-      navigate(`/student-dashboard/student-classes/${cid}/assignment/${id}`);
-    } else if (type === 'quiz') {
-      navigate(`/student-dashboard/student-classes/${cid}/quiz/${id}`);
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleDialogOpen = (homework) => {
+    setSelectedHomework(homework);
+    fetchHomeworkRecords(homework.id);
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+    setFile(null);
+  };
+
+  const extractFileName = (filePath) => {
+    if (!filePath) return ''; 
+
+    return filePath.split('/').pop();
+  };
+
+  const fetchHomeworkRecords = async (homeworkId) => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/student-homework-records/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ Homework_ID: homeworkId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setRecords(data);
+      } else {
+        console.error('Failed to fetch homework records');
+      }
+    } catch (error) {
+      console.error('Error fetching homework records:', error);
     }
   };
-  
+
+  const handleFileSubmit = async () => {
+    if (!file) {
+      console.error('No file selected');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('Homework_ID', selectedHomework.id); 
+    formData.append('HomeWorkAnswer', file);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/student-send-homework/", {
+        method: 'POST',
+        headers: {
+        },
+        credentials: 'include',
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('File submitted successfully');
+        setFile(null);
+        fetchHomeworkRecords(selectedHomework.id); 
+      } else {
+        console.error('Failed to submit file');
+      }
+    } catch (error) {
+      console.error('Error submitting file:', error);
+    }
+  };
 
   if (!classDetails) {
     return <Typography variant="h6" align="center" sx={{ marginTop: 4 }}>Loading class details...</Typography>;
@@ -91,7 +186,7 @@ const ClassDetails = () => {
           Back
         </Button>
       </Paper>
-
+  
       <Tabs 
         value={tabValue} 
         onChange={handleTabChange} 
@@ -103,7 +198,7 @@ const ClassDetails = () => {
         <Tab label="Quizzes" sx={{ fontWeight: 'bold' }} />
         <Tab label="Assignments" sx={{ fontWeight: 'bold' }} />
       </Tabs>
-
+  
       {tabValue === 0 && (
         <Box>
           <Typography variant="h5" color="primary" sx={{ marginBottom: 2 }}>
@@ -112,7 +207,7 @@ const ClassDetails = () => {
           <Card
             variant="outlined"
             sx={{ marginBottom: 2, cursor: 'pointer' }}
-            onClick={() => handleCardClick('quiz', 1)}
+            onClick={() => navigate(`/student-dashboard/student-classes/${cid}/quiz/1`)}
           >
             <CardContent>
               <Typography>Quiz 1: JavaScript Basics - <strong>Due on 2024-12-10</strong></Typography>
@@ -121,7 +216,7 @@ const ClassDetails = () => {
           <Card
             variant="outlined"
             sx={{ marginBottom: 2, cursor: 'pointer' }}
-            onClick={() => handleCardClick('quiz', 2)}
+            onClick={() => navigate(`/student-dashboard/student-classes/${cid}/quiz/2`)}
           >
             <CardContent>
               <Typography>Quiz 2: React Fundamentals - <strong>Due on 2024-12-15</strong></Typography>
@@ -129,36 +224,60 @@ const ClassDetails = () => {
           </Card>
         </Box>
       )}
-
+  
       {tabValue === 1 && (
         <Box>
           <Typography variant="h5" color="primary" sx={{ marginBottom: 2 }}>
             Recent Assignments
           </Typography>
-          <Card
-                variant="outlined"
-                sx={{ marginBottom: 2, cursor: 'pointer' }}
-                onClick={() => handleCardClick('assignment', 1)} 
+          {homeworks.map((homework) => (
+            <Card
+              key={homework.id}
+              variant="outlined"
+              sx={{ marginBottom: 2, cursor: 'pointer' }}
+            >
+              <CardContent>
+                <Typography>{homework.Title} - <strong>Due on {homework.DeadLine}</strong></Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 1 }}
+                  onClick={() => handleDialogOpen(homework)}
                 >
-                <CardContent>
-                    <Typography>Assignment 1: Create a portfolio website - <strong>Due on 2024-12-05</strong></Typography>
-                </CardContent>
-                </Card>
-
-                <Card
-                variant="outlined"
-                sx={{ marginBottom: 2, cursor: 'pointer' }}
-                onClick={() => handleCardClick('assignment', 2)} 
-                >
-                <CardContent>
-                    <Typography>Assignment 2: Build a React application - <strong>Due on 2024-12-12</strong></Typography>
-                </CardContent>
+                  Submit Homework
+                </Button>
+              </CardContent>
             </Card>
-
+          ))}
         </Box>
       )}
+  
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>Submit Homework</DialogTitle>
+        <DialogContent>
+          <Typography variant="h6">
+            {selectedHomework?.Title}
+          </Typography>
+          <input type="file" onChange={handleFileChange} />
+          <List>
+            {records.map((record) => (
+              <ListItem key={record.id}>
+                <ListItemText  primary={extractFileName(record.HomeWorkAnswer)} />
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleFileSubmit} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
-};
-
+  
+};  
 export default ClassDetails;

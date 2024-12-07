@@ -1,21 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTeacher } from '../../context/TeacherContext';
+import { useClass } from '../../context/ClassContext';
+import Swal from 'sweetalert2';
 import './classes.css';
 
 const TeacherClassList = () => {
   const navigate = useNavigate();
-  const { teacher, _ } = useTeacher();
-  const [classes, getClasses] = useState([]);
+  const { teacher } = useTeacher();
+  const { classToken, loginClass } = useClass(); // Use the class context
+
+  const [classes, setClasses] = useState([]);
   const [showSchedule, setShowSchedule] = useState(false);
-  const token = teacher?.jwt;
+  const teacherToken = teacher?.jwt;
 
   const handleShowSchedule = () => {
     setShowSchedule(!showSchedule);
   };
 
   const generateTimeTable = () => {
-    const days = ['saturday','sunday','monday', 'tuesday', 'wednesday'];
+    const days = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday'];
     const periods = ['8:00 to 9:00', '9:15 to 10:15', '10:30 to 11:30', '11:45 to 12:45', '13:00 to 14:00'];
     const timeTable = {};
 
@@ -30,17 +34,18 @@ const TeacherClassList = () => {
     classes.forEach(cls => {
       const [day, period] = [cls.Session1Day, cls.Session1Time];
       if (timeTable[day] && timeTable[day][period]) {
-        timeTable[day][period] += ` / ${cls.Topic}`; // If there's already a class, append this class Topic
+        timeTable[day][period] += `${cls.Topic}`; // If there's already a class, append this class Topic
       } else {
         timeTable[day][period] = cls.Topic;
       }
       const [day2, period2] = [cls.Session2Day, cls.Session2Time];
       if (timeTable[day2] && timeTable[day2][period2]) {
-        timeTable[day2][period2] += ` / ${cls.Topic}`; // If there's already a class, append this class Topic
+        timeTable[day2][period2] += `${cls.Topic}`; // If there's already a class, append this class Topic
       } else {
         timeTable[day2][period2] = cls.Topic;
       }
     });
+
     return (
       <table className="timetable">
         <thead>
@@ -65,43 +70,74 @@ const TeacherClassList = () => {
     );
   };
 
-  const fetchClassesData = useCallback(async () => {
+  const fetchClassesData = async () => {
     try {
-      const fetchclassresponse = await fetch("http://127.0.0.1:8000/teacher/classes/", {
+      const response = await fetch("http://127.0.0.1:8000/teacher/classes/", {
         headers: {
           'Content-Type': 'application/json',
-          // Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${teacherToken}`, 
         },
         credentials: 'include',
       });
 
-      if (fetchclassresponse.ok) {
-        const classData = await fetchclassresponse.json();
-        getClasses(classData);
+      if (response.ok) {
+        const classData = await response.json();
+        setClasses(classData);
       } else {
         console.error('Failed to fetch class list');
       }
     } catch (error) {
       console.error('Error fetching class list:', error);
+      Swal.fire('Error', 'Failed to fetch classes', 'error'); 
     }
-  }, [token]);
+  };
 
   useEffect(() => {
-    if (token) {
+    if (teacherToken) {
       fetchClassesData();
     }
     document.body.classList.add('classes-list');
     return () => {
       document.body.classList.remove('classes-list');
     };
-  }, [token, fetchClassesData]);
+  }, [teacherToken]); // Removed fetchClassesData from dependencies as it is not defined here
 
   const backToHome = () => {
     navigate('/teacher-dashboard');
   };
 
-  const handleClassClick = (classId) => {
-    navigate(`/teacher-dashboard/teacher-classes/${classId}`);
+  const handleClassClick = async (id) => {
+    try {
+      const loginResponse = await fetch(
+        `http://127.0.0.1:8000/api/teacher-login-class/`, 
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+          credentials: "include",
+        }
+      );
+
+      if (loginResponse.ok) {
+        const token = await loginResponse.json();
+        loginClass(token); 
+        navigate(`/teacher-dashboard/teacher-classes/${id}`); 
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Failed to login to the class. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Network error or server is unavailable. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
   };
 
   return (

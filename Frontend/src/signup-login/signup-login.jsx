@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Box, Typography, Button, Tabs, Tab, Paper, TextField, IconButton, InputAdornment } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Link } from '@mui/material';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { usePrincipal } from '../context/PrincipalContext';  
@@ -15,6 +16,7 @@ const theme = createTheme({
   },
 });
 
+
 const HomePage = ({ onSignUpClick }) => (
   <Container maxWidth="sm" className="container-singuplogin">
     <Box textAlign="center" mt={5}>
@@ -25,14 +27,16 @@ const HomePage = ({ onSignUpClick }) => (
 );
 
 const PrincipalSignUpForm = ({ onBackClick }) => {
+  
   const [formData, setFormData] = useState({
-    first_name: '', last_name: '', National_ID: '', Phone_Number: '',   email: '',  password: '', password2: ''
+    first_name: '', last_name: '', National_ID: '', Phone_Number: '', password: '', password2: '', email: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPasswordToggle = () => setShowPassword(!showPassword);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,7 +84,7 @@ const PrincipalSignUpForm = ({ onBackClick }) => {
       <TextField margin="normal" required fullWidth label="Name" name="first_name" value={formData.first_name} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Last Name" name="last_name" value={formData.last_name} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Phone Number" name="Phone_Number" value={formData.Phone_Number} onChange={handleChange} />
-      <TextField margin="normal" required fullWidth label="Email Address" name="email"  value={formData.email} onChange={handleChange} autoComplete="email" />
+      <TextField margin="normal" required fullWidth label="Email Address" name="email" value={formData.email} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Password" type={showPassword ? 'text' : 'password'} name="password" autoComplete="current-password" value={formData.password} onChange={handleChange}/>
       <TextField margin="normal" required fullWidth label="Confirm Password" type={showPassword ? 'text' : 'password'} name="password2" autoComplete="current-password" value={formData.password2} onChange={handleChange}/>
       <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>Complete Sign Up</Button>
@@ -91,6 +95,11 @@ const PrincipalSignUpForm = ({ onBackClick }) => {
 
 const PrincipalForm = ({ onSignUpClick }) => {
   const navigate = useNavigate();
+
+  const handleresetadmin = () => {
+    navigate('/ResetPasswordAdmin'); // Use absolute path
+  };
+
   const { loginPrincipal } = usePrincipal(); 
   const [formData, setFormData] = useState({ National_ID: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -142,6 +151,7 @@ const PrincipalForm = ({ onSignUpClick }) => {
       <TextField margin="normal" required fullWidth label="Password" type={showPassword ? 'text' : 'password'} name="password" autoComplete="current-password" value={formData.password} onChange={handleChange}/>
       <Button type="button" fullWidth variant="outlined" color="primary" sx={{ mt: 3, mb: 2 }} onClick={onSignUpClick}>Sign Up</Button>
       <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 1 }}>Login</Button>
+      <Link onClick={handleresetadmin}  sx={{ display: 'block', textAlign: 'center', my: 1, backgroundColor: 'white' }}> Forgot Password? </Link>
     </Box>
   );
 };
@@ -154,6 +164,10 @@ const StudentForm = () => {
   const handleShowPasswordToggle = () => setShowPassword(!showPassword);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleresetstudent = () => {
+    navigate('/ResetPasswordStudent');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -199,6 +213,7 @@ const StudentForm = () => {
       <TextField margin="normal" required fullWidth label="Student ID" name="National_ID" autoFocus value={formData.National_ID} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Password" type={showPassword ? 'text' : 'password'} name="password" autoComplete="current-password" value={formData.password} onChange={handleChange}/>
       <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 1 }}>Login</Button>
+      <Link onClick={handleresetstudent}  sx={{ display: 'block', textAlign: 'center', my: 1, backgroundColor: 'white' }}> Forgot Password? </Link>
     </Box>
   );
 };
@@ -210,6 +225,10 @@ const TeacherForm = () => {
   const handleShowPasswordToggle = () => setShowPassword(!showPassword);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleresetteacher = () => {
+    navigate('/ResetPasswordTeacher');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -254,6 +273,7 @@ const TeacherForm = () => {
       <TextField margin="normal" required fullWidth label="Teacher ID" name="National_ID" autoFocus value={formData.National_ID} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Password" type={showPassword ? 'text' : 'password'} name="password" autoComplete="current-password" value={formData.password} onChange={handleChange}/>
       <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 1 }}>Login</Button>
+      <Link onClick={handleresetteacher}  sx={{ display: 'block', textAlign: 'center', my: 1, backgroundColor: 'white' }}> Forgot Password? </Link>
     </Box>
   );
 };

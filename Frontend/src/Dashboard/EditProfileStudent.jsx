@@ -2,6 +2,18 @@ import './EditProfileStudent.css';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Avatar,
+  Grid,
+  InputAdornment,
+  IconButton,
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 function EditProfile() {
     const navigate = useNavigate();
@@ -17,6 +29,8 @@ function EditProfile() {
         New_Password: ''
     });
     const [imagePreview, setImagePreview] = useState(null);
+    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
 
     useEffect(() => {
         fetchProfileData();
@@ -37,7 +51,7 @@ function EditProfile() {
                     Address: data.Address,
                     Grade_Level: data.Grade_Level,
                     bio: data.StudentProfile[0]?.bio || '',
-                    profile_image: data.StudentProfile[0]?.profile_image
+                    profile_image: null // Initialize to null
                 });
                 if (data.StudentProfile[0]?.profile_image) {
                     setImagePreview(data.StudentProfile[0].profile_image);
@@ -75,6 +89,12 @@ function EditProfile() {
                 profile_image: file
             }));
             setImagePreview(URL.createObjectURL(file));
+        } else {
+            setProfile(prevProfile => ({
+                ...prevProfile,
+                profile_image: null
+            }));
+            setImagePreview(null);
         }
     };
 
@@ -82,9 +102,15 @@ function EditProfile() {
         e.preventDefault();
         try {
             const formData = new FormData();
-            for (const key in profile) {
-                formData.append(key, profile[key]);
+            formData.append('LandLine', profile.LandLine);
+            formData.append('Address', profile.Address);
+            formData.append('Grade_Level', profile.Grade_Level);
+            formData.append('bio', profile.bio);
+
+            if (profile.profile_image) {
+                formData.append('profile_image', profile.profile_image);
             }
+
             formData.append('Old_Password', passwordData.Old_Password);
             formData.append('New_Password', passwordData.New_Password);
 
@@ -117,89 +143,141 @@ function EditProfile() {
     };
 
     return (
-        <div className="edit-profile-container">
-            <h1>Edit Profile</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="LandLine">Landline : </label>
-                    <input
-                        type="tel"
-                        id="LandLine"
-                        name="LandLine"
-                        value={profile.LandLine}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="Address">Address : </label>
-                    <textarea
-                        id="Address"
-                        name="Address"
-                        value={profile.Address}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="Grade_Level">Grade Level : </label>
-                    <input
-                        type="text"
-                        id="Grade_Level"
-                        name="Grade_Level"
-                        value={profile.Grade_Level}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="bio">Bio : </label>
-                    <textarea
-                        id="bio"
-                        name="bio"
-                        value={profile.bio}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="oldPassword">Old Password : </label>
-                    <input
-                        type="password"
-                        id="oldPassword"
-                        name="Old_Password"
-                        value={passwordData.Old_Password}
-                        onChange={handlePasswordChange}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="newPassword">New Password : </label>
-                    <input
-                        type="password"
-                        id="newPassword"
-                        name="newPassword"
-                        value={passwordData.New_Password}
-                        onChange={handlePasswordChange}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="profile_image">Profile Image : </label>
-                    <input
-                        type="file"
-                        id="profile_image"
-                        name="profile_image"
-                        onChange={handleImageChange}
-                        accept="image/*"
-                    />
-                    {imagePreview && (
-                        <img 
-                            src={imagePreview} 
-                            alt="Profile Preview" 
-                            style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+        <Container sx={{ mt: 4, backgroundColor: '#9de2ff', padding: '20px', borderRadius: '8px' }}>
+            <Typography variant="h4" gutterBottom align="center">
+                Edit Profile for Student
+            </Typography>
+            
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Landline"
+                            name="LandLine"
+                            value={profile.LandLine}
+                            onChange={handleChange}
+                            variant="outlined"
+                            fullWidth
                         />
-                    )}
-                </div>
-                <button type="submit" class="update-button">Update Profile</button>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Address"
+                            name="Address"
+                            value={profile.Address}
+                            onChange={handleChange}
+                            required
+                            multiline
+                            rows={3}
+                            variant="outlined"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Grade Level"
+                            name="Grade_Level"
+                            value={profile.Grade_Level}
+                            onChange={handleChange}
+                            required
+                            variant="outlined"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Bio"
+                            name="bio"
+                            value={profile.bio}
+                            onChange={handleChange}
+                            multiline
+                            rows={3}
+                            variant="outlined"
+                            fullWidth
+                        />
+                    </Grid>
+
+                    {/* Old Password and New Password Fields */}
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Old Password"
+                            type={showOldPassword ? "text" : "password"}
+                            name="Old_Password"
+                            value={passwordData.Old_Password}
+                            onChange={handlePasswordChange}
+                            variant="outlined"
+                            fullWidth
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowOldPassword(!showOldPassword)}>
+                                            {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="New Password"
+                            type={showNewPassword ? "text" : "password"}
+                            name="New_Password"
+                            value={passwordData.New_Password}
+                            onChange={handlePasswordChange}
+                            variant="outlined"
+                            fullWidth
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>
+                                            {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Grid>
+
+                    {/* Profile Image Upload */}
+                    <Grid item xs={12}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                          <label htmlFor="profile_image">
+                              <input 
+                                  type="file" 
+                                  id="profile_image" 
+                                  name="profile_image" 
+                                  onChange={handleImageChange} 
+                                  accept="image/*" 
+                                  style={{ display: 'none' }} 
+                              />
+                              <Button variant="contained" component="span">
+                                  Upload Profile Image
+                              </Button>
+                          </label>
+                          
+                          {imagePreview && (
+                              <Avatar 
+                                  src={imagePreview} 
+                                  alt="Profile Preview" 
+                                  sx={{ width: 100, height: 100, mt: 2 }} 
+                              />
+                          )}
+                        </Box>
+                    </Grid>
+
+                    {/* Submit Button */}
+                    <Grid item xs={12}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                          <Button type="submit" variant="contained" color="primary">
+                              Update Profile
+                          </Button>
+                        </Box>
+                    </Grid>
+                </Grid>
             </form>
-        </div>
+        </Container>
     );
 }
 

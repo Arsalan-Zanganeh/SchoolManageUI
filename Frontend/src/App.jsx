@@ -7,6 +7,12 @@ import LoginTeacher from './login-page/Teacher';
 import Dashboard from './Dashboard/Dashboard';
 import StuDashboard from './Dashboard/StudentDashboard';
 import TeacherDashboard from './Dashboard/TeacherDashboard';
+import ResetPasswordAdmin from './signup-login/ResetPasswordAdmin'; 
+import ResetPasswordStudent from './signup-login/ResetPasswordStudent';
+import ResetPasswordTeacher from './signup-login/ResetPasswordTeacher';
+import PasswordResetAdmin from './signup-login/PasswordResetAdmin';
+import PasswordResetStudent from './signup-login/PasswordResetStudent';
+import PasswordResetTeacher from './signup-login/PasswordResetTeacher';
 import SignUpStudent from './Dashboard/add-student/add-student';
 import SignUpTeacher from './Dashboard/add-teacher/add-teacher';
 import AddClass from './Dashboard/add-class/AddClass';
@@ -20,10 +26,11 @@ import ProfileTeacher from './Dashboard/ProfileTeacher';
 import EditProfileAdmin from './Dashboard/EditProfileAdmin';
 import EditProfileStudent from './Dashboard/EditProfileStudent';
 import EditProfileTeacher from './Dashboard/EditProfileTeacher';
-import ManageStudents from './Dashboard/ManageStudents'; // Import ManageStudents component
+import ManageStudents from './Dashboard/ManageStudents'; 
 import { PrincipalProvider } from './context/PrincipalContext';
 import { StudentProvider } from './context/StudentContext';
 import { TeacherProvider } from './context/TeacherContext'; 
+import { ClassProvider } from './context/ClassContext';
 import PrivateRoute from './components/PrivateRoute';
 import { SchoolProvider } from './context/SchoolContext';  
 import HollandTest from './HollandTest/HollandTest'; 
@@ -34,6 +41,7 @@ import TeacherClass from './classes/TClassDetail' ;
 import AssignmentDetail from './assignment/stuassignment' ;
 import TAssignmentDetail from './assignment/teacherassignment' ;
 import PreviousResults from "./HollandTest/PreviousResults";
+
 import './App.css';
 
 function App() {
@@ -43,11 +51,18 @@ function App() {
         <StudentProvider>
           <TeacherProvider>
             <SchoolProvider>
+              <ClassProvider>
               <Routes>
                 <Route path="/" element={<SignUpLogin/>} />
                 <Route path="/principal-login" element={<LoginPrincipal />} />
                 <Route path="/student-login" element={<LoginStudent />} />
                 <Route path="/teacher-login" element={<LoginTeacher />} />
+                <Route path="/ResetPasswordAdmin" element={<ResetPasswordAdmin />} /> 
+                <Route path="/ResetPasswordStudent" element={<ResetPasswordStudent />} /> 
+                <Route path="/ResetPasswordTeacher" element={<ResetPasswordTeacher />} />
+                <Route path="/PasswordResetAdmin/:uidb64/:token/" element={<PasswordResetAdmin />} /> {}
+                <Route path="/PasswordResetStudent/:uidb64/:token/" element={<PasswordResetStudent />} /> {}
+                <Route path="/PasswordResetTeacher/:uidb64/:token/" element={<PasswordResetTeacher />} /> {}
                 <Route
                   path="/admin-school"
                   element={
@@ -251,6 +266,7 @@ function App() {
               />
 
               </Routes>
+              </ClassProvider>
             </SchoolProvider> 
           </TeacherProvider>
         </StudentProvider>
