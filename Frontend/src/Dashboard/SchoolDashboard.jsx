@@ -1,13 +1,55 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AppBar, Toolbar, IconButton, Box, Container, Grid, Paper, Typography, CssBaseline, Button, Avatar, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Box, Container, Grid, Paper, Typography,Dialog, DialogActions, DialogContent, DialogTitle , CssBaseline, Button, Avatar, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { ExitToApp, Menu, Class, Person, PersonAdd, School, Person4, HomeWork, NotificationAdd, PermContactCalendar, Security } from '@mui/icons-material';
 import { styled } from '@mui/system';
+import Swal from "sweetalert2";
 import { useMediaQuery } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSchool } from '../context/SchoolContext';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { usePrincipal } from '../context/PrincipalContext';
 import './SchoolDashboard.css';
+const styles = {
+  list: {
+      width: '100%',
+      backgroundColor: '#f9f9f9',
+      borderRadius: '8px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      padding: '8px',
+  },
+  listItem: {
+      borderBottom: '1px solid #ddd',
+      padding: '16px',
+      cursor: 'pointer',
+      '&:hover': {
+          backgroundColor: '#f1f1f1',
+      },
+  },
+  listItemText: {
+      fontWeight: 500,
+  },
+  previewText: {
+      color: '#555',
+  },
+  dialogTitle: {
+      textAlign: 'center',
+      fontWeight: 'bold',
+  },
+  dialogContent: {
+      padding: '16px',
+  },
+  dateText: {
+      marginRight: '16px',
+      color: '#aaa',
+  },
+};
+const customCss = `
+    .ql-editor {
+        font-size: 14px;
+    }
+`;
 
 const theme = createTheme({
   palette: {
@@ -51,13 +93,148 @@ const SchoolInfoBox = styled(Paper)(({ theme }) => ({
 }));
 
 const SchoolDashboard = () => {
+  const [openmessagebox, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleMessageClickOpen = () => {
+      setOpen(true);
+  };
+
+  const handleMessageClickClose = () => {
+      setOpen(false);
+  };
+
+  const handleSendMessage = async (e) => {
+    handleMessageClickClose();
+      e.preventDefault();
+      try {
+        const submit = await fetch("http://127.0.0.1:8000/api/add_notification/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            message: message}),
+        });
+        if (!submit.ok) {
+          const errorData = await submit.json();
+    
+          if (errorData) {
+            let errorMessage = '';
+            for (const key in errorData) {
+              if (errorData.hasOwnProperty(key)) {
+                errorMessage += `${key}: ${errorData[key].join(', ')}\n`;
+              }
+            }
+            Swal.fire({
+              title: 'Error',
+              text: errorMessage || 'Failed to send notificaiton. Please check the details and try again.',
+              icon: 'error',
+              confirmButtonText: 'OK',
+            });
+          } else {
+            Swal.fire('Error', 'An unknown error occurred. Please try again later.', 'error');
+          }
+        } else {
+          Swal.fire('Success', 'Sent!', 'success');
+        }
+    
+      } catch (error) 
+      {
+        Swal.fire('Error', 'Server error or network issue. Please try again.', 'error');
+        console.error('Error:', error);
+      }
+    setMessage('');
+  };
   const { schoolId } = useParams();
   const navigate = useNavigate();
-  const { schoolToken } = useSchool();
-  const { principal } = usePrincipal();
+  const { schoolToken ,logoutSchool} = useSchool();
+  const { principal ,logoutPrincipal} = usePrincipal();
   const [school, setSchool] = useState(null);
   const [principalInfo, setPrincipalInfo] = useState(null);
+  const [openSentNotifications, setOpenSentNotifications] = useState(false);
+  const [sentNotifications, setSentNotifications] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const handleSentNotificationsClickOpen = () => {
+    fetchSentNotifications();
+    setOpenSentNotifications(true);
+  };
+  const handleSentNotificationsClickClose = () => {
+    setOpenSentNotifications(false);
+};
+const createPreview = (message) => {
+  const plainText = message.replace(/<[^>]+>/g, ''); // Strip HTML tags
+  const preview = plainText.split(' ').slice(0, 10).join(' ') + '...'; // Take first 10 words
+  return preview;
+};
+const [selectedNotification, setSelectedNotification] = useState(null);
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'short', day: 'numeric' , hour: 'numeric', minute: 'numeric'};
+  return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
+};
+  const fetchSentNotifications = useCallback(async () => {
+    if (!schoolToken) return;
+    try {
+      const fetchnotifresponse = await fetch("http://127.0.0.1:8000/api/notify/", {
+        headers: {
+          'Content-Type': 'application/json',
+          // Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+      });
+
+      if (fetchnotifresponse.ok) {
+        const notifdata = await fetchnotifresponse.json();
+        setSentNotifications(notifdata);
+      } else {
+        console.error('Failed to fetch notif list');
+      }
+    } catch (error) {
+      console.error('Error fetching notif list:', error);
+    }}, [schoolId, schoolToken]);
+
+  const handleLogout = async () => {
+    try {
+      const adminLogoutResponse = await fetch(
+        "http://127.0.0.1:8000/api/logout_school/",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+      if (!adminLogoutResponse.ok) {
+        throw new Error("Failed to logout admin");
+      }
+      const schoolLogoutResponse = await fetch(
+        "http://127.0.0.1:8000/api/logout/",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      if (!schoolLogoutResponse.ok) {
+        throw new Error("Failed to logout school");
+      }
+      logoutPrincipal();
+      logoutSchool();
+      Swal.fire({
+        title: "Logged Out",
+        text: "You have been logged out successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+      navigate("/");
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Failed to logout completely. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
 
   const fetchSchoolData = useCallback(async () => {
     if (!schoolToken) return;
@@ -79,6 +256,23 @@ const SchoolDashboard = () => {
       console.error('Error fetching school data:', error);
     }
   }, [schoolId, schoolToken]);
+
+  const fetchCalendar = useCallback(async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/prinicipal-google-calendar/`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data)
+      } else {
+        Swal.fire("Error", "Failed to fetch classes", "error");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Network error while fetching classes", "error");
+    }
+  },[schoolId]);
 
   const fetchPrincipalData = useCallback(async () => {
     if (!principal?.jwt) return;
@@ -113,7 +307,13 @@ const SchoolDashboard = () => {
 
   const isDesktop = useMediaQuery('(min-width:600px)');
   const isMobile = useMediaQuery('(max-width:599px)');
-
+  const sortedNotifications = [...sentNotifications].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const handleNotificationClick = (notification) => {
+    setSelectedNotification(notification);
+  };
+  const handleBackClick = () => {
+    setSelectedNotification(null);
+  };
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -138,7 +338,7 @@ const SchoolDashboard = () => {
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
               {principalInfo ? `${principalInfo.first_name} ${principalInfo.last_name}` : 'Loading...'}
             </Typography>
-            <IconButton edge="end" color="inherit" aria-label="logout">
+            <IconButton edge="end" color="inherit" aria-label="logout" onClick={handleLogout}>
               <ExitToApp />
             </IconButton>
           </Toolbar>
@@ -179,7 +379,7 @@ const SchoolDashboard = () => {
                   </NavigationBox>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" href="https://example.com/page1" onClick={() => handleSchoolSelection({ name: "Helli 7", location: "blah blah blah" })}>
+                  <NavigationBox elevation={3} onClick={handleMessageClickOpen}>
                     <NotificationAdd fontSize="large" />
                     <Typography variant="subtitle1">Send Notifications</Typography>
                   </NavigationBox>
@@ -192,25 +392,25 @@ const SchoolDashboard = () => {
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" href="https://example.com/page1" onClick={() => handleSchoolSelection({ name: "Helli 7", location: "blah blah blah" })}>
+                  <NavigationBox elevation={3} component="a" href="https://example.com/page1" >
                     <Person fontSize="large" />
                     <Typography variant="subtitle1">Student Files</Typography>
                   </NavigationBox>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" href="https://example.com/page2" onClick={() => handleSchoolSelection({ name: "School 2", location: "Location 2" })}>
+                  <NavigationBox elevation={3} component="a" href="https://example.com/page2" >
                     <Person4 fontSize="large" />
                     <Typography variant="subtitle1">Teacher Files</Typography>
                   </NavigationBox>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" href="https://example.com/page3" onClick={() => handleSchoolSelection({ name: "School 3", location: "Location 3" })}>
+                  <NavigationBox elevation={3} component="a" href="https://example.com/page3" >
                     <Security fontSize="large" />
                     <Typography variant="subtitle1">Disciplinary management</Typography>
                   </NavigationBox>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" href="https://example.com/page1" onClick={() => handleSchoolSelection({ name: "Helli 7", location: "blah blah blah" })}>
+                  <NavigationBox elevation={3} onClick={fetchCalendar}>
                     <PermContactCalendar fontSize="large" />
                     <Typography variant="subtitle1">Calendar</Typography>
                   </NavigationBox>
@@ -263,6 +463,63 @@ const SchoolDashboard = () => {
             </Button>
           </Box>
         )}
+            <Dialog open={openmessagebox} onClose={handleMessageClickClose}>
+                <DialogTitle>Send Notification</DialogTitle>
+                <DialogContent>
+                    <ReactQuill value={message} onChange={setMessage} />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleMessageClickClose} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSendMessage} color="primary">
+                        Send
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={handleSentNotificationsClickOpen}>
+                        View Sent Notifications
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openSentNotifications} onClose={handleSentNotificationsClickClose} maxWidth="md" fullWidth>
+                <DialogTitle style={styles.dialogTitle}>Sent Notifications</DialogTitle>
+                <DialogContent style={styles.dialogContent}>
+                {selectedNotification ? (
+                    <Box style={styles.messageContainer}>
+                        <Button onClick={handleBackClick} color="primary">Back</Button>
+                        <div style={styles.messageContent} dangerouslySetInnerHTML={{ __html: selectedNotification.message }} />
+                        <Typography variant="body2" style={styles.dateText}>{formatDate(selectedNotification.date)}</Typography>
+                    </Box>
+                    ) : (
+                    <List style={styles.list}>
+                        {sortedNotifications.map((notification) => (
+                            <ListItem key={notification.id} style={styles.listItem}
+                            button
+                            onClick={() => handleNotificationClick(notification)} 
+                            >
+                                <ListItemText 
+                                    primary={
+                                        <div>
+                                            <Typography style={styles.dateText}>
+                                                {formatDate(notification.date)}
+                                            </Typography>
+                                            <Typography style={styles.listItemText}>
+                                                {createPreview(notification.message)}
+                                            </Typography>
+                                        </div>
+                                    }
+                                    style={styles.previewText}
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleSentNotificationsClickClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
       </Box>
     </ThemeProvider>
   );
