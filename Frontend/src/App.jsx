@@ -41,6 +41,10 @@ import TeacherClass from './classes/TClassDetail' ;
 import AssignmentDetail from './assignment/stuassignment' ;
 import TAssignmentDetail from './assignment/teacherassignment' ;
 import PreviousResults from "./HollandTest/PreviousResults";
+import QuizPage from "./quiz/QuizPage";
+import QuizPageStudent from "./quiz/QuizPageStudent";
+import ResultsPage from "./quiz/ResultsPage";
+import TeacherResult from "./quiz/TeacherResult";
 
 import './App.css';
 
@@ -264,6 +268,41 @@ function App() {
                 </PrivateRoute>
               }
               />
+              <Route
+            path="/teacher-dashboard/teacher-classes/:tcid/quiz/:qid"
+            element={
+              <PrivateRoute role="teacher">
+                <QuizPage />
+              </PrivateRoute>
+            }
+            />
+            <Route
+            path="/student-dashboard/student-classes/:cid/quiz/:quizId"
+            element={
+              <PrivateRoute role="student">
+                <QuizPageStudent/>
+              </PrivateRoute>
+            }
+            />
+            <Route
+              path="/student-dashboard/student-classes/:cid/quiz/:quizId/results"
+              element={
+                <PrivateRoute role="student">
+                  <ResultsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/teacher-dashboard/teacher-classes/:tcid/quiz/:qid/results"
+              element={
+                <PrivateRoute role="teacher">
+                  <TeacherResult />
+                </PrivateRoute>
+              }
+            />
+
+
+
 
               </Routes>
               </ClassProvider>
