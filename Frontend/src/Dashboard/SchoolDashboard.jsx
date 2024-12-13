@@ -1,9 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AppBar, Toolbar, IconButton, Box, Container, Grid, Paper, Typography,Dialog, DialogActions, DialogContent, DialogTitle , CssBaseline, Button, Avatar, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Box, Container, Grid, Paper, Typography,Dialog, DialogActions,ListItemIcon ,DialogContent, DialogTitle , CssBaseline, Button, Avatar, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { ExitToApp, Menu, Class, Person, PersonAdd, School, Person4, HomeWork, NotificationAdd, PermContactCalendar, Security } from '@mui/icons-material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import HomeIcon from '@mui/icons-material/Home';
+import SchoolIcon from '@mui/icons-material/School';
+import BusinessIcon from '@mui/icons-material/Business';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { styled } from '@mui/system';
 import Swal from "sweetalert2";
+import SignUpStudent from "./add-student/add-student";
+import SignUpTeacher from "./add-teacher/add-teacher";
+import AddClass from "./add-class/AddClass";
+import ShowProfile from "./ProfileAdmin";
 import { useMediaQuery } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSchool } from '../context/SchoolContext';
@@ -11,6 +20,26 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { usePrincipal } from '../context/PrincipalContext';
 import './SchoolDashboard.css';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
+
 const styles = {
   list: {
       width: '100%',
@@ -24,7 +53,7 @@ const styles = {
       padding: '16px',
       cursor: 'pointer',
       '&:hover': {
-          backgroundColor: '#f1f1f1',
+          backgroundColor: '#0036AB',
       },
   },
   listItemText: {
@@ -54,7 +83,8 @@ const customCss = `
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#6200ea',
+      main: '#0036AB',
+      drawer: '#0051FF',
     },
     text: {
       secondary: '#757575',
@@ -93,6 +123,7 @@ const SchoolInfoBox = styled(Paper)(({ theme }) => ({
 }));
 
 const SchoolDashboard = () => {
+  const [tabvalue, settabvalue] = useState(0);
   const [openmessagebox, setOpen] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -299,9 +330,9 @@ const formatDate = (dateString) => {
     fetchPrincipalData();
   }, [fetchSchoolData, fetchPrincipalData]);
 
-  const addStudent = () => navigate(`/dashboard/school/${schoolId}/add-student`);
-  const addTeacher = () => navigate(`/dashboard/school/${schoolId}/add-teacher`);
-  const viewClasses = () => navigate(`/dashboard/school/${schoolId}/classes`);
+  const addStudent = () => settabvalue(3);
+  const addTeacher = () => settabvalue(4);
+  const viewClasses = () => settabvalue(5);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -332,7 +363,7 @@ const formatDate = (dateString) => {
                     transition: 'transform 0.2s ease-in-out',
                   },
                 }}
-                onClick={() => navigate('/dashboard/profile-admin')}
+                onClick={() => settabvalue(6)}
             />
 
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -345,7 +376,7 @@ const formatDate = (dateString) => {
         </AppBar>
         <Toolbar />
         <Box sx={{ display: 'flex', flexGrow: 1 }}>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 4 }}>
             <Container maxWidth="lg">
               {school && (
                 <SchoolInfoBox elevation={3}>
@@ -356,7 +387,34 @@ const formatDate = (dateString) => {
                   </Box>
                 </SchoolInfoBox>
               )}
-              <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              <TabPanel value={tabvalue} index={0}>
+              <Typography variant="h6" sx={{ mt:1, flexGrow: 1 }}>
+                Welcome {principalInfo ? `${principalInfo.first_name} ${principalInfo.last_name}` : 'Loading...'}!
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <NavigationBox elevation={3} component="a">
+                    <Class fontSize="large" />
+                    <Typography variant="subtitle1">Last visited Page</Typography>
+                  </NavigationBox>
+                </Grid>
+                <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <NavigationBox elevation={3} component="a" onClick={() => settabvalue(6)}>
+                    <PersonAdd fontSize="large" />
+                    <Typography variant="subtitle1">Edit Profile</Typography>
+                  </NavigationBox>
+                </Grid>
+                <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <NavigationBox elevation={3} component="a" onClick={handleLogout}>
+                    <School fontSize="large" />
+                    <Typography variant="subtitle1">Log out</Typography>
+                  </NavigationBox>
+                </Grid>
+              </Grid>
+              </TabPanel>
+
+              <TabPanel value={tabvalue} index={1}>
+              <Typography variant="h6" sx={{ mt:1, flexGrow: 1 }}>
                 Classes Management
               </Typography>
               <Grid container spacing={2}>
@@ -385,8 +443,9 @@ const formatDate = (dateString) => {
                   </NavigationBox>
                 </Grid>
               </Grid>
-            </Container>
-            <Container maxWidth="lg">
+              </TabPanel>
+
+            <TabPanel value={tabvalue} index={2}>
               <Typography variant="h6" sx={{ mt:1, flexGrow: 1 }}>
                 Office Automation
               </Typography>
@@ -416,43 +475,168 @@ const formatDate = (dateString) => {
                   </NavigationBox>
                 </Grid>
               </Grid>
+            </TabPanel>
+            <TabPanel value={tabvalue} index={3}>
+              <SignUpStudent></SignUpStudent>
+              <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
+              <ArrowBackIcon />
+              Back
+               </Button>
+            </TabPanel>
+            <TabPanel value={tabvalue} index={4}>
+              <SignUpTeacher></SignUpTeacher>
+              <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
+              <ArrowBackIcon />
+              Back
+               </Button>
+            </TabPanel>
+            <TabPanel value={tabvalue} index={5}>
+              <AddClass></AddClass>
+              <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
+              <ArrowBackIcon />
+              Back
+               </Button>
+            </TabPanel>
+            <TabPanel value={tabvalue} index={6}>
+              <ShowProfile></ShowProfile>
+              <Button variant="contained" color="secondary" onClick={() => settabvalue(0)}>
+              <ArrowBackIcon />
+              Back
+               </Button>
+            </TabPanel>
             </Container>
           </Box>
           {isDesktop ? (
-            <Drawer variant="permanent" anchor="right" sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.main, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
-              <Toolbar />
-              <List>
-                <ListItem button component="a"  onClick={() => navigate('/admin-school')}
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: theme.palette.primary.light, 
-                        transition: 'background-color 0.3s', 
-                      },
-                      cursor: 'pointer', 
-                      borderRadius: 1, 
-                      padding: theme.spacing(1), 
-                    }}>
-                  <ListItemText primary="Switch School" />
-                </ListItem>
-              </List>
-            </Drawer>
+            <Drawer variant="permanent" anchor="left" sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.drawer, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
+            <Toolbar />
+            <List>
+              <ListItem button component="a"  onClick={() => navigate('/admin-school')}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.light, 
+                      transition: 'background-color 0.3s', 
+                    },
+                    cursor: 'pointer', 
+                    borderRadius: 1, 
+                    padding: theme.spacing(1), 
+                  }}>
+                <ListItemIcon sx={{ color: '#fff' }}>
+                  <SwapHorizIcon />
+                </ListItemIcon>
+                <ListItemText primary="Switch School" />
+              </ListItem>
+              <ListItem button onClick={() => settabvalue(0)}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.light, 
+                      transition: 'background-color 0.3s', 
+                    },
+                    cursor: 'pointer', 
+                    borderRadius: 1, 
+                    padding: theme.spacing(1), 
+                  }}>
+                <ListItemIcon sx={{ color: '#fff' }}>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+              <ListItem button onClick={() => settabvalue(1)}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.light, 
+                      transition: 'background-color 0.3s', 
+                    },
+                    cursor: 'pointer', 
+                    borderRadius: 1, 
+                    padding: theme.spacing(1), 
+                  }}>
+                <ListItemIcon sx={{ color: '#fff' }}>
+                  <SchoolIcon />
+                </ListItemIcon>
+                <ListItemText primary="Classes" />
+              </ListItem>
+              <ListItem button onClick={() => settabvalue(2)}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.light, 
+                      transition: 'background-color 0.3s', 
+                    },
+                    cursor: 'pointer', 
+                    borderRadius: 1, 
+                    padding: theme.spacing(1), 
+                  }}>
+                <ListItemIcon sx={{ color: '#fff' }}>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary="Office" />
+              </ListItem>
+            </List>
+          </Drawer>          
           ) : (
-            <Drawer anchor="right" open={sidebarOpen} onClose={toggleSidebar} sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.main, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
+            <Drawer anchor="left" open={sidebarOpen} onClose={toggleSidebar} sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.drawer, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
               <Toolbar />
               <List>
-                <ListItem button component="a"  onClick={() => navigate('/admin-school')}
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: theme.palette.primary.light, 
-                        transition: 'background-color 0.3s', 
-                      },
-                      cursor: 'pointer', 
-                      borderRadius: 1, 
-                      padding: theme.spacing(1), 
-                    }}>
-                  <ListItemText primary="Switch School" />
-                </ListItem>
-              </List>
+              <ListItem button component="a"  onClick={() => navigate('/admin-school')}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.light, 
+                      transition: 'background-color 0.3s', 
+                    },
+                    cursor: 'pointer', 
+                    borderRadius: 1, 
+                    padding: theme.spacing(1), 
+                  }}>
+                <ListItemIcon sx={{ color: '#fff' }}>
+                  <SwapHorizIcon />
+                </ListItemIcon>
+                <ListItemText primary="Switch School" />
+              </ListItem>
+              <ListItem button onClick={() => settabvalue(0)}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.light, 
+                      transition: 'background-color 0.3s', 
+                    },
+                    cursor: 'pointer', 
+                    borderRadius: 1, 
+                    padding: theme.spacing(1), 
+                  }}>
+                <ListItemIcon sx={{ color: '#fff' }}>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+              <ListItem button onClick={() => settabvalue(1)}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.light, 
+                      transition: 'background-color 0.3s', 
+                    },
+                    cursor: 'pointer', 
+                    borderRadius: 1, 
+                    padding: theme.spacing(1), 
+                  }}>
+                <ListItemIcon sx={{ color: '#fff' }}>
+                  <SchoolIcon />
+                </ListItemIcon>
+                <ListItemText primary="Classes" />
+              </ListItem>
+              <ListItem button onClick={() => settabvalue(2)}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.light, 
+                      transition: 'background-color 0.3s', 
+                    },
+                    cursor: 'pointer', 
+                    borderRadius: 1, 
+                    padding: theme.spacing(1), 
+                  }}>
+                <ListItemIcon sx={{ color: '#fff' }}>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary="Office" />
+              </ListItem>
+            </List>
             </Drawer>
           )}
         </Box>
