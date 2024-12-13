@@ -285,7 +285,7 @@ const AddClass = () => {
         </Box>
       {/* Class List */}
       <Grid container spacing={3}>
-  {classes.map((cls) => (
+  {classes.length > 0 ?(classes.map((cls) => (
     <Grid item xs={12} md={6} key={cls.id}>
       <Card sx={{ position: "relative", padding: 2 }}>
         <CardContent>
@@ -353,7 +353,9 @@ const AddClass = () => {
         </CardActions>
       </Card>
     </Grid>
-  ))}
+  ))):(<Typography textAlign="center" mt = {3} mb={3}>
+    No Classes are signed to this School.
+  </Typography>)}
 </Grid>
 
 
