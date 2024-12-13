@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 import SignUpStudent from "./add-student/add-student";
 import SignUpTeacher from "./add-teacher/add-teacher";
 import AddClass from "./add-class/AddClass";
-import ShowProfile from "./ProfileAdmin";
+import AppWrapper from "./ProfileAdmin";
 import { useMediaQuery } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSchool } from '../context/SchoolContext';
@@ -376,7 +376,7 @@ const formatDate = (dateString) => {
         </AppBar>
         <Toolbar />
         <Box sx={{ display: 'flex', flexGrow: 1 }}>
-          <Box component="main" sx={{ flexGrow: 1, p: 4 }}>
+          <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
             <Container maxWidth="lg">
               {school && (
                 <SchoolInfoBox elevation={3}>
@@ -498,7 +498,7 @@ const formatDate = (dateString) => {
                </Button>
             </TabPanel>
             <TabPanel value={tabvalue} index={6}>
-              <ShowProfile></ShowProfile>
+              <AppWrapper></AppWrapper>
               <Button variant="contained" color="secondary" onClick={() => settabvalue(0)}>
               <ArrowBackIcon />
               Back
