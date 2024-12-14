@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import './add-student.css';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Grid,
+  Paper,
+} from '@mui/material';
 
-function SignUpStudent() {
-  //const navigate = useNavigate();
+function SignUpStudent({ goBack }) {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [nationalid, setNationalid] = useState('');
@@ -19,12 +25,12 @@ function SignUpStudent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!firstname || !lastname || !nationalid || !fatherphone || !password || !password2 || !fatherfname || !Email || !address || !landline || !gradelevel) {
       Swal.fire('Error', 'All fields are required', 'error');
       return;
     }
-  
+
     try {
       const submit = await fetch("http://127.0.0.1:8000/api/add_student/", {
         method: "POST",
@@ -36,54 +42,38 @@ function SignUpStudent() {
           first_name: firstname,
           last_name: lastname,
           National_ID: nationalid,
-          Father_Phone_Number : fatherphone,
+          Father_Phone_Number: fatherphone,
           password,
           password2,
           Email: Email,
-          Father_first_name : fatherfname,
-          Grade_Level : gradelevel,
+          Father_first_name: fatherfname,
+          Grade_Level: gradelevel,
           Address: address,
           LandLine: landline,
         }),
       });
       if (!submit.ok) {
         const errorData = await submit.json();
-  
-        if (errorData) {
-          let errorMessage = '';
-          for (const key in errorData) {
-            if (errorData.hasOwnProperty(key)) {
-              errorMessage += `${key}: ${errorData[key].join(', ')}\n`;
-            }
+        let errorMessage = '';
+        for (const key in errorData) {
+          if (errorData.hasOwnProperty(key)) {
+            errorMessage += `${key}: ${errorData[key].join(', ')}\n`;
           }
-          Swal.fire({
-            title: 'Error',
-            text: errorMessage || 'Registration failed. Please check the details and try again.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
-        } else {
-          Swal.fire('Error', 'An unknown error occurred. Please try again later.', 'error');
         }
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage || 'Registration failed. Please check the details and try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
       } else {
         Swal.fire('Success', 'Registration successful!', 'success');
-        //navigate('/principal-login');
       }
-  
-    } catch (error) 
-    {
+    } catch (error) {
       Swal.fire('Error', 'Server error or network issue. Please try again.', 'error');
       console.error('Error:', error);
     }
   };
-  
-
-  useEffect(() => {
-    document.body.classList.add('signup-background');
-    return () => {
-      document.body.classList.remove('signup-background');
-    };
-  }, []);
 
   const resetForm = () => {
     setFirstname('');
@@ -100,110 +90,146 @@ function SignUpStudent() {
   };
 
   return (
-    <div className="add-stu-container">
-      <h1 className="add-stu-title">Add new student</h1>
-      <form className="add-stu-form" onSubmit={handleSubmit}>
-        <div className="add-form-section">
-          <h2 className="section-title">Student's Information</h2>
-          <div className="add-stu-form-group">
-            <input
-              type="text"
-              placeholder="First Name"
-              className="add-stu-input"
-              value={firstname}
-              onChange={(e) => setFirstname(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              className="add-stu-input"
-              value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="National ID"
-              className="add-stu-input"
-              value={nationalid}
-              onChange={(e) => setNationalid(e.target.value)}
-            />
-          </div>
-          <div className="add-stu-form-group">
-            <input
-              type="text"
-              placeholder="Father Phone Number"
-              className="add-stu-input"
-              value={fatherphone}
-              onChange={(e) => setFatherPhoneNumber(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Father First Name"
-              className="add-stu-input"
-              value={fatherfname}
-              onChange={(e) => setFatherFirstName(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Grade Level"
-              className="add-stu-input"
-              value={gradelevel}
-              onChange={(e) => setGradeLevel(e.target.value)}
-            />
-            
-          </div>
-          <div className="add-stu-form-group">
-            <input
-              type="password"
-              placeholder="Password"
-              className="add-stu-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              className="add-stu-input"
-              value={password2}
-              onChange={(e) => setPassword2(e.target.value)}
-            />       
-          </div>
-          <div className="add-stu-form-group">
-            <input type="text" 
-            placeholder='Email'
-            className="add-stu-input"
-            value={Email}
-            onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="add-stu-form-group">
-            <textarea
-              placeholder="Enter Home Address"
-              rows="3"
-              className="add-stu-input"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            ></textarea>
-          </div>
-          <div className="add-stu-form-group">
-            <textarea
-              placeholder="Enter Land Line"
-              className="add-stu-input"
-              value={landline}
-              onChange={(e) => setLandLine(e.target.value)}
-            ></textarea>
-          </div>
-        </div>
-        <div className="form-buttons add-stu-teacher-buttons">
-          <button type="submit" className="submit-button add-stu-teacher-button">
-            Submit
-          </button>
-          <button type="button" className="reset-button add-stu-teacher-button" onClick={resetForm}>
-            Reset
-          </button>
-        </div>
-      </form>
-    </div>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+        padding: { xs: 2, sm: 4 },
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          maxWidth: 600,
+          width: '100%',
+          padding: 4,
+          borderRadius: 4,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            mb: 3,
+          }}
+        >
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<ArrowBackIcon />}
+            onClick={goBack}
+            sx={{
+              borderRadius: 50,
+              backgroundColor: '#6A1B9A',
+              ':hover': {
+                backgroundColor: '#4A0072',
+              },
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              mb: 2,
+            }}
+          >
+            Back
+          </Button>
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+            }}
+          >
+            Add New Student
+          </Typography>
+        </Box>
+
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+          <Grid container spacing={2}>
+            {[
+              { label: 'First Name', value: firstname, setValue: setFirstname },
+              { label: 'Last Name', value: lastname, setValue: setLastname },
+              { label: 'National ID', value: nationalid, setValue: setNationalid },
+              { label: 'Father Phone Number', value: fatherphone, setValue: setFatherPhoneNumber },
+              { label: 'Father First Name', value: fatherfname, setValue: setFatherFirstName },
+              { label: 'Grade Level', value: gradelevel, setValue: setGradeLevel },
+              { label: 'Password', type: 'password', value: password, setValue: setPassword },
+              { label: 'Confirm Password', type: 'password', value: password2, setValue: setPassword2 },
+              { label: 'Email', value: Email, setValue: setEmail },
+              { label: 'Land Line', value: landline, setValue: setLandLine },
+            ].map((field, idx) => (
+              <Grid item xs={12} sm={6} key={idx}>
+                <TextField
+                  fullWidth
+                  label={field.label}
+                  type={field.type || 'text'}
+                  variant="outlined"
+                  value={field.value}
+                  onChange={(e) => field.setValue(e.target.value)}
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 50,
+                    },
+                  }}
+                />
+              </Grid>
+            ))}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Home Address"
+                variant="outlined"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                multiline
+                rows={3}
+                required
+              />
+            </Grid>
+          </Grid>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              sx={{
+                flex: 1,
+                mr: 1,
+                borderRadius: 50,
+              }}
+            >
+              Submit
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              type="button"
+              onClick={resetForm}
+              sx={{
+                flex: 1,
+                ml: 1,
+                borderRadius: 50,
+              }}
+            >
+              Reset
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
+    </Box>
   );
 }
 

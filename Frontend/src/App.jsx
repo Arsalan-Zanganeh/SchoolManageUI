@@ -45,6 +45,8 @@ import QuizPage from "./quiz/QuizPage";
 import QuizPageStudent from "./quiz/QuizPageStudent";
 import ResultsPage from "./quiz/ResultsPage";
 import TeacherResult from "./quiz/TeacherResult";
+import Discipline from "./discipline/Discipline"
+
 
 import './App.css';
 
@@ -300,6 +302,14 @@ function App() {
                 </PrivateRoute>
               }
             />
+          <Route
+                path="/dashboard/school/:schoolId/disciplinary-management"
+                element={
+                  <PrivateRoute role="principal">
+                    <Discipline/>
+                  </PrivateRoute>
+                }
+          />
 
 
 

@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import './add-teacher.css';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Grid,
+  Paper,
+} from '@mui/material';
 
-function SignUpTeacher() {
+function SignUpTeacher({ goBack }) {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [nationalid, setNationalid] = useState('');
@@ -14,12 +22,12 @@ function SignUpTeacher() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!firstname || !lastname || !nationalid || !phonenumber || !password || !password2 || !address) {
       Swal.fire('Error', 'All fields are required', 'error');
       return;
     }
-  
+
     try {
       const submit = await fetch("http://127.0.0.1:8000/api/add_teacher/", {
         method: "POST",
@@ -41,7 +49,7 @@ function SignUpTeacher() {
 
       if (!submit.ok) {
         const errorData = await submit.json();
-  
+
         if (errorData) {
           let errorMessage = '';
           for (const key in errorData) {
@@ -60,21 +68,13 @@ function SignUpTeacher() {
         }
       } else {
         Swal.fire('Success', 'Registration successful!', 'success');
-        // navigate('/teacher-login');
       }
-  
+
     } catch (error) {
       Swal.fire('Error', 'Server error or network issue. Please try again.', 'error');
       console.error('Error:', error);
     }
   };
-
-  useEffect(() => {
-    document.body.classList.add('signup-background');
-    return () => {
-      document.body.classList.remove('signup-background');
-    };
-  }, []);
 
   const resetForm = () => {
     setFirstname('');
@@ -88,88 +88,264 @@ function SignUpTeacher() {
   };
 
   return (
-    <div className="add-teacher-container">
-      <h1 className="add-teacher-title">Add new teacher</h1>
-      <form className="add-teacher-form" onSubmit={handleSubmit}>
-        <div className="add-form-section">
-          <h2 className="section-title">Teacher's Information</h2>
-          <div className="add-teacher-form-group">
-            <input
-              type="text"
-              placeholder="First Name"
-              className="add-teacher-input"
-              value={firstname}
-              onChange={(e) => setFirstname(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              className="add-teacher-input"
-              value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
-            />
-          </div>
-          <div className="add-teacher-form-group">
-            <input
-              type="text"
-              placeholder="National ID"
-              className="add-teacher-input"
-              value={nationalid}
-              onChange={(e) => setNationalid(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Phone Number"
-              className="add-teacher-input"
-              value={phonenumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-            />
-          </div>
-          <div className="add-teacher-form-group">
-            <input
-              type="password"
-              placeholder="Password"
-              className="add-teacher-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              className="add-teacher-input"
-              value={password2}
-              onChange={(e) => setPassword2(e.target.value)}
-            />
-          <div className="add-teacher-form-group">
-            <input
-              name="" id="" placeholder='Enter Email' rows="3"
-              className="add-teacher-input"
-              value={Email}
-              onChange={(e) => setEmail(e.target.value)}>
-            </input>
-          </div>
-          </div>
-          <div className="add-teacher-form-group">
-            <textarea
-              placeholder="Enter Home Address"
-              rows="3"
-              className="add-teacher-input"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            ></textarea>
-          </div>
-        </div>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        // minHeight: '100vh',
+        backgroundColor: '#f5f5f5',
+        padding: 3,
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          maxWidth: 600,
+          width: '100%',
+          padding: 4,
+          borderRadius: 4, // گرد کردن کادر اصلی
+        }}
+      >
+       <Box
+  sx={{
+    display: 'flex',
+    flexDirection: 'column', // تغییر جهت برای ایجاد خط جدید
+    alignItems: 'center', // مرکز کردن محتوا
+    mb: 3,
+  }}
+>
+<Button
+  variant="contained"
+  onClick={goBack}
+  startIcon={<ArrowBackIcon />}
+  sx={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1, // فاصله بین آیکون و متن
+    padding: '8px 16px', // فضای داخلی دکمه
+    fontSize: '0.9rem', // اندازه متن
+    fontWeight: 'bold', // برجسته کردن متن
+    color: '#fff', // رنگ متن
+    backgroundColor: '#673AB7', // رنگ بنفش
+    borderRadius: 50, // گرد کردن دکمه
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // سایه دکمه
+    transition: 'all 0.3s ease', // اضافه کردن انیمیشن
+    ':hover': {
+      backgroundColor: '#512DA8', // رنگ هاور
+      boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.3)', // سایه هاور
+    },
+    ':active': {
+      backgroundColor: '#311B92', // رنگ در حالت کلیک شده
+    },
+  }}
+>
+  Back
+</Button>
 
-        <div className="form-buttons add-stu-teacher-buttons">
-          <button type="submit" className="submit-button add-stu-teacher-button">
-            Submit
-          </button>
-          <button type="button" className="reset-button add-stu-teacher-button" onClick={resetForm}>
-            Reset
-          </button>
-        </div>
-      </form>
-    </div>
+  {/* افزودن فاصله بین دکمه و متن */}
+  <Box sx={{ mt: 2 }}> 
+    <Typography
+      variant="h4" // بزرگ‌تر کردن متن
+      component="h1"
+      sx={{
+        textAlign: 'center', // وسط‌چین کردن
+        fontWeight: 'bold', // برجسته کردن متن
+      }}
+    >
+      Add New Teacher
+    </Typography>
+  </Box>
+</Box>
+
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+         <Grid container spacing={2}>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      fullWidth
+      label="First Name"
+      variant="outlined"
+      value={firstname}
+      onChange={(e) => setFirstname(e.target.value)}
+      required
+      InputLabelProps={{
+        shrink: Boolean(firstname), // اگر مقدار موجود باشد، برچسب بالای فیلد می‌رود
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 50,
+        },
+      }}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      fullWidth
+      label="Last Name"
+      variant="outlined"
+      value={lastname}
+      onChange={(e) => setLastname(e.target.value)}
+      required
+      InputLabelProps={{
+        shrink: Boolean(lastname),
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 50,
+        },
+      }}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      fullWidth
+      label="National ID"
+      variant="outlined"
+      value={nationalid}
+      onChange={(e) => setNationalid(e.target.value)}
+      required
+      InputLabelProps={{
+        shrink: Boolean(nationalid),
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 50,
+        },
+      }}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      fullWidth
+      label="Phone Number"
+      variant="outlined"
+      value={phonenumber}
+      onChange={(e) => setPhoneNumber(e.target.value)}
+      required
+      InputLabelProps={{
+        shrink: Boolean(phonenumber),
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 50,
+        },
+      }}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      fullWidth
+      label="Password"
+      type="password"
+      variant="outlined"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      required
+      InputLabelProps={{
+        shrink: Boolean(password),
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 50,
+        },
+      }}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      fullWidth
+      label="Confirm Password"
+      type="password"
+      variant="outlined"
+      value={password2}
+      onChange={(e) => setPassword2(e.target.value)}
+      required
+      InputLabelProps={{
+        shrink: Boolean(password2),
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 50,
+        },
+      }}
+    />
+  </Grid>
+  <Grid item xs={12}>
+    <TextField
+      fullWidth
+      label="Email"
+      variant="outlined"
+      value={Email}
+      onChange={(e) => setEmail(e.target.value)}
+      required
+      InputLabelProps={{
+        shrink: Boolean(Email),
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 50,
+        },
+      }}
+    />
+  </Grid>
+  <Grid item xs={12}>
+    <TextField
+      fullWidth
+      label="Home Address"
+      variant="outlined"
+      value={address}
+      onChange={(e) => setAddress(e.target.value)}
+      multiline
+      rows={3}
+      required
+      InputLabelProps={{
+        shrink: Boolean(address),
+      }}
+    />
+  </Grid>
+</Grid>
+
+ 
+
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              sx={{
+                flex: 1,
+                mr: 1,
+                borderRadius: 50, // گرد کردن دکمه
+              }}
+            >
+              Submit
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              type="button"
+              onClick={resetForm}
+              sx={{
+                flex: 1,
+                ml: 1,
+                borderRadius: 50, // گرد کردن دکمه
+              }}
+            >
+              Reset
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
+    </Box>
   );
 }
 

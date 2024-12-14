@@ -20,6 +20,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { usePrincipal } from '../context/PrincipalContext';
 import './SchoolDashboard.css';
+import Discipline from "../discipline/Discipline"
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -377,18 +379,20 @@ const formatDate = (dateString) => {
         <Toolbar />
         <Box sx={{ display: 'flex', flexGrow: 1 }}>
           <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
-            <Container maxWidth="lg">
-              {school && (
-                <SchoolInfoBox elevation={3}>
-                  <HomeWork fontSize="large" />
-                  <Box>
-                    <Typography variant="h6">{school.School_Name}</Typography>
-                    <Typography variant="body1">{school.City}, {school.Province}</Typography>
-                  </Box>
-                </SchoolInfoBox>
-              )}
+            <Container maxWidth="lg"
+            >
+            {school && tabvalue !== 5 && tabvalue!== 4 && tabvalue !==3 && ( // نمایش فقط در تب‌های غیر از Manage Classes
+            <SchoolInfoBox elevation={3}>
+              <HomeWork fontSize="large" />
+              <Box>
+                <Typography variant="h6">{school.School_Name}</Typography>
+                <Typography variant="body1">{school.City}, {school.Province}</Typography>
+              </Box>
+            </SchoolInfoBox>
+            )}
+
               <TabPanel value={tabvalue} index={0}>
-              <Typography variant="h6" sx={{ mt:1, flexGrow: 1 }}>
+              <Typography variant="h6" sx={{ mt:1, flexGrow: 1 , mb:3 }}>
                 Welcome {principalInfo ? `${principalInfo.first_name} ${principalInfo.last_name}` : 'Loading...'}!
               </Typography>
               <Grid container spacing={2}>
@@ -414,7 +418,7 @@ const formatDate = (dateString) => {
               </TabPanel>
 
               <TabPanel value={tabvalue} index={1}>
-              <Typography variant="h6" sx={{ mt:1, flexGrow: 1 }}>
+              <Typography variant="h6" sx={{ mt:1, flexGrow: 1  , mb : 3}}>
                 Classes Management
               </Typography>
               <Grid container spacing={2}>
@@ -446,7 +450,7 @@ const formatDate = (dateString) => {
               </TabPanel>
 
             <TabPanel value={tabvalue} index={2}>
-              <Typography variant="h6" sx={{ mt:1, flexGrow: 1 }}>
+              <Typography variant="h6" sx={{ mt:1, flexGrow: 1 , mb: 3}}>
                 Office Automation
               </Typography>
               <Grid container spacing={2}>
@@ -463,11 +467,12 @@ const formatDate = (dateString) => {
                   </NavigationBox>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" href="https://example.com/page3" >
+                  <NavigationBox elevation={3} onClick={() => settabvalue(7)}>
                     <Security fontSize="large" />
                     <Typography variant="subtitle1">Disciplinary management</Typography>
                   </NavigationBox>
-                </Grid>
+              </Grid>
+
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
                   <NavigationBox elevation={3} onClick={fetchCalendar}>
                     <PermContactCalendar fontSize="large" />
@@ -477,25 +482,22 @@ const formatDate = (dateString) => {
               </Grid>
             </TabPanel>
             <TabPanel value={tabvalue} index={3}>
-              <SignUpStudent></SignUpStudent>
-              <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
+              <SignUpStudent goBack={() => settabvalue(1)} />
+              {/* <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
               <ArrowBackIcon />
               Back
-               </Button>
+               </Button> */}
             </TabPanel>
             <TabPanel value={tabvalue} index={4}>
-              <SignUpTeacher></SignUpTeacher>
-              <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
-              <ArrowBackIcon />
-              Back
-               </Button>
-            </TabPanel>
+              <SignUpTeacher goBack={() => settabvalue(1)} /> {/* ارسال تابع برای بازگشت */}
+          </TabPanel>
+
             <TabPanel value={tabvalue} index={5}>
-              <AddClass></AddClass>
-              <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
+            <AddClass onBack={() => settabvalue(1)} />
+              {/* <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
               <ArrowBackIcon />
               Back
-               </Button>
+               </Button> */}
             </TabPanel>
             <TabPanel value={tabvalue} index={6}>
               <AppWrapper></AppWrapper>
@@ -504,6 +506,17 @@ const formatDate = (dateString) => {
               Back
                </Button>
             </TabPanel>
+            <TabPanel value={tabvalue} index={7}>
+            <Typography variant="h4" sx={{ mb: 3 }}>
+              Disciplinary Management
+            </Typography>
+            <Box>
+              <Typography>Manage disciplinary actions here.</Typography>
+            </Box>
+            <Discipline onBack={() => settabvalue(2)} />
+
+</TabPanel>
+
             </Container>
           </Box>
           {isDesktop ? (
