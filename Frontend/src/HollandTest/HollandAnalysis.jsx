@@ -2,9 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { Box, Typography, Card, CardContent, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const HollandResults = () => {
+const HollandResults = ({goBack, gotoHolland}) => {
   const location = useLocation();
-  const navigate = useNavigate();
   const scores = location.state?.scores;
 
   // فلگ برای کنترل اجرای درخواست
@@ -26,7 +25,7 @@ const HollandResults = () => {
           No data available. Please take the test first.
         </Typography>
         <Button
-          onClick={() => navigate("/student-dashboard/holland-test")}
+          onClick={() => goBack()}
           variant="contained"
           sx={{
             textTransform: "none",
@@ -209,7 +208,7 @@ const HollandResults = () => {
                 backgroundColor: "#42a5f5",
                 "&:hover": { backgroundColor: "#1e88e5" },
               }}
-              onClick={() => navigate("/student-dashboard/holland-test")}
+              onClick={() => gotoHolland()}
             >
               Retake the Test
             </Button>
@@ -222,7 +221,7 @@ const HollandResults = () => {
                 color: "#42a5f5",
                 "&:hover": { borderColor: "#1e88e5", color: "#1e88e5" },
               }}
-              onClick={() => navigate("/student-dashboard")}
+              onClick={() => goBack()}
             >
               Back to Dashboard
             </Button>

@@ -3,9 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useStudent } from '../../context/StudentContext';
 import { useClass } from '../../context/ClassContext';
 import Swal from 'sweetalert2';
-import './classes.css';
+import {
+  Box,
+  Typography,
+  Grid,
+} from "@mui/material";
 
-const StudentClassList = () => {
+const StudentClassList = ({goBack}) => {
   const navigate = useNavigate();
   const { student } = useStudent();
   const { classToken, loginClass } = useClass(); // Use the class context
@@ -103,7 +107,7 @@ const StudentClassList = () => {
   }, [studentToken]); // Removed fetchClassesData from dependencies as it is not defined here
 
   const backToHome = () => {
-    navigate('/student-dashboard');
+    goBack()
   };
 
   const handleClassClick = async (id) => {
@@ -144,7 +148,7 @@ const StudentClassList = () => {
     <div className="student-classes">
       <h1>Your Classes</h1>
       <div className="class-grid">
-        {classes.map(cls => (
+        {classes.length ? (classes.map(cls => (
           <div 
             key={cls.id} 
             className="class-box"
@@ -154,7 +158,29 @@ const StudentClassList = () => {
             <p>{cls.Session1Day} {cls.Session1Time}</p>
             <p>{cls.Session2Day} {cls.Session2Time}</p>
           </div>
-        ))}
+        ))):(
+          <Grid item xs={12}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          // height: "100vh",
+          textAlign: "center",
+        }}
+      >
+        <Typography
+          variant="body1"
+          sx={{
+            color: "#666",
+            fontSize: "1.2rem",
+          }}
+        >
+          You are not signed to any classes yet.
+        </Typography>
+      </Box>
+    </Grid>
+        )}
       </div>
       <button onClick={backToHome} className='show-cls-btn'>
         Back to Home

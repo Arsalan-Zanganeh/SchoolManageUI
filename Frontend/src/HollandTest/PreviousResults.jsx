@@ -17,7 +17,7 @@ import {
   Button,
 } from "@mui/material";
 
-const PreviousResults = () => {
+const PreviousResults = ({goBack}) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -186,7 +186,7 @@ const PreviousResults = () => {
         component={Paper}
         sx={{
           width: "90%",
-          maxWidth: "1200px",
+          maxWidth: "1080px",
           borderRadius: "16px",
           boxShadow: "0 12px 32px rgba(0,0,0,0.15)",
           marginBottom: "20px",
@@ -334,6 +334,18 @@ const PreviousResults = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Button
+            onClick={goBack}
+            sx={{
+              color: "white",
+              backgroundColor: "#3949ab",
+              "&:hover": { backgroundColor: "#303f9f" },
+              textTransform: "none",
+              fontWeight: "bold",
+            }}
+          >
+            Back
+          </Button>
     </Box>
   );
   

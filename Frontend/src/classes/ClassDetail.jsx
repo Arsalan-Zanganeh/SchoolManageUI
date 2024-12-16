@@ -328,11 +328,11 @@ const ClassDetails = () => {
           <Button 
             variant="contained" 
             color="primary" 
-            onClick={() => navigate("/student-dashboard/student-classes")} 
+            onClick={() => navigate("/student-dashboard/")} 
             startIcon={<ArrowBack />}
             sx={{ marginTop: 2 }}
           >
-            Back
+            Back To Dashboard
           </Button>
         </Paper>
     

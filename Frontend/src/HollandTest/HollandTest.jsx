@@ -1,16 +1,13 @@
 import React from 'react';
 import { Button, Box, Typography, Card, CardContent, Divider } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-
-const HollandTest = () => {
-  const navigate = useNavigate();
+const HollandTest = ({ gotoQuestions ,  gotoResults , goBack}) => {
 
   const startTest = () => {
-    navigate('/holland-test/questions');
+    gotoQuestions();
   };
 
   const viewPreviousResults = () => {
-    navigate('/holland-test/previous-results');
+    gotoResults();
   };
 
   return (
@@ -121,7 +118,7 @@ const HollandTest = () => {
             </Button>
             <Button
               variant="outlined"
-              onClick={() => navigate('/student-dashboard')}
+              onClick={goBack}
               sx={{
                 padding:{ xs:'10px 20px', sm:'12px 24px'},
                 fontSize:{xs:'14px', sm:'16px'},
