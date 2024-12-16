@@ -24,7 +24,7 @@ import {
   Grid,
 } from "@mui/material";
 
-const AddClass = ({ onBack }) => {
+const AddClass = ({ goBack }) => {
   const { schoolId } = useParams();
   const [classes, setClasses] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -112,6 +112,7 @@ const handleCloseManageDialog = () => {
       if (response.ok) {
         const data = await response.json();
         console.log(data)
+        const sortedData = data.sort((a, b) => a.id - b.id); // مرتب‌سازی براساس id
         setClasses(data);
       } else {
         Swal.fire("Error", "Failed to fetch classes", "error");
@@ -355,7 +356,7 @@ const handleCloseManageDialog = () => {
   <Button
     variant="contained"
     color="secondary"
-    onClick={onBack}
+    onClick={goBack}
     sx={{
       display: "flex",
       alignItems: "center",

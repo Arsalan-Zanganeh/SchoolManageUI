@@ -125,9 +125,18 @@ const SchoolInfoBox = styled(Paper)(({ theme }) => ({
 }));
 
 const SchoolDashboard = () => {
-  const [tabvalue, settabvalue] = useState(0);
+  const initialTabValue = parseInt(localStorage.getItem('activeTab')) || 0;
+  const [tabvalue, settabvalue] = useState(initialTabValue);
   const [openmessagebox, setOpen] = useState(false);
   const [message, setMessage] = useState('');
+
+  const handleTabChange = (newTabValue) => {
+    settabvalue(newTabValue);
+    localStorage.setItem('activeTab', newTabValue); // ذخیره‌سازی مقدار تب در localStorage
+  };
+  const goToProfileTab = () => {
+    handleTabChange(6); // مقدار 6 همان تب پروفایل است
+  };
 
   const handleMessageClickOpen = () => {
       setOpen(true);
@@ -136,6 +145,32 @@ const SchoolDashboard = () => {
   const handleMessageClickClose = () => {
       setOpen(false);
   };
+  const [profileImage, setProfileImage] = useState(null);
+
+useEffect(() => {
+  const fetchProfileImage = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/user/profile/", {
+        credentials: "include",
+        // headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.UserProfile[0]?.profile_image) {
+          setProfileImage(`http://127.0.0.1:8000/api${data.UserProfile[0]?.profile_image}`);
+        } else {
+          setProfileImage(null); // مسیر پیش‌فرض اگر تصویر نباشد
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching profile image", error);
+    }
+  };
+
+  fetchProfileImage();
+}, []);
+
 
   const handleSendMessage = async (e) => {
     handleMessageClickClose();
@@ -189,6 +224,7 @@ const SchoolDashboard = () => {
   const [openSentNotifications, setOpenSentNotifications] = useState(false);
   const [sentNotifications, setSentNotifications] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
   const handleSentNotificationsClickOpen = () => {
     fetchSentNotifications();
     setOpenSentNotifications(true);
@@ -332,9 +368,9 @@ const formatDate = (dateString) => {
     fetchPrincipalData();
   }, [fetchSchoolData, fetchPrincipalData]);
 
-  const addStudent = () => settabvalue(3);
-  const addTeacher = () => settabvalue(4);
-  const viewClasses = () => settabvalue(5);
+  const addStudent = () => handleTabChange(3);
+  const addTeacher = () => handleTabChange(4);
+  const viewClasses = () => handleTabChange(5);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -347,6 +383,11 @@ const formatDate = (dateString) => {
   const handleBackClick = () => {
     setSelectedNotification(null);
   };
+  const handleSwitchSchool = () => {
+    localStorage.removeItem('activeTab'); // حذف تب ذخیره‌شده از localStorage
+    navigate('/admin-school'); // هدایت به صفحه Switch School
+  };
+  
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -354,19 +395,20 @@ const formatDate = (dateString) => {
         <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main, zIndex: theme.zIndex.drawer + 1 }}>
           <Toolbar>
           <Avatar
-                alt="Profile Picture"
-                src="/src/1.jpg"
-                sx={{
-                  marginRight: 2,
-                  cursor: 'pointer',
-                  '&:hover': {
-                    boxShadow: 3, 
-                    transform: 'scale(1.1)',
-                    transition: 'transform 0.2s ease-in-out',
-                  },
-                }}
-                onClick={() => settabvalue(6)}
-            />
+          alt="Profile Picture"
+          src={profileImage || "/default-avatar.png"}
+          sx={{
+            marginRight: 2,
+            cursor: "pointer",
+            "&:hover": {
+              boxShadow: 3,
+              transform: "scale(1.1)",
+              transition: "transform 0.2s ease-in-out",
+            },
+          }}
+          onClick={() => handleTabChange(6)}
+          />
+
 
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
               {principalInfo ? `${principalInfo.first_name} ${principalInfo.last_name}` : 'Loading...'}
@@ -381,7 +423,7 @@ const formatDate = (dateString) => {
           <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
             <Container maxWidth="lg"
             >
-            {school && tabvalue !== 5 && tabvalue!== 4 && tabvalue !==3 && ( // نمایش فقط در تب‌های غیر از Manage Classes
+            {school && tabvalue !== 5 && tabvalue!== 4 && tabvalue !==3 && tabvalue!==6 &&( // نمایش فقط در تب‌های غیر از Manage Classes
             <SchoolInfoBox elevation={3}>
               <HomeWork fontSize="large" />
               <Box>
@@ -403,7 +445,7 @@ const formatDate = (dateString) => {
                   </NavigationBox>
                 </Grid>
                 <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" onClick={() => settabvalue(6)}>
+                  <NavigationBox elevation={3} component="a" onClick={() => handleTabChange(6)}>
                     <PersonAdd fontSize="large" />
                     <Typography variant="subtitle1">Edit Profile</Typography>
                   </NavigationBox>
@@ -467,7 +509,7 @@ const formatDate = (dateString) => {
                   </NavigationBox>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} onClick={() => settabvalue(7)}>
+                  <NavigationBox elevation={3} onClick={() => handleTabChange(7)}>
                     <Security fontSize="large" />
                     <Typography variant="subtitle1">Disciplinary management</Typography>
                   </NavigationBox>
@@ -482,30 +524,27 @@ const formatDate = (dateString) => {
               </Grid>
             </TabPanel>
             <TabPanel value={tabvalue} index={3}>
-              <SignUpStudent goBack={() => settabvalue(1)} />
+              <SignUpStudent goBack={() => handleTabChange(1)} />
               {/* <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
               <ArrowBackIcon />
               Back
                </Button> */}
             </TabPanel>
             <TabPanel value={tabvalue} index={4}>
-              <SignUpTeacher goBack={() => settabvalue(1)} /> {/* ارسال تابع برای بازگشت */}
+              <SignUpTeacher goBack={() => handleTabChange(1)} /> {/* ارسال تابع برای بازگشت */}
           </TabPanel>
 
             <TabPanel value={tabvalue} index={5}>
-            <AddClass onBack={() => settabvalue(1)} />
+            <AddClass goBack={() => handleTabChange(1)} />
               {/* <Button variant="contained" color="secondary" onClick={() => settabvalue(1)}>
               <ArrowBackIcon />
               Back
                </Button> */}
             </TabPanel>
             <TabPanel value={tabvalue} index={6}>
-              <AppWrapper></AppWrapper>
-              <Button variant="contained" color="secondary" onClick={() => settabvalue(0)}>
-              <ArrowBackIcon />
-              Back
-               </Button>
+              <AppWrapper onBack={() => handleTabChange(0)} /> {/* ارسال تابع بک */}
             </TabPanel>
+
             <TabPanel value={tabvalue} index={7}>
             <Typography variant="h4" sx={{ mb: 3 }}>
               Disciplinary Management
@@ -513,7 +552,7 @@ const formatDate = (dateString) => {
             <Box>
               <Typography>Manage disciplinary actions here.</Typography>
             </Box>
-            <Discipline onBack={() => settabvalue(2)} />
+            <Discipline onBack={() => handleTabChange(2)} />
 
 </TabPanel>
 
@@ -523,7 +562,8 @@ const formatDate = (dateString) => {
             <Drawer variant="permanent" anchor="left" sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.drawer, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
             <Toolbar />
             <List>
-              <ListItem button component="a"  onClick={() => navigate('/admin-school')}
+              <ListItem button component="a"    onClick={handleSwitchSchool} // فراخوانی تابع
+
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 
@@ -538,7 +578,7 @@ const formatDate = (dateString) => {
                 </ListItemIcon>
                 <ListItemText primary="Switch School" />
               </ListItem>
-              <ListItem button onClick={() => settabvalue(0)}
+              <ListItem button onClick={() => handleTabChange(0)}
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 
@@ -553,7 +593,7 @@ const formatDate = (dateString) => {
                 </ListItemIcon>
                 <ListItemText primary="Home" />
               </ListItem>
-              <ListItem button onClick={() => settabvalue(1)}
+              <ListItem button onClick={() => handleTabChange(1)}
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 
@@ -568,7 +608,7 @@ const formatDate = (dateString) => {
                 </ListItemIcon>
                 <ListItemText primary="Classes" />
               </ListItem>
-              <ListItem button onClick={() => settabvalue(2)}
+              <ListItem button onClick={() => handleTabChange(2)}
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 
@@ -604,7 +644,7 @@ const formatDate = (dateString) => {
                 </ListItemIcon>
                 <ListItemText primary="Switch School" />
               </ListItem>
-              <ListItem button onClick={() => settabvalue(0)}
+              <ListItem button onClick={() => handleTabChange(0)}
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 
@@ -619,7 +659,7 @@ const formatDate = (dateString) => {
                 </ListItemIcon>
                 <ListItemText primary="Home" />
               </ListItem>
-              <ListItem button onClick={() => settabvalue(1)}
+              <ListItem button onClick={() => handleTabChange(1)}
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 
@@ -634,7 +674,7 @@ const formatDate = (dateString) => {
                 </ListItemIcon>
                 <ListItemText primary="Classes" />
               </ListItem>
-              <ListItem button onClick={() => settabvalue(2)}
+              <ListItem button onClick={() => handleTabChange(2)}
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 

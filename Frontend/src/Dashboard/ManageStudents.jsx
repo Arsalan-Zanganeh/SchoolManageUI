@@ -1,27 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, List, ListItem, Button, TextField, Dialog } from "@mui/material";
-import Swal from "sweetalert2";
+import {
+  Typography,
+  Box,
+  List,
+  ListItem,
+  Button,
+  Dialog,
+  TextField,
+  Autocomplete,
+} from "@mui/material";
 
 const ManageStudents = ({ classId }) => {
   const [students, setStudents] = useState([]);
-  const [newStudentId, setNewStudentId] = useState("");
-  
-  // States for the custom message Dialog
+  const [availableStudents, setAvailableStudents] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
   const [message, setMessage] = useState(null); // Message text
   const [messageType, setMessageType] = useState("success"); // Message type (success or error)
   const [messageOpen, setMessageOpen] = useState(false); // Open state for the Dialog
 
+  // Fetch students in the class
   const fetchStudents = async () => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/class_student/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ id: classId }), // Sending class ID
-        }
-      );
+      const response = await fetch(`http://127.0.0.1:8000/api/class_student/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ id: classId }), // Sending class ID
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -35,13 +40,43 @@ const ManageStudents = ({ classId }) => {
     }
   };
 
+  // Fetch all available students
+  const fetchAvailableStudents = async () => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/discipline/school-students/`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setAvailableStudents(data);
+      } else {
+        console.error("Failed to fetch available students");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  // Show a message dialog
   const showMessage = (type, text) => {
     setMessageType(type);
     setMessage(text);
     setMessageOpen(true);
   };
 
+  // Add a student to the class
   const handleAddStudent = async () => {
+    if (!selectedStudent) {
+      showMessage("error", "Please select a student.");
+      return;
+    }
+
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/api/add_class_student/`,
@@ -50,8 +85,8 @@ const ManageStudents = ({ classId }) => {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({
-            Classes: classId, // Class ID
-            Student: newStudentId, // Student ID
+            Classes: classId,
+            Student: selectedStudent.National_ID,
           }),
         }
       );
@@ -59,7 +94,7 @@ const ManageStudents = ({ classId }) => {
       if (response.ok) {
         showMessage("success", "Student added successfully");
         fetchStudents();
-        setNewStudentId("");
+        setSelectedStudent(null);
       } else {
         const errorData = await response.json();
         showMessage("error", errorData.detail || "Failed to add student");
@@ -79,8 +114,8 @@ const ManageStudents = ({ classId }) => {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({
-            id: classId, // Class ID
-            Student: studentId, // Student ID
+            id: classId,
+            Student: studentId,
           }),
         }
       );
@@ -99,6 +134,7 @@ const ManageStudents = ({ classId }) => {
 
   useEffect(() => {
     fetchStudents();
+    fetchAvailableStudents();
   }, [classId]);
 
   return (
@@ -106,19 +142,26 @@ const ManageStudents = ({ classId }) => {
       <Typography variant="h4" textAlign="center" mb={3}>
         Manage Students for Class {classId}
       </Typography>
-      
+
       {/* Add Student Section */}
-      <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-        <TextField
-          label="Student ID"
-          value={newStudentId}
-          onChange={(e) => setNewStudentId(e.target.value)}
+      <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
+        <Autocomplete
+          options={availableStudents}
+          getOptionLabel={(option) =>
+            `${option.first_name} ${option.last_name} (ID: ${option.National_ID})`
+          }
+          value={selectedStudent}
+          onChange={(event, value) => setSelectedStudent(value)}
+          renderInput={(params) => (
+            <TextField {...params} label="Select Student" />
+          )}
+          sx={{ flex: 1 }}
         />
         <Button variant="contained" onClick={handleAddStudent}>
           Add Student
         </Button>
       </Box>
-      
+
       {/* List of Students */}
       <Typography variant="h6">Students in this Class:</Typography>
       {students.length > 0 ? (
@@ -133,7 +176,7 @@ const ManageStudents = ({ classId }) => {
               }}
             >
               <Typography>
-                {student.first_name} {student.last_name} (ID: {student.id})
+                {student.first_name} {student.last_name} (ID: {student.National_ID})
               </Typography>
               <Button
                 color="error"
@@ -146,9 +189,7 @@ const ManageStudents = ({ classId }) => {
           ))}
         </List>
       ) : (
-        <Typography color="textSecondary">
-          No students in this class.
-        </Typography>
+        <Typography color="textSecondary">No students in this class.</Typography>
       )}
 
       {/* Message Dialog */}

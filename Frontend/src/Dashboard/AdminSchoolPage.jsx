@@ -30,28 +30,81 @@ import { usePrincipal } from "../context/PrincipalContext";
 
 const theme = createTheme({
   palette: {
-    primary: { main: '#6200ea' },
+    primary: { main: '#0036AB' },
     text: { secondary: '#757575' },
     background: { default: '#f4f6f8' },
   },
 });
+const patterns = [
+  // طرح 1: مورب ظریف با شفافیت
+  'linear-gradient(135deg, rgba(144, 202, 249, 0.5) 10%, transparent 10%, transparent 20%, rgba(144, 202, 249, 0.5) 20%)',
 
-const NavigationBox = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
+  // طرح 2: موج ملایم (Soft Wave)
+  'radial-gradient(circle at 50% 50%, rgba(144, 202, 249, 0.4), transparent 70%)',
+
+  // طرح 3: ترکیب سایه‌های مورب
+  'repeating-linear-gradient(135deg, rgba(144, 202, 249, 0.2), rgba(144, 202, 249, 0.4) 20px, transparent 20px, transparent 40px)',
+
+  // طرح 4: خطوط نرم افقی
+'repeating-linear-gradient(135deg, rgba(144, 202, 249, 0.3), rgba(144, 202, 249, 0.3) 10px, rgba(255, 255, 255, 0.8) 10px, rgba(255, 255, 255, 0.8) 20px)',
+
+  // طرح 5: شطرنجی مدرن
+  'repeating-linear-gradient(45deg, rgba(144, 202, 249, 0.3), rgba(144, 202, 249, 0.3) 10px, transparent 10px, transparent 20px)',
+
+  // طرح 6: سایه‌های عمودی
+  'linear-gradient(to bottom, rgba(144, 202, 249, 0.3), rgba(144, 202, 249, 0.7))'
+];
+
+
+
+
+
+
+
+
+
+const NavigationBox = styled(Paper)(({ theme, background }) => ({
   textAlign: 'center',
-  color: theme.palette.text.secondary,
-  backgroundColor: '#ffffff',
-  transition: 'transform 0.3s',
+  color: '#fff',
+  background: background, // استفاده از طرح دریافتی
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  transition: 'all 0.3s ease',
+  borderRadius: '12px',
+  position: 'relative',
+  overflow: 'hidden',
+  width: '100%',
+  maxWidth: '300px',
+  height: '220px',
+  display: 'flex',
+  alignItems: 'flex-end',
+  justifyContent: 'center',
+  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+  margin: 'auto',
   '&:hover': {
-    transform: 'scale(1.05)',
+    transform: 'translateY(-5px)',
+    boxShadow: '0 6px 15px rgba(0, 0, 0, 0.3)',
     cursor: 'pointer',
   },
-  width: '200px',
-  height: '200px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
 }));
+
+
+
+
+
+
+
+const OverlayText = styled(Box)({
+  position: 'absolute',
+  bottom: 0,
+  width: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  color: '#fff',
+  padding: '10px',
+  textAlign: 'center',
+  fontSize: '1rem',
+});
+
 
 const AdminSchoolPage = () => {
   const navigate = useNavigate();
@@ -225,26 +278,45 @@ const AdminSchoolPage = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+
+    <ThemeProvider  theme={theme}>
+          <div className="admin-page-background"></div>
       <CssBaseline />
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: theme.palette.background.default,
-          minHeight: '100vh',
-        }}
-      >
+   sx={{
+    top : 0 ,
+    
+    position: { xs: "relative", sm: "absolute" },
+    left: { xs: "10px", sm: "20px" },
+    right: { xs: "10px", sm: "20px" },
+    width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+    maxWidth: { xs: "100%", sm: "1400px" },
+    height: { xs: "auto", sm: "auto" },
+    margin: "0 auto",
+    padding: "20px",
+    // backgroundImage: `url('/school-default.jpg')`, // مسیر عکس
+    // backgroundSize: "cover", // عکس کل صفحه را می‌پوشاند
+    // backgroundRepeat: "no-repeat", // تکرار نشود
+    // backgroundPosition: "center", // مرکز صفحه
+
+    // backgroundColor: "#fff",
+    // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    // borderRadius: "8px",
+    // display: "flex",
+    // flexDirection: "column",
+    // justifyContent: "center",
+    // alignItems: "center",
+  }}
+>
+
         <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main }}>
           <Toolbar>
-            <Avatar
+            {/* <Avatar
               alt="Profile Picture"
               src="/src/1.jpg"
               sx={{ marginRight: 2, cursor: 'pointer' }}
               onClick={() => navigate('/dashboard/profile-admin')}
-            />
+            /> */}
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
               Admin Panel
             </Typography>
@@ -264,38 +336,84 @@ const AdminSchoolPage = () => {
             width: '100%',
           }}
         >
-          <Container maxWidth="md" sx={{ textAlign: 'center', marginTop: 8 }}>
-            <Typography variant="h4" gutterBottom>
-              Select School
-            </Typography>
-            <Grid container spacing={3} justifyContent="center">
-              {schools.map((school) => (
-                <Grid item key={school.id}>
-                  <NavigationBox
-                    elevation={3}
-                    onClick={() => handleNavigateToDashboard(school.id, school.Postal_Code)}
-                  >
-                    {school.School_Name}
-                  </NavigationBox>
-                </Grid>
-              ))}
-            </Grid>
-            <Box sx={{ textAlign: 'center', marginTop: 3 }}>
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<Add />}
-                onClick={handleDialogOpen}
-              >
-                Add New School
-              </Button>
-            </Box>
-          </Container>
+<Container 
+  maxWidth={false} 
+  sx={{ 
+    textAlign: 'center',
+    marginTop: { xs: 4, sm: 8 }, // Reduced top margin on mobile
+    padding: '0 24px', 
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '80vh',
+    justifyContent: 'space-between',
+    gap: { xs: 4, sm: 6 } // Add gap between school grid and button
+  }}
+>
+  {/* School content */}
+  <Box>
+    <Typography
+      variant="h4"
+      gutterBottom
+      sx={{
+        color: '#ffffff',
+        textShadow: '1px 1px 3px rgba(0, 0, 0, 0.6)',
+        fontWeight: 'bold',
+        marginBottom: { xs: 3, sm: 4 } // Adjusted bottom margin
+      }}
+    >
+      Select School
+    </Typography>
+
+    <Grid container spacing={{ xs: 2, sm: 4 }} justifyContent="space-evenly" alignItems="center">
+      {schools.map((school, index) => (
+        <Grid item key={school.id} xs={12} sm={6} md={4} lg={3}>
+          <NavigationBox
+            style={{
+              background: patterns[index % patterns.length],
+              backgroundSize: '20px 20px',
+              backgroundColor: '#fff',
+            }}
+            onClick={() => handleNavigateToDashboard(school.id, school.Postal_Code)}
+          >
+            <OverlayText>{school.School_Name}</OverlayText>
+          </NavigationBox>
+        </Grid>
+      ))}
+    </Grid>
+  </Box>
+
+  {/* Button at the bottom of the page */}
+  <Box sx={{ 
+    textAlign: 'center', 
+    marginBottom: { xs: 2, sm: 4 },
+    marginTop: { xs: 3, sm: 0 } // Add top margin on mobile to create space
+  }}>
+    <Button
+      variant="contained"
+      color="primary"
+      startIcon={<Add />}
+      onClick={handleDialogOpen}
+      sx={{ 
+        fontWeight: 'bold', 
+        fontSize: '1rem',
+        width: 'fit-content',
+        margin: '0 auto'
+      }}
+    >
+      Add New School
+    </Button>
+  </Box>
+</Container>
+
+
+
+
         </Box>
 
         <Dialog open={dialogOpen} onClose={handleDialogClose}>
           <DialogTitle>Add New School</DialogTitle>
           <DialogContent>
+            
             {errorMessage && ( // نمایش پیام خطا در دیالوگ
               <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
                 {errorMessage}
@@ -332,6 +450,8 @@ const AdminSchoolPage = () => {
               fullWidth
               value={newSchool.Address}
               onChange={(e) => setNewSchool((prev) => ({ ...prev, Address: e.target.value }))}
+              sx={{ marginBottom: '8px' }} 
+
             />
             <Select
               margin="dense"
@@ -339,6 +459,8 @@ const AdminSchoolPage = () => {
               value={newSchool.School_Type}
               onChange={(e) => setNewSchool((prev) => ({ ...prev, School_Type: e.target.value }))}
               displayEmpty
+              sx={{ marginBottom: '8px' }} 
+
             >
               <MenuItem value="">
                 <em>Select School Type</em>
@@ -367,6 +489,7 @@ const AdminSchoolPage = () => {
               fullWidth
               value={newSchool.Postal_Code}
               onChange={(e) => setNewSchool((prev) => ({ ...prev, Postal_Code: e.target.value }))}
+              
             />
           </DialogContent>
           <DialogActions>
@@ -380,6 +503,9 @@ const AdminSchoolPage = () => {
         </Dialog>
       </Box>
     </ThemeProvider>
+    // </div>
+
+
   );
 };
 

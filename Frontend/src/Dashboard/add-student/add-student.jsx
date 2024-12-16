@@ -117,25 +117,6 @@ function SignUpStudent({ goBack }) {
             mb: 3,
           }}
         >
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<ArrowBackIcon />}
-            onClick={goBack}
-            sx={{
-              borderRadius: 50,
-              backgroundColor: '#6A1B9A',
-              ':hover': {
-                backgroundColor: '#4A0072',
-              },
-              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-              padding: '8px 16px',
-              fontWeight: 'bold',
-              mb: 2,
-            }}
-          >
-            Back
-          </Button>
           <Typography
             variant="h4"
             component="h1"
@@ -200,33 +181,55 @@ function SignUpStudent({ goBack }) {
               />
             </Grid>
           </Grid>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              sx={{
-                flex: 1,
-                mr: 1,
-                borderRadius: 50,
-              }}
-            >
-              Submit
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              type="button"
-              onClick={resetForm}
-              sx={{
-                flex: 1,
-                ml: 1,
-                borderRadius: 50,
-              }}
-            >
-              Reset
-            </Button>
-          </Box>
+          <Box
+  sx={{
+    display: 'flex',
+    justifyContent: 'space-between', // فاصله یکنواخت بین دکمه‌ها
+    gap: 2, // فاصله بین دکمه‌ها
+    mt: 2,
+  }}
+>
+  <Button
+    variant="contained"
+    startIcon={<ArrowBackIcon />}
+    onClick={goBack}
+    sx={{
+      flex: 1,
+      borderRadius: 50,
+      backgroundColor: '#6A1B9A',
+      color: '#fff',
+      ':hover': {
+        backgroundColor: '#4A0072',
+      },
+    }}
+  >
+    Back
+  </Button>
+  <Button
+    variant="contained"
+    color="primary"
+    type="submit"
+    sx={{
+      flex: 1,
+      borderRadius: 50,
+    }}
+  >
+    Submit
+  </Button>
+  <Button
+    variant="outlined"
+    color="secondary"
+    type="button"
+    onClick={resetForm}
+    sx={{
+      flex: 1,
+      borderRadius: 50,
+    }}
+  >
+    Reset
+  </Button>
+</Box>
+
         </Box>
       </Paper>
     </Box>

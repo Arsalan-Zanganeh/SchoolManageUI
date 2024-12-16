@@ -116,33 +116,7 @@ function SignUpTeacher({ goBack }) {
     mb: 3,
   }}
 >
-<Button
-  variant="contained"
-  onClick={goBack}
-  startIcon={<ArrowBackIcon />}
-  sx={{
-    display: 'flex',
-    alignItems: 'center',
-    gap: 1, // فاصله بین آیکون و متن
-    padding: '8px 16px', // فضای داخلی دکمه
-    fontSize: '0.9rem', // اندازه متن
-    fontWeight: 'bold', // برجسته کردن متن
-    color: '#fff', // رنگ متن
-    backgroundColor: '#673AB7', // رنگ بنفش
-    borderRadius: 50, // گرد کردن دکمه
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // سایه دکمه
-    transition: 'all 0.3s ease', // اضافه کردن انیمیشن
-    ':hover': {
-      backgroundColor: '#512DA8', // رنگ هاور
-      boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.3)', // سایه هاور
-    },
-    ':active': {
-      backgroundColor: '#311B92', // رنگ در حالت کلیک شده
-    },
-  }}
->
-  Back
-</Button>
+
 
   {/* افزودن فاصله بین دکمه و متن */}
   <Box sx={{ mt: 2 }}> 
@@ -316,33 +290,55 @@ function SignUpTeacher({ goBack }) {
 
  
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              sx={{
-                flex: 1,
-                mr: 1,
-                borderRadius: 50, // گرد کردن دکمه
-              }}
-            >
-              Submit
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              type="button"
-              onClick={resetForm}
-              sx={{
-                flex: 1,
-                ml: 1,
-                borderRadius: 50, // گرد کردن دکمه
-              }}
-            >
-              Reset
-            </Button>
-          </Box>
+<Box
+  sx={{
+    display: 'flex',
+    justifyContent: 'center', // وسط‌چین کردن دکمه‌ها
+    gap: 2, // فاصله یکنواخت بین دکمه‌ها
+    mt: 2,
+  }}
+>
+  <Button
+    variant="contained"
+    startIcon={<ArrowBackIcon />}
+    onClick={goBack}
+    sx={{
+      flex: 1,
+      borderRadius: 50,
+      backgroundColor: '#673AB7',
+      color: '#fff',
+      ':hover': {
+        backgroundColor: '#512DA8',
+      },
+    }}
+  >
+    Back
+  </Button>
+  <Button
+    variant="contained"
+    color="primary"
+    type="submit"
+    sx={{
+      flex: 1,
+      borderRadius: 50,
+    }}
+  >
+    Submit
+  </Button>
+  <Button
+    variant="outlined"
+    color="secondary"
+    type="button"
+    onClick={resetForm}
+    sx={{
+      flex: 1,
+      borderRadius: 50,
+    }}
+  >
+    Reset
+  </Button>
+</Box>
+
         </Box>
       </Paper>
     </Box>
