@@ -472,6 +472,7 @@ const handleClickOpen = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${teacherToken}`,  // Include token if necessary
         },
         credentials: 'include',
         body: JSON.stringify({
@@ -498,6 +499,7 @@ const handleClickOpen = () => {
       setLoading(false);
     }
   };
+  
   
   return (
     <Container maxWidth="md" sx={{ py: 4 ,
@@ -790,6 +792,9 @@ const handleClickOpen = () => {
               Due on {homework.DeadLine}
             </Typography>
           </Box>
+          <IconButton color="primary" onClick={() => handleDeleteAssignment(homework.id)}>
+            <DeleteIcon />
+          </IconButton>
         </Box>
       </CardContent>
     </Card>
