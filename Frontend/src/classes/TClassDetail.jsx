@@ -25,7 +25,8 @@ import {
   Add as AddIcon, 
   ArrowBack as BackIcon, 
   Edit as EditIcon, 
-  Publish as PublishIcon 
+  Publish as PublishIcon,
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 import { useClass } from "../context/ClassContext";
 import { useTeacher } from "../context/TeacherContext";
@@ -147,8 +148,6 @@ const TeacherClassDetail = () => {
       alert("An unexpected error occurred. Please try again.");
     }
   };
-  
-  
   
   
   // useEffect(() => {
@@ -462,8 +461,44 @@ const handleClickOpen = () => {
     }
   };
   
+  const handleDeleteAssignment = async (HomeworkID) => {
+    setLoading(true);
+    setMessage('');
   
-
+    const homeworkToDelete = assignments.find((assignment) => assignment.id === HomeworkID);
+  
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/teacher-delete-homework/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          Homework_ID: HomeworkID
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setAssignments((prev) => prev.filter((assignment) => assignment.id !== HomeworkID));
+        setMessage(`Homework "${homeworkToDelete.Title}" deleted successfully!`);
+        setTimeout(() => {
+          setMessage('');
+        }, 3000);
+      } else {
+        const errorData = await response.json();
+        setMessage(`Failed to delete homework: ${errorData.error}`);
+        console.error('Failed to delete homework', errorData);
+      }
+    } catch (error) {
+      setMessage('An error occurred while deleting homework');
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   return (
     <Container maxWidth="md" sx={{ py: 4 ,
       backgroundColor: '#DCE8FD' ,
@@ -702,15 +737,20 @@ const handleClickOpen = () => {
                           Due on {assignment.DeadLine}
                         </Typography>
                       </Box>
-                      <Button 
-                        variant="contained" 
-                        color="primary" 
-                        size="small"
-                        startIcon={<PublishIcon />}
-                        onClick={() => handlePublishHomework(assignment.id)}
-                      >
-                        Publish
-                      </Button>
+                      <Box display="flex" flexDirection="row" gap="15px">
+                        <Button 
+                          variant="contained" 
+                          color="primary" 
+                          size="small"
+                          startIcon={<PublishIcon />}
+                          onClick={() => handlePublishHomework(assignment.id)}
+                        >
+                          Publish
+                        </Button>
+                        <IconButton color="primary" onClick={() => handleDeleteAssignment(assignment.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
                     </Box>
                   </CardContent>
                 </Card>
@@ -739,25 +779,23 @@ const handleClickOpen = () => {
               backgroundColor: '#f9f9f9',
             }}
           >
-            <Stack spacing={2}>
-              {publishedHomeworks.map((homework) => (
-                <Card key={homework.Homework_ID} variant="outlined">
-                  <CardContent>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Box>
-                        <Typography variant="body1">{homework.Title}</Typography>
-                        <Typography variant="body2" color="textSecondary">
-                          Due on {homework.DeadLine}
-                        </Typography>
-                      </Box>
-                      <IconButton color="primary">
-                        <EditIcon />
-                      </IconButton>
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
-            </Stack>
+<Stack spacing={2}>
+  {publishedHomeworks.map((homework) => (
+    <Card key={homework.Homework_ID} variant="outlined">
+      <CardContent>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
+            <Typography variant="body1">{homework.Title}</Typography>
+            <Typography variant="body2" color="textSecondary">
+              Due on {homework.DeadLine}
+            </Typography>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  ))}
+</Stack>
+
           </Box>
         )}
       </Paper>
