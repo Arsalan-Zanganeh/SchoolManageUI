@@ -335,7 +335,7 @@ const questions = [
   ];
   
 
-const HollandQuestions = () => {
+const HollandQuestions = ({gotoAnalize}) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [answers, setAnswers] = useState({});
   const questionsPerPage = 1;
@@ -367,7 +367,8 @@ const HollandQuestions = () => {
     } else {
       const finalScores = calculateScores();
       console.log("Final Scores:", finalScores);
-      navigate('/holland-test/analysis', { state: { scores: finalScores } });
+      navigate('', { state: { scores: finalScores } });
+      gotoAnalize()
     }
   };
 

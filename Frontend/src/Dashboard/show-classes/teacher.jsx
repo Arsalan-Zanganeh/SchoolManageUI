@@ -5,7 +5,7 @@ import { useClass } from '../../context/ClassContext';
 import Swal from 'sweetalert2';
 import './classes.css';
 
-const TeacherClassList = () => {
+const TeacherClassList = ({goBack}) => {
   const navigate = useNavigate();
   const { teacher } = useTeacher();
   const { classToken, loginClass } = useClass(); // Use the class context
@@ -103,7 +103,7 @@ const TeacherClassList = () => {
   }, [teacherToken]); // Removed fetchClassesData from dependencies as it is not defined here
 
   const backToHome = () => {
-    navigate('/teacher-dashboard');
+    goBack();
   };
 
   const handleClassClick = async (id) => {
