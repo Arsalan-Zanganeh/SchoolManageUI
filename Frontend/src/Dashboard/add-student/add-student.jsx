@@ -18,7 +18,7 @@ function SignUpStudent({ goBack }) {
   const [fatherfname, setFatherFirstName] = useState('');
   const [gradelevel, setGradeLevel] = useState('');
   const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
+  const [Parent_password, setParent_password] = useState('');
   const [Email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [landline, setLandLine] = useState('');
@@ -26,7 +26,7 @@ function SignUpStudent({ goBack }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!firstname || !lastname || !nationalid || !fatherphone || !password || !password2 || !fatherfname || !Email || !address || !landline || !gradelevel) {
+    if (!firstname || !lastname || !nationalid || !fatherphone || !password || !Parent_password || !fatherfname || !Email || !address || !landline || !gradelevel) {
       Swal.fire('Error', 'All fields are required', 'error');
       return;
     }
@@ -44,7 +44,7 @@ function SignUpStudent({ goBack }) {
           National_ID: nationalid,
           Father_Phone_Number: fatherphone,
           password,
-          password2,
+          Parent_password,
           Email: Email,
           Father_first_name: fatherfname,
           Grade_Level: gradelevel,
@@ -82,7 +82,7 @@ function SignUpStudent({ goBack }) {
     setFatherPhoneNumber('');
     setFatherFirstName('');
     setPassword('');
-    setPassword2('');
+    setParent_password('');
     setEmail('');
     setAddress('');
     setLandLine('');
@@ -147,7 +147,7 @@ function SignUpStudent({ goBack }) {
               { label: 'Father First Name', value: fatherfname, setValue: setFatherFirstName },
               { label: 'Grade Level', value: gradelevel, setValue: setGradeLevel },
               { label: 'Password', type: 'password', value: password, setValue: setPassword },
-              { label: 'Confirm Password', type: 'password', value: password2, setValue: setPassword2 },
+              { label: 'Parent Password', type: 'password', value: Parent_password, setValue: setParent_password },
               { label: 'Email', value: Email, setValue: setEmail },
               { label: 'Land Line', value: landline, setValue: setLandLine },
             ].map((field, idx) => (
