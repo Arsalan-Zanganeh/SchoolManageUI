@@ -149,6 +149,7 @@ const NavigationBox = styled(Paper)(({ theme }) => ({
 const TeacherDashboard = () => {
   const navigate = useNavigate();
   const [tabvalue, settabvalue] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { teacher, logoutTeacher } = useTeacher();
   const [name, setName] = useState(teacher ? teacher.first_name : '');
   const [lastName, setLastName] = useState(teacher ? teacher.last_name : '');

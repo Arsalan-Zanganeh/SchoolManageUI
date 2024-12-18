@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { 
   Box, 
   Typography, 
   Grid, 
   Divider, 
+  AppBar,
+  Toolbar,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Paper, 
   Button, 
   Tabs, 
   Tab, 
   Card, 
+  Drawer,
   CardContent, 
   Dialog, 
   DialogActions, 
@@ -26,10 +34,127 @@ import {
   ArrowBack as BackIcon, 
   Edit as EditIcon, 
   Publish as PublishIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
+  Quiz,
+  Assessment,
+  People,
+  HomeWork,
+  EditNote
 } from '@mui/icons-material';
 import { useClass } from "../context/ClassContext";
 import { useTeacher } from "../context/TeacherContext";
+import { useMediaQuery } from '@mui/material';
+import {Menu} from '@mui/icons-material';
+import BusinessIcon from '@mui/icons-material/Business';
+import Attendance from "../Attendence";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
+
+const styles = {
+  list: {
+      width: '100%',
+      backgroundColor: '#f9f9f9',
+      borderRadius: '8px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      padding: '8px',
+  },
+  listItem: {
+      borderBottom: '1px solid #ddd',
+      padding: '16px',
+      cursor: 'pointer',
+      '&:hover': {
+          backgroundColor: '#0036AB',
+      },
+  },
+  listItemText: {
+      fontWeight: 500,
+  },
+  previewText: {
+      color: '#555',
+  },
+  dialogTitle: {
+      textAlign: 'center',
+      fontWeight: 'bold',
+  },
+  dialogContent: {
+      padding: '16px',
+  },
+  dateText: {
+      marginRight: '16px',
+      color: '#aaa',
+  },
+  list: {
+    width: '95%',
+    backgroundColor: '#f9f9f9',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    padding: '8px',
+},
+listItem: {
+    borderBottom: '1px solid #ddd',
+    padding: '16px',
+    cursor: 'pointer',
+    '&:hover': {
+        backgroundColor: '#f1f1f1',
+    },
+},
+listItemHighlight: {
+  padding: '20px',
+},
+listItemText: {
+    fontWeight: 500,
+},
+previewTextGray: {
+    color: '#C8C6C6', // Gray for seen notifications
+},
+previewTextBlack: {
+    color: '#000', // Black for unseen notifications
+},
+dialogTitle: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+},
+dialogContent: {
+    padding: '16px',
+},
+dateText: {
+    fontWeight: 'bold', // Bold date
+    marginRight: '16px',
+    color: '#aaa',
+},
+};
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#0036AB',
+      drawer: '#0051FF',
+    },
+    text: {
+      secondary: '#757575',
+    },
+    background: {
+      default: '#f4f6f8',
+    },
+  },
+});
 
 const TeacherClassDetail = () => {
   const { tcid } = useParams();
@@ -54,12 +179,16 @@ const TeacherClassDetail = () => {
   });
   const [assignments, setAssignments] = useState([]);
   const [publishedHomeworks, setPublishedHomeworks] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [quizDialogOpen, setQuizDialogOpen] = useState(false); // برای کنترل نمایش دیالوگ
   const [quizTitle, setQuizTitle] = useState(''); // برای ذخیره عنوان کوئیز
   const [quizzes, setQuizzes] = useState([]);
   const [loadingQuizzes, setLoadingQuizzes] = useState(true);
+  const isDesktop = useMediaQuery('(min-width:600px)');
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const drawerProps = isDesktop ? { variant: 'permanent', open: true } : { open: sidebarOpen, onClose: toggleSidebar };
 
   const handleQuizDialogOpen = () => setQuizDialogOpen(true);
   const handleQuizDialogClose = () => {
@@ -502,26 +631,21 @@ const handleClickOpen = () => {
   
   
   return (
-    <Container maxWidth="md" sx={{ py: 4 ,
-      backgroundColor: '#DCE8FD' ,
-      height : '100%',
-        // position: 'absolute',
-        // top: 0,
-        // left: 0,
-        // right: 0,
-      //   bottom: 0, 
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        // padding: '20px',
-    }}>
-      <Paper elevation={3} sx={{ p: 3, mb: 3 ,
+    <Box sx={{ display: 'flex', flexDirection: 'column', backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
+    <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main, zIndex: theme.zIndex.drawer + 1 }}>
+          <Toolbar>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              {`${classDetails.Topic}`}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      <Toolbar/>
+    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+    <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
+    <Container maxWidth="">
+    <Paper elevation={3} sx={{ p: 3, mb: 3 ,
          backgroundColor: '#DCE8FD' ,
          height : '100%',
-           position: 'absolute',
-           top: 0,
-           left: 0,
-           right: 0,
-           bottom: 0, 
            justifyContent: 'center',
            alignItems: 'center',
            padding: '20px',
@@ -563,23 +687,6 @@ const handleClickOpen = () => {
             </Paper>
           </Grid>
         </Grid>
-  
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          variant="fullWidth"
-          textColor="primary"
-          indicatorColor="primary"
-          sx={{ 
-            borderBottom: 1, 
-            borderColor: 'divider',
-            mb: 3 
-          }}
-        >
-          <Tab label="Quizzes" />
-          <Tab label="Assignments" />
-          <Tab label="Published Homeworks" />
-        </Tabs>
   
 {tabValue === 0 && (
   <Box>
@@ -803,8 +910,10 @@ const handleClickOpen = () => {
 
           </Box>
         )}
+        <TabPanel value={tabValue} index={3}>
+        <Attendance/>
+          </TabPanel>
       </Paper>
-  
       <Dialog 
         open={openDialog} 
         onClose={handleClose}
@@ -902,6 +1011,97 @@ const handleClickOpen = () => {
       </Dialog>
   
     </Container>
+    </Box>
+    <Drawer anchor='left' {...drawerProps} sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.drawer, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
+    <Toolbar />
+  <List>
+    <ListItem button onClick={() => setTabValue(0)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+      <ListItemIcon sx={{ color: '#fff' }}>
+        <Quiz />
+      </ListItemIcon>
+      <ListItemText primary="Quizzes" />
+    </ListItem>
+    <ListItem button onClick={() => setTabValue(1)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+      <ListItemIcon sx={{ color: '#fff' }}>
+        <EditNote />
+      </ListItemIcon>
+      <ListItemText primary="Assignments" />
+    </ListItem>
+    <ListItem button onClick={() => setTabValue(2)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+      <ListItemIcon sx={{ color: '#fff' }}>
+        <BusinessIcon />
+      </ListItemIcon>
+      <ListItemText primary="Published Homeworks" />
+    </ListItem>
+    <ListItem button onClick={() => setTabValue(3)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+      <ListItemIcon sx={{ color: '#fff' }}>
+        <People />
+      </ListItemIcon>
+      <ListItemText primary="Attendence" />
+    </ListItem>
+    <ListItem button onClick={() => navigate(-1)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+      <ListItemIcon sx={{ color: '#fff' }}>
+        <BackIcon />
+      </ListItemIcon>
+      <ListItemText primary="Back to Dashboard" />
+    </ListItem>
+    
+  </List>
+    </Drawer> 
+    </Box>  
+    {!isDesktop && (
+      <Box sx={{ position: 'fixed', top: '50%', right: 0, transform: 'translateY(-50%)' }}>
+        <Button variant="contained" color="primary" onClick={toggleSidebar}>
+          <Menu />
+        </Button>
+      </Box>
+    )}
+    </Box>       
   );
   
 };
