@@ -46,6 +46,8 @@ import QuizPageStudent from "./quiz/QuizPageStudent";
 import ResultsPage from "./quiz/ResultsPage";
 import TeacherResult from "./quiz/TeacherResult";
 import Discipline from "./discipline/Discipline"
+import { ParentProvider } from './context/ParentContext';
+import ParentDashboard from "./Dashboard/ParentDashboard";
 
 
 import './App.css';
@@ -53,6 +55,7 @@ import './App.css';
 function App() {
   return (
     <Router>
+      <ParentProvider>
       <PrincipalProvider>
         <StudentProvider>
           <TeacherProvider>
@@ -310,7 +313,14 @@ function App() {
                   </PrivateRoute>
                 }
           />
-
+          <Route
+                  path="/parent-dashboard"
+                  element={
+                    <PrivateRoute role="parent">
+                      <ParentDashboard/>
+                    </PrivateRoute>
+                  }
+          />
 
 
 
@@ -320,6 +330,7 @@ function App() {
           </TeacherProvider>
         </StudentProvider>
       </PrincipalProvider>
+      </ParentProvider>
     </Router>
   );
 }

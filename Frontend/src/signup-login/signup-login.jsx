@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePrincipal } from '../context/PrincipalContext';  
 import { useStudent } from '../context/StudentContext'; 
 import { useTeacher } from '../context/TeacherContext';
+import {useParent} from '../context/ParentContext' ;
 import './sl.css'
 
 const theme = createTheme({
@@ -293,18 +294,76 @@ const SignUpLogin = () => {
     if (selectedTab === 2 && principalSignUp) {
       return <PrincipalSignUpForm onBackClick={handleBackClick} />;
     }
-
+  
     switch (selectedTab) {
       case 0:
         return <StudentForm />;
       case 1:
-        return <TeacherForm />;
+        return <ParentForm />;
       case 2:
+        return <TeacherForm />;
+      case 3:
         return <PrincipalForm onSignUpClick={handlePrincipalSignUpClick} />;
       default:
         return <StudentForm />;
     }
   };
+  const ParentForm = () => {
+    const navigate = useNavigate();
+    const { loginParent } = useParent();
+    const [formData, setFormData] = useState({ National_ID: '', Parent_password: '' });
+  
+    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch("http://127.0.0.1:8000/student/parent-login/", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(formData),
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          Swal.fire({
+            title: 'Success',
+            text: 'Login successful!',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          });
+          loginParent(data);
+          navigate('/parent-dashboard');
+        } else {
+          const errorData = await response.json();
+          Swal.fire({
+            title: 'Error',
+            text: errorData.detail || 'Invalid National_ID or password. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Network error or server is unavailable. Please try again later.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
+    };
+  
+    return (
+      <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit}>
+        <TextField margin="normal" required fullWidth label="Parent National ID" name="National_ID" autoFocus value={formData.National_ID} onChange={handleChange} />
+        <TextField margin="normal" required fullWidth label="Password" type="password" name="Parent_password" autoComplete="current-password" value={formData.Parent_password} onChange={handleChange} />
+        <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 1 }}>Login</Button>
+      </Box>
+    );
+  };
+  
+  
 
   return (
     <div className="body-singuplogin">
@@ -315,20 +374,30 @@ const SignUpLogin = () => {
       ) : (
         <Container maxWidth="sm" className="container-singuplogin">
           <Paper elevation={3} sx={{ padding: 3, marginTop: 5 }}>
-            <Typography variant="h4" align="center" gutterBottom>School Management System</Typography>
+            <Typography variant="h4" align="center" gutterBottom>
+              School Management System
+            </Typography>
             <Box display="flex" justifyContent="center">
-              <Tabs value={selectedTab} onChange={handleChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
+              <Tabs 
+                value={selectedTab} 
+                onChange={handleChange} 
+                indicatorColor="primary" 
+                textColor="primary" 
+                variant="fullWidth">
                 <Tab label="Student" />
+                <Tab label="Parent" />
                 <Tab label="Teacher" />
                 <Tab label="Principal" />
               </Tabs>
             </Box>
-            <Box mt={3}>{renderForm()}</Box>
+            <Box mt={3}>
+              {renderForm()}
+            </Box>
           </Paper>
         </Container>
       )}
     </ThemeProvider>
-    </div>
+  </div>
   );
 };
 

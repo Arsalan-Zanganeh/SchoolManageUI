@@ -8,7 +8,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #fff; /* Adding a background color to avoid black areas */
 }
+
 .background-singuplogin {
   position: absolute;
   top: 0;
@@ -26,4 +28,28 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding: 16px;
+  border-radius: 8px; /* Adding some border radius for better look */
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 600px) {
+  .container-singuplogin {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  .body-singuplogin {
+    align-items: flex-start; /* Adjust alignment for smaller screens */
+    padding-top: 2rem;
+    padding-bottom: 2rem; /* Adding padding at the bottom */
+    position: relative;
+  }
+}
+
+@media (max-width: 400px) {
+  .container-singuplogin {
+    padding: 1rem;
+    font-size: 0.9rem; /* Smaller font size for very small devices */
+  }
 }
