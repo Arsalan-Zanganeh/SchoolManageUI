@@ -5,7 +5,28 @@ import {
   Grid, Divider, Paper, Dialog, DialogTitle, DialogContent,
   DialogActions, List, ListItem, ListItemText, Container
 } from '@mui/material';
-import { Assignment, Quiz, ArrowBack, Send } from '@mui/icons-material';
+import { Assignment, Quiz, ArrowBack, People,Send } from '@mui/icons-material';
+import AttendanceStatus from "../Attendence-stu";
+
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
 
 const ClassDetails = () => {
   const { cid } = useParams(); 
@@ -355,6 +376,8 @@ const ClassDetails = () => {
         >
           <Tab label="Quizzes" sx={{ fontWeight: 'bold', minWidth: 120 }} icon={<Quiz />} iconPosition="start"/>
           <Tab label="Assignments" sx={{ fontWeight: 'bold', minWidth: 120 }} icon={<Assignment />} iconPosition="start"/>
+          <Tab label="Attendence" sx={{ fontWeight: 'bold', minWidth: 120 }} icon={<People />} iconPosition="start"/>
+
         </Tabs>
     
         {tabValue === 0 && (
@@ -528,7 +551,10 @@ const ClassDetails = () => {
             </Box>
           </Box>
         )}
-    
+
+        <TabPanel value={tabValue} index={2}>
+        <AttendanceStatus Topic={classDetails.Topic}/>
+          </TabPanel>
         <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm">
           <DialogTitle>Submit Homework</DialogTitle>
           <DialogContent>
