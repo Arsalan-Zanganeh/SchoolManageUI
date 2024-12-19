@@ -155,7 +155,7 @@ const Attendance = () => {
                       <PaperStyled elevation={3}>
                         <Grid container justifyContent="space-between" alignItems="center">
                           <Grid item>
-                            <Typography>{attendance[National_ID].first_name} {attendance[National_ID].last_name} (ID: {National_ID}) {attendance[National_ID].Absent}</Typography>
+                            <Typography>{attendance[National_ID].first_name} {attendance[National_ID].last_name} (ID: {National_ID})</Typography>
                           </Grid>
                           <Grid item>
                             <FormControlLabel

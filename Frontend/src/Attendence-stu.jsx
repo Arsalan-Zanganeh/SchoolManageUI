@@ -8,8 +8,14 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 
 const ContainerStyled = styled(Container)(({ theme }) => ({
-  marginTop: theme.spacing(4),
+  marginTop: theme.spacing(2),
 }));
+
+const TableCellStyled = styled(TableCell)(({ theme }) => ({
+  padding: theme.spacing(0),
+}));
+
+
 const AttendanceStatus = ({Topic}) => {
   const [attendance, setAttendance] = useState([]);
   const [month, setMonth] = useState(new Date());
@@ -26,10 +32,17 @@ const AttendanceStatus = ({Topic}) => {
       if (response.ok) {
         const attendanceData = await response.json();
         console.log("Fetched attendance data:", attendanceData);
-        const filteredAttendance = attendanceData.filter(
+        const selectedMonthStr = month.toISOString().split('T')[0].slice(0, 7);
+        console.log("Fetched attendance data:", selectedMonthStr);
+
+        const filteredData = attendanceData.filter(entry =>
+          entry.Date.startsWith(selectedMonthStr)
+        );
+        const filteredAttendance = filteredData.filter(
           (record) => record.Topic === Topic
         );
-        setAttendance(attendanceData);
+        filteredAttendance.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+        setAttendance(filteredAttendance);
       } else {
         console.error('Failed to fetch class list');
       }
@@ -65,35 +78,35 @@ const AttendanceStatus = ({Topic}) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Absent</TableCell>
-                    <TableCell>Present</TableCell>
+                    <TableCellStyled>Date</TableCellStyled>
+                    <TableCellStyled>Absent</TableCellStyled>
+                    <TableCellStyled>Present</TableCellStyled>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {attendance.length > 0 ? (
                     attendance.map(entry => (
                       <TableRow key={entry.id}>
-                        <TableCell>{entry.Date}</TableCell>
-                        <TableCell>
+                        <TableCellStyled>{entry.Date}</TableCellStyled>
+                        <TableCellStyled>
                           <Checkbox
                             checked={entry.Absent === "True"}
                             disabled
                           />
-                        </TableCell>
-                        <TableCell>
+                        </TableCellStyled>
+                        <TableCellStyled>
                           <Checkbox
                             checked={entry.Absent === "False"}
                             disabled
                           />
-                        </TableCell>
+                        </TableCellStyled>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={3}>
+                      <TableCellStyled colSpan={3}>
                         <Typography>No attendance records for this month</Typography>
-                      </TableCell>
+                      </TableCellStyled>
                     </TableRow>
                   )}
                 </TableBody>
