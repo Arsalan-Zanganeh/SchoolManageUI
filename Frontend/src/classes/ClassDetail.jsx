@@ -1,11 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Box, Typography, Button, Tabs, Tab, Card, CardContent,
-  Grid, Divider, Paper, Dialog, DialogTitle, DialogContent,
-  DialogActions, List, ListItem, ListItemText, Container
+  Box, Typography, Button, Tabs, Tab, Card, CardContent, AppBar, Toolbar,
+  Grid, Divider, Paper, Dialog, DialogTitle, DialogContent, IconButton,Drawer,ListItemIcon,
+  DialogActions, List, ListItem, ListItemText, Container, useMediaQuery
 } from '@mui/material';
-import { Assignment, Quiz, ArrowBack, People,Send } from '@mui/icons-material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { 
+  Add as AddIcon, 
+  ArrowBack as BackIcon, 
+  Edit as EditIcon, 
+  Publish as PublishIcon,
+  Delete as DeleteIcon,
+  Quiz,
+  Assessment,
+  People,
+  Send,
+  HomeWork,
+  EditNote
+} from '@mui/icons-material';
+import BusinessIcon from '@mui/icons-material/Business';
+
 import AttendanceStatus from "../Attendence-stu";
 
 
@@ -28,6 +43,80 @@ function TabPanel(props) {
   );
 }
 
+const styles = {
+  list: {
+      width: '100%',
+      backgroundColor: '#f9f9f9',
+      borderRadius: '8px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      padding: '8px',
+  },
+  listItem: {
+      borderBottom: '1px solid #ddd',
+      padding: '16px',
+      cursor: 'pointer',
+      '&:hover': {
+          backgroundColor: '#0036AB',
+      },
+  },
+  listItemText: {
+      fontWeight: 500,
+  },
+  previewText: {
+      color: '#555',
+  },
+  dialogTitle: {
+      textAlign: 'center',
+      fontWeight: 'bold',
+  },
+  dialogContent: {
+      padding: '16px',
+  },
+  list: {
+    width: '95%',
+    backgroundColor: '#f9f9f9',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    padding: '8px',
+},
+listItemHighlight: {
+  padding: '20px',
+},
+previewTextGray: {
+    color: '#C8C6C6', // Gray for seen notifications
+},
+previewTextBlack: {
+    color: '#000', // Black for unseen notifications
+},
+dialogTitle: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+},
+dialogContent: {
+    padding: '16px',
+},
+dateText: {
+    fontWeight: 'bold', // Bold date
+    marginRight: '16px',
+    color: '#aaa',
+},
+};
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#0036AB',
+      drawer: '#0051FF',
+    },
+    text: {
+      secondary: '#757575',
+    },
+    background: {
+      default: '#f4f6f8',
+    },
+  },
+});
+
 const ClassDetails = () => {
   const { cid } = useParams(); 
   const navigate = useNavigate();
@@ -41,6 +130,10 @@ const ClassDetails = () => {
   const [openDialog, setOpenDialog] = useState(false); 
   const [file, setFile] = useState(null); 
   const [finishedQuizzes, setFinishedQuizzes] = useState([]);
+  const isDesktop = useMediaQuery('(min-width:600px)');
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const drawerProps = isDesktop ? { variant: 'permanent', open: true } : { open: sidebarOpen, onClose: toggleSidebar };
+
 
   useEffect(() => {
     const fetchClassList = async () => {
@@ -292,93 +385,63 @@ const ClassDetails = () => {
   }
 
   return (
-    <Box
-      sx={{
-        backgroundColor: '#DCE8FD' ,
-        height : '100%',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0, 
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '20px',
-      }}
-    >
-      <Container maxWidth="lg"
-        sx={{
-          backgroundColor: 'rgba(255,255,255,0.8)',
-          borderRadius: 2,
-          boxShadow: 3,
-          py: { xs: 2, md: 3 },
-          px: { xs: 2, md: 3 }
-        }}
-      >
-        <Paper 
-          elevation={3} 
-          sx={{ 
-            padding: { xs: 1, md: 2}, 
-            marginBottom: 3, 
-            backgroundColor: 'rgba(255,255,255,0.8)',
-            borderRadius: 2,
-            backdropFilter: 'blur(5px)',
-          }}
-        >
-          <Typography variant="h4" color="primary" gutterBottom fontWeight="bold">
-            {classDetails.Topic}
-          </Typography>
-          <Divider sx={{ marginBottom: 2 }} />
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="body1">
-                <strong>Instructor:</strong> {classDetails.Teacher}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="body1">
-                <strong>Session 1:</strong> {classDetails.Session1Day} - {classDetails.Session1Time}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="body1">
-                <strong>Session 2:</strong> {classDetails.Session2Day} - {classDetails.Session2Time}
-              </Typography>
-            </Grid>
-          </Grid>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={() => navigate("/student-dashboard/")} 
-            startIcon={<ArrowBack />}
-            sx={{ marginTop: 2 }}
+    <ThemeProvider theme={theme}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
+    <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main, zIndex: theme.zIndex.drawer + 1 }}>
+          <Toolbar>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              {`${classDetails.Topic}`}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      <Toolbar/>
+    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+    <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
+    <Container maxWidth="">
+    <Paper elevation={3} sx={{ p: 3, mb: 3 ,
+         backgroundColor: '#DCE8FD' ,
+         height : '100%',
+           justifyContent: 'center',
+           alignItems: 'center',
+           padding: '20px',
+      }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Box>
+            <Typography variant="h4" color="primary" gutterBottom>
+              {classDetails.Topic}
+            </Typography>
+            <Typography variant="subtitle1" color="textSecondary">
+              Instructor: {classDetails.Teacher}
+            </Typography>
+          </Box>
+          <IconButton 
+            color="default" 
+            onClick={() => navigate(-1)}
+            sx={{ 
+              border: '1px solid', 
+              borderColor: 'divider' 
+            }}
           >
-            Back To Dashboard
-          </Button>
-        </Paper>
-    
-        <Tabs 
-          value={tabValue} 
-          onChange={handleTabChange} 
-          aria-label="Class details tabs" 
-          variant="scrollable"
-          scrollButtons
-          allowScrollButtonsMobile
-          sx={{ 
-            marginBottom: 3, 
-            borderBottom: 1, 
-            borderColor: 'divider',
-            backgroundColor: 'rgba(255,255,255,0.8)',
-            borderRadius: 1,
-          }}
-          textColor="primary" 
-          indicatorColor="primary"
-        >
-          <Tab label="Quizzes" sx={{ fontWeight: 'bold', minWidth: 120 }} icon={<Quiz />} iconPosition="start"/>
-          <Tab label="Assignments" sx={{ fontWeight: 'bold', minWidth: 120 }} icon={<Assignment />} iconPosition="start"/>
-          <Tab label="Attendence" sx={{ fontWeight: 'bold', minWidth: 120 }} icon={<People />} iconPosition="start"/>
-
-        </Tabs>
+            <BackIcon />
+          </IconButton>
+        </Box>
+  
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid item xs={12} sm={6}>
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Typography variant="body2" color="textSecondary">
+                Session 1: {classDetails.Session1Day} - {classDetails.Session1Time}
+              </Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Typography variant="body2" color="textSecondary">
+                Session 2: {classDetails.Session2Day} - {classDetails.Session2Time}
+              </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
     
         {tabValue === 0 && (
           <Box
@@ -553,8 +616,10 @@ const ClassDetails = () => {
         )}
 
         <TabPanel value={tabValue} index={2}>
-        <AttendanceStatus Topic={classDetails.Topic}/>
-          </TabPanel>
+          <AttendanceStatus Topic={classDetails.Topic}/>
+        </TabPanel>
+        </Paper>
+
         <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm">
           <DialogTitle>Submit Homework</DialogTitle>
           <DialogContent>
@@ -580,8 +645,83 @@ const ClassDetails = () => {
           </DialogActions>
         </Dialog>
       </Container>
-    </Box>
+      </Box>
+      <Drawer anchor='left' {...drawerProps} sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.drawer, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
+    <Toolbar />
+  <List>
+    <ListItem button onClick={() => setTabValue(0)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+      <ListItemIcon sx={{ color: '#fff' }}>
+        <Quiz />
+      </ListItemIcon>
+      <ListItemText primary="Quizzes" />
+    </ListItem>
+    <ListItem button onClick={() => setTabValue(1)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+      <ListItemIcon sx={{ color: '#fff' }}>
+        <EditNote />
+      </ListItemIcon>
+      <ListItemText primary="Assignments" />
+    </ListItem>
+    <ListItem button onClick={() => setTabValue(2)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+      <ListItemIcon sx={{ color: '#fff' }}>
+        <People />
+      </ListItemIcon>
+      <ListItemText primary="Attendence" />
+    </ListItem>
+    <ListItem button onClick={() => navigate(-1)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+      <ListItemIcon sx={{ color: '#fff' }}>
+        <BackIcon />
+      </ListItemIcon>
+      <ListItemText primary="Back to Dashboard" />
+    </ListItem>
+    
+  </List>
+    </Drawer> 
+    </Box> 
+    {!isDesktop && (
+      <Box sx={{ position: 'fixed', top: '50%', right: 0, transform: 'translateY(-50%)' }}>
+        <Button variant="contained" color="primary" onClick={toggleSidebar}>
+          <Menu />
+        </Button>
+      </Box>
+    )}
+    </Box>       
+    </ThemeProvider>
   );
-};  
-
+}
 export default ClassDetails;

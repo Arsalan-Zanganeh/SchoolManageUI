@@ -96,10 +96,6 @@ const styles = {
   dialogContent: {
       padding: '16px',
   },
-  dateText: {
-      marginRight: '16px',
-      color: '#aaa',
-  },
   list: {
     width: '95%',
     backgroundColor: '#f9f9f9',
@@ -107,19 +103,8 @@ const styles = {
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     padding: '8px',
 },
-listItem: {
-    borderBottom: '1px solid #ddd',
-    padding: '16px',
-    cursor: 'pointer',
-    '&:hover': {
-        backgroundColor: '#f1f1f1',
-    },
-},
 listItemHighlight: {
   padding: '20px',
-},
-listItemText: {
-    fontWeight: 500,
 },
 previewTextGray: {
     color: '#C8C6C6', // Gray for seen notifications
@@ -631,6 +616,8 @@ const handleClickOpen = () => {
   
   
   return (
+    <ThemeProvider theme={theme}>
+    
     <Box sx={{ display: 'flex', flexDirection: 'column', backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
     <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main, zIndex: theme.zIndex.drawer + 1 }}>
           <Toolbar>
@@ -1102,6 +1089,7 @@ const handleClickOpen = () => {
       </Box>
     )}
     </Box>       
+    </ThemeProvider>
   );
   
 };
