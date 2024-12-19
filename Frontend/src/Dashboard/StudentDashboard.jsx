@@ -22,6 +22,7 @@ import HollandTest from '../HollandTest/HollandTest';
 import HollandQuestions from '../HollandTest/HollandQuestions';
 import HollandResults from '../HollandTest/HollandAnalysis';
 import PreviousResults from '../HollandTest/PreviousResults';
+import Planner from './Planning/planner';
 import './SchoolDashboard.css';
 
 
@@ -328,7 +329,7 @@ const StudentDashboard = () => {
   const editProfile = () => settabvalue(3)
   const viewClasses = () => settabvalue(4);
   const gotoHollandtest = () => settabvalue(5);
-  const gotoAcademicPlanning = () => settabvalue(2);
+  const gotoAcademicPlanning = () => settabvalue(9);
 
   const sortedNotifications = [...unreadNotifications].sort((a, b) => new Date(b.date) - new Date(a.date));
   return (
@@ -503,6 +504,11 @@ const StudentDashboard = () => {
             <TabPanel value={tabvalue} index={8}>
               <PreviousResults goBack={() => settabvalue(2)}/>
             </TabPanel>
+            <Box padding={2}>
+            <TabPanel value={tabvalue} index={9}>
+              <Planner onBack={() => settabvalue(2)}/>
+            </TabPanel>
+            </Box>
             </Container>
           </Box>
           <Drawer anchor='left' {...drawerProps} sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.drawer, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
