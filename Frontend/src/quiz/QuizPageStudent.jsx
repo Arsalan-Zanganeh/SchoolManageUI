@@ -195,7 +195,25 @@ const QuizPageStudent = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+    <Container maxWidth="md" sx=
+    {{
+      position: { xs: 'relative', sm: 'absolute' },
+      top : 0 ,
+      left: { xs: '10px', sm: '20px' },
+      right: { xs: '10px', sm: '20px' },
+      width: { xs: 'calc(100% - 20px)', sm: 'calc(100% - 40px)' },
+      maxWidth: { xs: '100%', sm: '1600px' },
+      margin: '0 auto',
+      padding: '20px',
+      backgroundColor: '#fff',
+      // boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+      borderRadius: '8px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      // alignItems: 'center',
+      
+    }}>
       {/* Timer */}
       <Paper
         elevation={5}

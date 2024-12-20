@@ -14,7 +14,7 @@ const HollandTest = ({ gotoQuestions ,  gotoResults , goBack}) => {
     <Box
       sx={{
         position: 'absolute',
-        top: 0,
+        top: { xs: '10%', sm: '0' }, 
         left: 0,
         right: 0,
         bottom: { xs: 'auto', sm: 0 }, 

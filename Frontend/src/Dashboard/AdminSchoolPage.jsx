@@ -309,22 +309,40 @@ const AdminSchoolPage = () => {
   }}
 >
 
-        <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main }}>
-          <Toolbar>
-            {/* <Avatar
-              alt="Profile Picture"
-              src="/src/1.jpg"
-              sx={{ marginRight: 2, cursor: 'pointer' }}
-              onClick={() => navigate('/dashboard/profile-admin')}
-            /> */}
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              Admin Panel
-            </Typography>
-            <IconButton edge="end" color="inherit" aria-label="logout" onClick={handleLogout}>
-              <ExitToApp />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+<AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main }}>
+  <Toolbar>
+    <Grid container alignItems="center">
+      {/* ستون اول: عنوان */}
+      <Grid item xs>
+        <Typography
+          variant="h6"
+          sx={{
+            textAlign: 'left',
+            fontSize: '1.2rem',
+          }}
+        >
+          Admin Panel
+        </Typography>
+      </Grid>
+
+      {/* ستون دوم: دکمه خروج */}
+      <Grid item>
+        <IconButton
+          edge="end"
+          color="inherit"
+          aria-label="logout"
+          onClick={handleLogout}
+          sx={{
+            padding: '8px', // تنظیم فضای کلیک
+          }}
+        >
+          <ExitToApp />
+        </IconButton>
+      </Grid>
+    </Grid>
+  </Toolbar>
+</AppBar>
+
         <Box
           sx={{
             flexGrow: 1,

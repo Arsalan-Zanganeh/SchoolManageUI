@@ -138,80 +138,104 @@ const ManageStudents = ({ classId }) => {
   }, [classId]);
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" textAlign="center" mb={3}>
-        Manage Students for Class {classId}
-      </Typography>
-
-      {/* Add Student Section */}
-      <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
-        <Autocomplete
-          options={availableStudents}
-          getOptionLabel={(option) =>
-            `${option.first_name} ${option.last_name} (ID: ${option.National_ID})`
-          }
-          value={selectedStudent}
-          onChange={(event, value) => setSelectedStudent(value)}
-          renderInput={(params) => (
-            <TextField {...params} label="Select Student" />
-          )}
-          sx={{ flex: 1 }}
-        />
-        <Button variant="contained" onClick={handleAddStudent}>
-          Add Student
-        </Button>
-      </Box>
-
-      {/* List of Students */}
-      <Typography variant="h6">Students in this Class:</Typography>
-      {students.length > 0 ? (
-        <List>
-          {students.map((student) => (
-            <ListItem
-              key={student.id}
+    <Box sx={{ p: 2 }}>
+    <Typography variant="h5" textAlign="center" mb={3}>
+      Manage Students for Class {classId}
+    </Typography>
+  
+    {/* Add Student Section */}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" }, // در موبایل ستونی شود
+        gap: 2,
+        mb: 3,
+        alignItems: "center",
+      }}
+    >
+      <Autocomplete
+        options={availableStudents}
+        getOptionLabel={(option) =>
+          `${option.first_name} ${option.last_name} (ID: ${option.National_ID})`
+        }
+        value={selectedStudent}
+        onChange={(event, value) => setSelectedStudent(value)}
+        renderInput={(params) => (
+          <TextField {...params} label="Select Student" fullWidth />
+        )}
+        sx={{ flex: 1, minWidth: { xs: "100%", sm: "auto" } }} // تمام عرض در موبایل
+      />
+      <Button
+        variant="contained"
+        onClick={handleAddStudent}
+        sx={{
+          width: { xs: "100%", sm: "auto" }, // تمام عرض در موبایل
+        }}
+      >
+        Add Student
+      </Button>
+    </Box>
+  
+    {/* List of Students */}
+    <Typography variant="h6">Students in this Class:</Typography>
+    {students.length > 0 ? (
+      <List>
+        {students.map((student) => (
+          <ListItem
+            key={student.id}
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" }, // ستونی در موبایل
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 1, // فاصله بین آیتم‌ها
+              p: 1,
+              border: "1px solid #e0e0e0", // حاشیه برای تفکیک آیتم‌ها
+              borderRadius: "8px",
+            }}
+          >
+            <Typography sx={{ textAlign: { xs: "center", sm: "left" } }}>
+              {student.first_name} {student.last_name} (ID: {student.National_ID})
+            </Typography>
+            <Button
+              color="error"
+              variant="contained"
+              onClick={() => handleRemoveStudent(student.National_ID)}
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                mt: { xs: 1, sm: 0 }, // فاصله در حالت موبایل
+                width: { xs: "100%", sm: "auto" }, // دکمه تمام عرض در موبایل
               }}
             >
-              <Typography>
-                {student.first_name} {student.last_name} (ID: {student.National_ID})
-              </Typography>
-              <Button
-                color="error"
-                variant="contained"
-                onClick={() => handleRemoveStudent(student.National_ID)}
-              >
-                Remove
-              </Button>
-            </ListItem>
-          ))}
-        </List>
-      ) : (
-        <Typography color="textSecondary">No students in this class.</Typography>
-      )}
-
-      {/* Message Dialog */}
-      <Dialog open={messageOpen} onClose={() => setMessageOpen(false)}>
-        <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography
-            variant="h6"
-            color={messageType === "success" ? "green" : "red"}
-          >
-            {messageType === "success" ? "Success" : "Error"}
-          </Typography>
-          <Typography>{message}</Typography>
-          <Button
-            onClick={() => setMessageOpen(false)}
-            variant="contained"
-            sx={{ mt: 2 }}
-          >
-            OK
-          </Button>
-        </Box>
-      </Dialog>
-    </Box>
+              Remove
+            </Button>
+          </ListItem>
+        ))}
+      </List>
+    ) : (
+      <Typography color="textSecondary">No students in this class.</Typography>
+    )}
+  
+    {/* Message Dialog */}
+    <Dialog open={messageOpen} onClose={() => setMessageOpen(false)}>
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        <Typography
+          variant="h6"
+          color={messageType === "success" ? "green" : "red"}
+        >
+          {messageType === "success" ? "Success" : "Error"}
+        </Typography>
+        <Typography>{message}</Typography>
+        <Button
+          onClick={() => setMessageOpen(false)}
+          variant="contained"
+          sx={{ mt: 2 }}
+        >
+          OK
+        </Button>
+      </Box>
+    </Dialog>
+  </Box>
+  
   );
 };
 

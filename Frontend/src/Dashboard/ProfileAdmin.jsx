@@ -10,7 +10,6 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 
 
@@ -208,47 +207,36 @@ const ProfilePage = ({ onBack }) => {
               {/* Password Fields */}
               <Grid item xs={12}>
               <TextField
-  label="Old Password"
-  type={showOldPassword ? 'text' : 'password'}
-  name="Old_Password"
-  value={profile.Old_Password}
-  onChange={handleChange}
-  fullWidth
-  inputProps={{
-    'data-lpignore': 'true', // جلوگیری از عملکرد افزونه‌ها
-  }}
-  InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton onClick={() => setShowOldPassword(!showOldPassword)}>
-          {showOldPassword ? <VisibilityOff /> : <Visibility />}
-        </IconButton>
-      </InputAdornment>
-    ),
-  }}
-/>
+                label="Old Password"
+                type={showOldPassword ? 'text' : 'password'}
+                name="Old_Password"
+                value={profile.Old_Password}
+                onChange={handleChange}
+                fullWidth
+                inputProps={{
+                  'data-lpignore': 'true', 
+                }}
+                InputProps={{
+                  readOnly: !isEditMode, 
+                }}
+              />
+            </Grid>
 
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="New Password"
-                  type={showNewPassword ? 'text' : 'password'}
-                  name="New_Password"
-                  value={profile.New_Password}
-                  onChange={handleChange}
-                  fullWidth
-                  InputProps={{
-                    readOnly: !isEditMode,
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>
-                          {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                label="New Password"
+                type={showNewPassword ? 'text' : 'password'}
+                name="New_Password"
+                value={profile.New_Password}
+                onChange={handleChange}
+                fullWidth
+                InputProps={{
+                  readOnly: !isEditMode,
+                }}
+              />
+            </Grid>
+
             </Grid>
             <Box display="flex" justifyContent="center" mt={3}>
               {!isEditMode && (

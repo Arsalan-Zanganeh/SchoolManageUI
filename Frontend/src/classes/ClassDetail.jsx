@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Box, Typography, Button, Tabs, Tab, Card, CardContent, AppBar, Toolbar,
+  Box, Menu , Typography, Button, Tabs, Tab, Card, CardContent, AppBar, Toolbar,
   Grid, Divider, Paper, Dialog, DialogTitle, DialogContent, IconButton,Drawer,ListItemIcon,
   DialogActions, List, ListItem, ListItemText, Container, useMediaQuery
 } from '@mui/material';
@@ -20,6 +20,8 @@ import {
   EditNote
 } from '@mui/icons-material';
 import BusinessIcon from '@mui/icons-material/Business';
+import MenuIcon from '@mui/icons-material/Menu'; 
+
 
 import AttendanceStatus from "../Attendence-stu";
 
@@ -83,10 +85,10 @@ listItemHighlight: {
   padding: '20px',
 },
 previewTextGray: {
-    color: '#C8C6C6', // Gray for seen notifications
+    color: '#C8C6C6', 
 },
 previewTextBlack: {
-    color: '#000', // Black for unseen notifications
+    color: '#000', 
 },
 dialogTitle: {
     textAlign: 'center',
@@ -96,7 +98,7 @@ dialogContent: {
     padding: '16px',
 },
 dateText: {
-    fontWeight: 'bold', // Bold date
+    fontWeight: 'bold', 
     marginRight: '16px',
     color: '#aaa',
 },
@@ -131,8 +133,11 @@ const ClassDetails = () => {
   const [file, setFile] = useState(null); 
   const [finishedQuizzes, setFinishedQuizzes] = useState([]);
   const isDesktop = useMediaQuery('(min-width:600px)');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const drawerProps = isDesktop ? { variant: 'permanent', open: true } : { open: sidebarOpen, onClose: toggleSidebar };
+
 
 
   useEffect(() => {
@@ -365,6 +370,32 @@ const ClassDetails = () => {
       console.error('Error submitting file:', error);
     }
   };
+  
+  const [teacherName, setTeacherName] = useState('');
+
+  useEffect(() => {
+    if (!classDetails || !classDetails.Teacher) return;
+  
+    const teacherId = classDetails.Teacher;
+    // از اینجا به بعد مطمئن هستیم که teacherId تعریف شده است
+    fetch('http://127.0.0.1:8000/api/othersides-watch-teacher-info/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({ id: teacherId })
+    })
+      .then(response => response.json())
+      .then(data => {
+        const fullName = data.first_name + ' ' + data.last_name;
+        setTeacherName(fullName);
+      })
+      .catch(err => {
+        console.error("Error fetching teacher info:", err);
+      });
+  }, [classDetails]);
+  
 
   if (!classDetails) {
     return (
@@ -383,17 +414,54 @@ const ClassDetails = () => {
       </Box>
     );
   }
+  
 
   return (
     <ThemeProvider theme={theme}>
-    <Box sx={{ display: 'flex', flexDirection: 'column', backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
-    <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main, zIndex: theme.zIndex.drawer + 1 }}>
-          <Toolbar>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              {`${classDetails.Topic}`}
-            </Typography>
-          </Toolbar>
-        </AppBar>
+    <Box 
+    sx=
+    {{
+      position: { xs: "relative", sm: "absolute" },
+      top: 0,
+      left: { xs: "10px", sm: "240px" },
+      right: { xs: "20px", sm: "20px" },
+      width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+      maxWidth: { xs: "100%", sm: "1600px" },
+      margin: "0 auto",
+      minHeight: "100vh",
+      borderRadius: "8px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      overflow: "hidden", 
+  }}
+    >
+     <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main, zIndex: theme.zIndex.drawer + 1 }}>
+  <Toolbar>
+    <Grid container alignItems="center" justifyContent="space-between">
+      {!isDesktop && (
+         <Grid item sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                  <IconButton
+                    edge="start"
+                    aria-label="menu"
+                    onClick={toggleSidebar}
+                    sx={{
+                      padding: '8px', 
+                      '& svg': { fontSize: '1.5rem' }, 
+                    }}
+                  >
+                    <MenuIcon sx={{ color: '#fff' }}/>
+                  </IconButton>
+        </Grid>
+      )}
+      <Grid item xs sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Typography variant="h6" sx={{ textAlign: 'center', color: '#fff' }}>
+          {`${classDetails?.Topic || 'Class Details'}`}
+        </Typography>
+      </Grid>
+    </Grid>
+  </Toolbar>
+</AppBar>
       <Toolbar/>
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
     <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
@@ -405,28 +473,123 @@ const ClassDetails = () => {
            alignItems: 'center',
            padding: '20px',
       }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Box>
-            <Typography variant="h4" color="primary" gutterBottom>
-              {classDetails.Topic}
-            </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              Instructor: {classDetails.Teacher}
-            </Typography>
-          </Box>
-          <IconButton 
-            color="default" 
-            onClick={() => navigate(-1)}
-            sx={{ 
-              border: '1px solid', 
-              borderColor: 'divider' 
-            }}
-          >
-            <BackIcon />
-          </IconButton>
-        </Box>
+<Box
+  sx={{
+    backgroundColor: '#DCE8FD',
+    padding: { xs: '20px', sm: '20px' },
+    borderRadius: '8px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '16px',
+  }}
+>
+  {/* ردیف شامل عنوان و دکمه بازگشت */}
+  <Grid container alignItems="center" sx={{ width: '100%' }}>
+    {/* ستون سمت چپ خالی برای ایجاد فضای متقارن */}
+    <Grid item xs={2} sm={2} />
+
+    {/* ستون میانی - عنوان */}
+    <Grid item xs={8} sm={8}>
+      <Typography
+        variant="h5"
+        color="primary"
+        sx={{
+          fontWeight: 'bold',
+          fontSize: { xs: '1.2rem', sm: '1.5rem' },
+          textAlign: 'center',
+        }}
+      >
+        {classDetails.Topic}
+      </Typography>
+    </Grid>
+
+    {/* ستون سمت راست - آیکن بازگشت */}
+    <Grid item xs={2} sm={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <IconButton
+  onClick={() => navigate('/student-dashboard')}
+  sx={{
+          padding: { xs: '6px', sm: '8px' },
+          '& svg': { fontSize: { xs: '1.2rem', sm: '1.5rem' } },
+          backgroundColor: '#fff',
+          color: 'primary.main',
+          border: '1px solid',
+          borderColor: 'divider',
+          boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            backgroundColor: '#f0f0f0',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+          },
+        }}
+      >
+        <BackIcon />
+      </IconButton>
+    </Grid>
+  </Grid>
+
+  <Typography
+    variant="subtitle1"
+    color="textSecondary"
+    sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, textAlign: 'center' }}
+  >
+    Instructor: {teacherName || 'Loading...'}
+  </Typography>
+
+  <Grid container spacing={2} sx={{ width: '100%' }}>
+    <Grid item xs={12} sm={6}>
+      <Paper
+        elevation={2}
+        sx={{
+          padding: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '8px',
+          backgroundColor: '#f9f9f9',
+        }}
+      >
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          sx={{ fontWeight: 'bold', textAlign: 'center' }}
+        >
+          Session 1: {classDetails.Session1Day} - {classDetails.Session1Time}
+        </Typography>
+      </Paper>
+    </Grid>
+    <Grid item xs={12} sm={6}>
+      <Paper
+        elevation={2}
+        sx={{
+          padding: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '8px',
+          backgroundColor: '#f9f9f9',
+        }}
+      >
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          sx={{ fontWeight: 'bold', textAlign: 'center' }}
+        >
+          Session 2: {classDetails.Session2Day} - {classDetails.Session2Time}
+        </Typography>
+      </Paper>
+    </Grid>
+  </Grid>
+</Box>
+
+
+
+
+
+
   
-        <Grid container spacing={2} sx={{ mb: 2 }}>
+        {/* <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid item xs={12} sm={6}>
             <Paper variant="outlined" sx={{ p: 2 }}>
               <Typography variant="body2" color="textSecondary">
@@ -441,7 +604,7 @@ const ClassDetails = () => {
               </Typography>
             </Paper>
           </Grid>
-        </Grid>
+        </Grid> */}
     
         {tabValue === 0 && (
           <Box
@@ -694,32 +857,29 @@ const ClassDetails = () => {
       </ListItemIcon>
       <ListItemText primary="Attendence" />
     </ListItem>
-    <ListItem button onClick={() => navigate(-1)}
-        sx={{
-          '&:hover': {
-            backgroundColor: theme.palette.primary.light, 
-            transition: 'background-color 0.3s', 
-          },
-          cursor: 'pointer', 
-          borderRadius: 1, 
-          padding: theme.spacing(1), 
-        }}>
-      <ListItemIcon sx={{ color: '#fff' }}>
-        <BackIcon />
-      </ListItemIcon>
-      <ListItemText primary="Back to Dashboard" />
-    </ListItem>
+    <ListItem
+  button
+  onClick={() => navigate('/student-dashboard')}
+  sx={{
+    '&:hover': {
+      backgroundColor: theme.palette.primary.light,
+      transition: 'background-color 0.3s',
+    },
+    cursor: 'pointer',
+    borderRadius: 1,
+    padding: theme.spacing(1),
+  }}
+>
+  <ListItemIcon sx={{ color: '#fff' }}>
+    <BackIcon />
+  </ListItemIcon>
+  <ListItemText primary="Back to Dashboard" />
+</ListItem>
+
     
   </List>
     </Drawer> 
     </Box> 
-    {!isDesktop && (
-      <Box sx={{ position: 'fixed', top: '50%', right: 0, transform: 'translateY(-50%)' }}>
-        <Button variant="contained" color="primary" onClick={toggleSidebar}>
-          <Menu />
-        </Button>
-      </Box>
-    )}
     </Box>       
     </ThemeProvider>
   );

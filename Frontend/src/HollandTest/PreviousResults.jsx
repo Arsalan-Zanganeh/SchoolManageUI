@@ -164,6 +164,8 @@ const PreviousResults = ({goBack}) => {
         alignItems: "center",
         backgroundColor: "#f9fafe",
         padding: "20px",
+        paddingTop: "100px", // فاصله بیشتر از بالای صفحه
+
       }}
     >
       {/* عنوان */}

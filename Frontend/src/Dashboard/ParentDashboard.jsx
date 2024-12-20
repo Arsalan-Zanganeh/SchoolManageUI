@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { VerifiedUser } from '@mui/icons-material'; 
 import DisciplinaryStatus from './DisciplinaryStatus';
@@ -108,6 +108,20 @@ const ParentDashboard = () => {
   const [nofunseen, setcount] = useState(0);
   const { logoutParent } = useParent();
 
+  // Load saved tab value from localStorage
+  useEffect(() => {
+    const savedTab = localStorage.getItem('parent-dashboard-tab');
+    if (savedTab !== null) {
+      setTabValue(Number(savedTab));
+    }
+  }, []);
+
+  const handleTabChange = (newValue) => {
+    setTabValue(newValue);
+    // Save the new tab value in localStorage
+    localStorage.setItem('parent-dashboard-tab', newValue);
+  };
+
   const handleLogout = async () => {
     try {
       const response = await fetch('http://127.0.0.1:8000/student/parent-logout/', {
@@ -133,7 +147,7 @@ const ParentDashboard = () => {
     ? { variant: 'permanent', open: true }
     : { open: sidebarOpen, onClose: toggleSidebar };
 
-  const goBack = () => setTabValue(0);
+  const goBack = () => handleTabChange(0);
 
   return (
     <ThemeProvider theme={theme}>
@@ -146,21 +160,41 @@ const ParentDashboard = () => {
           minHeight: '100vh',
         }}
       >
-        <AppBar
-          position="fixed"
-          sx={{
-            backgroundColor: theme.palette.primary.main,
-            zIndex: theme.zIndex.drawer + 1,
-          }}
-        >
-          <Toolbar>
-            
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              Parent Dashboard
-            </Typography>
-            
-          </Toolbar>
-        </AppBar>
+       <AppBar
+  position="fixed"
+  sx={{
+    backgroundColor: theme.palette.primary.main,
+    zIndex: theme.zIndex.drawer + 1,
+  }}
+>
+  <Toolbar>
+    {!isDesktop && (
+      <Grid container alignItems="center" sx={{ width: '100%' }}>
+        <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleSidebar}
+          >
+            <Menu />
+          </IconButton>
+        </Grid>
+        <Grid item xs={10} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Typography variant="h6" noWrap>
+            Parent Dashboard
+          </Typography>
+        </Grid>
+      </Grid>
+    )}
+    {isDesktop && (
+      <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        Parent Dashboard
+      </Typography>
+    )}
+  </Toolbar>
+</AppBar>
+
         <Toolbar />
         <Box sx={{ display: 'flex', flexGrow: 1 }}>
         <Drawer
@@ -169,13 +203,13 @@ const ParentDashboard = () => {
   open={isDesktop || sidebarOpen}
   onClose={toggleSidebar}
   ModalProps={{
-    keepMounted: true, // بهینه‌سازی برای موبایل
+    keepMounted: true, 
   }}
   sx={{
     '& .MuiDrawer-paper': {
       bgcolor: theme.palette.primary.drawer,
       color: theme.palette.text.primary,
-      minWidth: '14vh', // کشیده‌تر از 100vh
+      minWidth: '14vh', 
 
       '& .MuiListItemText-primary': { color: '#fff' },
     },
@@ -185,10 +219,7 @@ const ParentDashboard = () => {
   <List>
   <ListItem
   button
-  onClick={() => {
-    setTabValue(0); // مطمئن شوید که این تابع به درستی مقداردهی می‌شود
-    if (!isDesktop) toggleSidebar();
-  }}
+  onClick={() => handleTabChange(0)} 
   sx={{
     '&:hover': {
       backgroundColor: theme.palette.primary.light,
@@ -204,10 +235,6 @@ const ParentDashboard = () => {
   </ListItemIcon>
   <ListItemText primary="Home" />
 </ListItem>
-
-
-   
-
     <ListItem
       button
       onClick={() => {
@@ -231,46 +258,36 @@ const ParentDashboard = () => {
     </ListItem>
   </List>
 </Drawer>
- {!isDesktop && (
-          <Box sx={{ position: 'fixed', top: '50%', right: 0, transform: 'translateY(-50%)' }}>
-            <Button variant="contained" color="primary" onClick={toggleSidebar}>
-              <Menu />
-            </Button>
-          </Box>
-        )}
           <Box component="main" sx={{ flexGrow: 1, mt: 4 }}>
             <Container maxWidth="lg">
               <TabPanel value={tabValue} index={0}>
-                <Typography variant="h6" sx={{ mt: 1, mb: 3 }}>
-                  Welcome to the Parent Dashboard!
-                </Typography>
-                <Grid container spacing={2}>
-                <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <NavigationBox elevation={3} onClick={() => setTabValue(2)}>
-                    <VerifiedUser fontSize="large" />
-                    <Typography variant="subtitle1">Disciplinary Status</Typography>
-                </NavigationBox>
-                </Grid>
+              <Typography
+  variant="h4"
+  sx={{
+    fontWeight: "bold", // ضخیم‌تر کردن متن
+    fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه فونت برای موبایل و دسکتاپ
+    textAlign: "center", // متن وسط‌چین
+    mt: 2, // فاصله از بالا
+    mb: 3, // فاصله از پایین
+  }}
+>
+  Welcome to the Parent Dashboard!
+</Typography>
 
-                  <Grid
-                    item
-                    xs={6}
-                    sm={4}
-                    md={4}
-                    sx={{ display: 'flex', justifyContent: 'center' }}
-                  >
-                    <NavigationBox elevation={3} onClick={() => setTabValue(1)}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <NavigationBox elevation={3} onClick={() => handleTabChange(2)}>
+                      <VerifiedUser fontSize="large" />
+                      <Typography variant="subtitle1">Disciplinary Status</Typography>
+                    </NavigationBox>
+                  </Grid>
+                  <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <NavigationBox elevation={3} onClick={() => handleTabChange(1)}>
                       <Class fontSize="large" />
                       <Typography variant="subtitle1">Classes</Typography>
                     </NavigationBox>
                   </Grid>
-                  <Grid
-                    item
-                    xs={6}
-                    sm={4}
-                    md={4}
-                    sx={{ display: 'flex', justifyContent: 'center' }}
-                  >
+                  <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
                     <NavigationBox elevation={3} onClick={handleLogout}>
                       <ExitToApp fontSize="large" />
                       <Typography variant="subtitle1">Logout</Typography>
@@ -281,10 +298,9 @@ const ParentDashboard = () => {
               <TabPanel value={tabValue} index={1}>
                 <ParentClasses goBack={goBack} />
               </TabPanel>
-            <TabPanel value={tabValue} index={2}>
-               <DisciplinaryStatus goBack={goBack} />
-            </TabPanel>
-
+              <TabPanel value={tabValue} index={2}>
+                <DisciplinaryStatus goBack={goBack} />
+              </TabPanel>
             </Container>
           </Box>
         </Box>

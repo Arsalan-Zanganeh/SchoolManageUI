@@ -392,32 +392,77 @@ const formatDate = (dateString) => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', flexDirection: 'column', backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
-        <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main, zIndex: theme.zIndex.drawer + 1 }}>
-          <Toolbar>
-          <Avatar
+      <AppBar
+  position="fixed"
+  sx={{
+    backgroundColor: theme.palette.primary.main,
+    zIndex: theme.zIndex.drawer + 1,
+    height: '56px', // تنظیم ارتفاع ثابت
+  }}
+>
+  <Toolbar>
+    <Grid container alignItems="center" justifyContent="space-between">
+      {/* ستون اول: همبرگر و آواتار */}
+      <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+        {isMobile && (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleSidebar}
+            sx={{ padding: '4px', marginRight: '8px' }} // فاصله بین همبرگر و آواتار
+          >
+            <Menu />
+          </IconButton>
+        )}
+        <Avatar
           alt="Profile Picture"
           src={profileImage || "/default-avatar.png"}
           sx={{
-            marginRight: 2,
-            cursor: "pointer",
-            "&:hover": {
+            cursor: 'pointer',
+            '&:hover': {
               boxShadow: 3,
-              transform: "scale(1.1)",
-              transition: "transform 0.2s ease-in-out",
+              transform: 'scale(1.1)',
+              transition: 'transform 0.2s ease-in-out',
             },
           }}
           onClick={() => handleTabChange(6)}
-          />
+        />
+      </Grid>
+
+      <Grid item xs>
+      <Typography
+  variant="h6"
+  sx={{
+    fontSize: '1.2rem', 
+    textAlign: 'center', 
+    color: 'white', 
+  }}
+>
+  {principalInfo ? `${principalInfo.first_name} ${principalInfo.last_name}` : 'Loading...'}
+</Typography>
+
+      </Grid>
+
+      {/* ستون سوم: دکمه خروج */}
+      <Grid item>
+        <IconButton
+          edge="end"
+          color="inherit"
+          aria-label="logout"
+          onClick={handleLogout}
+          sx={{ padding: '4px' }}
+        >
+          <ExitToApp />
+        </IconButton>
+      </Grid>
+    </Grid>
+  </Toolbar>
+</AppBar>
 
 
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              {principalInfo ? `${principalInfo.first_name} ${principalInfo.last_name}` : 'Loading...'}
-            </Typography>
-            <IconButton edge="end" color="inherit" aria-label="logout" onClick={handleLogout}>
-              <ExitToApp />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+
+
         <Toolbar />
         <Box sx={{ display: 'flex', flexGrow: 1 }}>
           <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
@@ -434,9 +479,19 @@ const formatDate = (dateString) => {
             )}
 
               <TabPanel value={tabvalue} index={0}>
-              <Typography variant="h6" sx={{ mt:1, flexGrow: 1 , mb:3 }}>
-                Welcome {principalInfo ? `${principalInfo.first_name} ${principalInfo.last_name}` : 'Loading...'}!
-              </Typography>
+              <Typography
+  variant="h4"
+  sx={{
+    fontWeight: "bold", // ضخیم‌تر کردن متن
+    fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه متن برای موبایل و دسکتاپ
+    textAlign: "center", // متن وسط‌چین
+    mt: 2, // فاصله از بالا
+    mb: 3, // فاصله از پایین
+  }}
+>
+  Welcome {principalInfo ? `${principalInfo.first_name} ${principalInfo.last_name}` : 'Loading...'}!
+</Typography>
+
               <Grid container spacing={2}>
                 <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
                   <NavigationBox elevation={3} component="a">
@@ -460,9 +515,19 @@ const formatDate = (dateString) => {
               </TabPanel>
 
               <TabPanel value={tabvalue} index={1}>
-              <Typography variant="h6" sx={{ mt:1, flexGrow: 1  , mb : 3}}>
-                Classes Management
-              </Typography>
+              <Typography
+  variant="h4"
+  sx={{
+    fontWeight: "bold", // ضخیم‌تر کردن متن
+    fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه متن برای موبایل و دسکتاپ
+    textAlign: "center", // متن وسط‌چین
+    mt: 2, // فاصله از بالا
+    mb: 3, // فاصله از پایین
+  }}
+>
+  Classes Management
+</Typography>
+
               <Grid container spacing={2}>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
                   <NavigationBox elevation={3} component="a" onClick={viewClasses}>
@@ -492,9 +557,19 @@ const formatDate = (dateString) => {
               </TabPanel>
 
             <TabPanel value={tabvalue} index={2}>
-              <Typography variant="h6" sx={{ mt:1, flexGrow: 1 , mb: 3}}>
-                Office Automation
-              </Typography>
+            <Typography
+  variant="h4"
+  sx={{
+    fontWeight: "bold", // ضخیم‌تر کردن متن
+    fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه متن برای موبایل و دسکتاپ
+    textAlign: "center", // متن وسط‌چین
+    mt: 2, // فاصله از بالا
+    mb: 3, // فاصله از پایین
+  }}
+>
+  Office Automation
+</Typography>
+
               <Grid container spacing={2}>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
                   <NavigationBox elevation={3} component="a" href="https://example.com/page1" >
@@ -693,13 +768,13 @@ const formatDate = (dateString) => {
             </Drawer>
           )}
         </Box>
-        {!isDesktop && (
+        {/* {!isDesktop && (
           <Box sx={{ position: 'fixed', top: '50%', right: 0, transform: 'translateY(-50%)' }}>
             <Button variant="contained" color="primary" onClick={toggleSidebar}>
               <Menu />
             </Button>
           </Box>
-        )}
+        )} */}
             <Dialog open={openmessagebox} onClose={handleMessageClickClose}>
                 <DialogTitle>Send Notification</DialogTitle>
                 <DialogContent>

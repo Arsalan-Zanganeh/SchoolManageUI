@@ -16,7 +16,7 @@ import { useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTeacher } from '../context/TeacherContext';
 import { CgProfile } from "react-icons/cg";
-import './show-classes/teacher'
+import './show-classes/teacher';
 import TeacherClassList from './show-classes/teacher';
 import AppWrapper from './ProfileTeacher';
 
@@ -148,7 +148,8 @@ const NavigationBox = styled(Paper)(({ theme }) => ({
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
-  const [tabvalue, settabvalue] = useState(0);
+  const initialTabValue = parseInt(localStorage.getItem('activeTeacherTab')) || 0;
+  const [tabvalue, settabvalue] = useState(initialTabValue);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { teacher, logoutTeacher } = useTeacher();
   const [name, setName] = useState(teacher ? teacher.first_name : '');
@@ -160,7 +161,8 @@ const TeacherDashboard = () => {
   const drawerProps = isDesktop ? { variant: 'permanent', open: true } : { open: sidebarOpen, onClose: toggleSidebar };
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    settabvalue(newValue);
+    localStorage.setItem('activeTeacherTab', newValue);
   };
 
   const fetchTeacherData = useCallback(async () => {
@@ -185,8 +187,9 @@ const TeacherDashboard = () => {
   }, [token]);
 
   const handleLogout = () => {
-  logoutTeacher();
-  navigate('/');
+    logoutTeacher();
+    localStorage.removeItem('activeTeacherTab'); // حذف تب ذخیره‌شده هنگام خروج
+    navigate('/');
   };
 
   useEffect(() => {
@@ -195,47 +198,89 @@ const TeacherDashboard = () => {
     }
   }, [token, fetchTeacherData]);
 
-  const editProfile = () => settabvalue(3)
-  const viewClasses = () => settabvalue(4);
+  const editProfile = () => handleChange(null, 3);
+  const viewClasses = () => handleChange(null, 4);
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', flexDirection: 'column', backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
-        <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main, zIndex: theme.zIndex.drawer + 1 }}>
-          <Toolbar>
-          <Avatar
-                alt="Profile Picture"
-                src="/src/1.jpg"
-                sx={{
-                  marginRight: 2,
-                  cursor: 'pointer',
-                  '&:hover': {
-                    boxShadow: 3, 
-                    transform: 'scale(1.1)',
-                    transition: 'transform 0.2s ease-in-out',
-                  },
-                }}
-                onClick={() => settabvalue(3)}
-            />
+      <AppBar position="fixed" sx={{ backgroundColor: theme.palette.primary.main, zIndex: theme.zIndex.drawer + 1 }}>
+  <Toolbar>
+    <Grid container alignItems="center" justifyContent="space-between">
+      {/* ستون اول */}
+      <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+        {!isDesktop && (
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleSidebar}
+            sx={{ padding: '8px', marginRight: '8px' }}
+          >
+            <Menu />
+          </IconButton>
+        )}
+        <Avatar
+          alt="Profile Picture"
+          src="/src/1.jpg"
+          sx={{
+            cursor: 'pointer',
+            '&:hover': {
+              boxShadow: 3,
+              transform: 'scale(1.1)',
+              transition: 'transform 0.2s ease-in-out',
+            },
+          }}
+          onClick={() => handleChange(null, 3)}
+        />
+      </Grid>
 
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              {`${name} ${lastName}`}
-            </Typography>
-            <IconButton edge="end" color="inherit" aria-label="notifications"> 
-              <Badge badgeContent={nofunseen} color="error"> 
-                <NotificationsIcon /> 
-                </Badge> 
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+      {/* ستون دوم */}
+      <Grid item sx={{ flex: 1, textAlign: 'center' }}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontSize: '1.2rem',
+          }}
+        >
+          {`${name} ${lastName}`}
+        </Typography>
+      </Grid>
+
+      {/* ستون سوم */}
+      <Grid item sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <IconButton edge="end" color="inherit" aria-label="notifications">
+          <Badge badgeContent={nofunseen} color="error">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+      </Grid>
+    </Grid>
+  </Toolbar>
+</AppBar>
+
+
+
+
+
         <Toolbar />
         <Box sx={{ display: 'flex', flexGrow: 1 }}>
           <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
             <Container maxWidth="lg">
               <TabPanel value={tabvalue} index={0}>
               <Typography variant="h6" sx={{ mt:1, flexGrow: 1 , mb:3 }}>
-              <Typography variant="body1">Welcome, {name} {lastName}!</Typography>
+              <Typography
+  variant="h4"
+  sx={{
+    fontWeight: "bold", // متن ضخیم‌تر
+    fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه متغیر برای موبایل و دسکتاپ
+    textAlign: "center", // متن وسط‌چین
+    marginBottom: "20px", // فاصله از پایین
+  }}
+>
+  Welcome, {name} {lastName}!
+</Typography>
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -260,9 +305,19 @@ const TeacherDashboard = () => {
               </TabPanel>
 
               <TabPanel value={tabvalue} index={1}>
-              <Typography variant="h6" sx={{ mt:1, flexGrow: 1  , mb : 3}}>
-                Your School
-              </Typography>
+              <Typography
+  variant="h4"
+  sx={{
+    fontWeight: "bold", // ضخیم‌تر کردن متن
+    fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه فونت در موبایل و دسکتاپ
+    textAlign: "center", // متن در وسط صفحه
+    mt: 2, // فاصله از بالا
+    mb: 3, // فاصله از پایین
+  }}
+>
+  Your School
+</Typography>
+
               <Grid container spacing={2}>
                 <Grid item xs={6} sm={4} md={6} sx={{ display: 'flex', justifyContent: 'center' }}>
                   <NavigationBox elevation={3} component="a" onClick={viewClasses}>
@@ -285,17 +340,34 @@ const TeacherDashboard = () => {
               </Typography>
             </TabPanel>
             <TabPanel value={tabvalue} index={3}>
-              <AppWrapper goBack={() => settabvalue(0)}/>
+              <AppWrapper goBack={() => handleChange(null, 0)}/>
             </TabPanel>
             <TabPanel value={tabvalue} index={4}>
-              <TeacherClassList goBack={() => settabvalue(1) }/>
+              <TeacherClassList goBack={() => handleChange(null, 1) }/>
             </TabPanel>
             </Container>
           </Box>
-          <Drawer anchor='left' {...drawerProps} sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.drawer, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
+            <Drawer
+           anchor="left"
+           variant={isDesktop ? "permanent" : "temporary"}
+           open={isDesktop || sidebarOpen}
+           onClose={toggleSidebar}
+           ModalProps={{
+             keepMounted: true, // بهینه‌سازی برای موبایل
+           }}
+           sx={{
+             '& .MuiDrawer-paper': {
+               bgcolor: theme.palette.primary.drawer,
+               color: theme.palette.text.primary,
+               minWidth: '16vh', // کشیده‌تر از 100vh
+
+               '& .MuiListItemText-primary': { color: '#fff' },
+             },
+           }}
+         >
               <Toolbar />
             <List>
-              <ListItem button onClick={() => settabvalue(0)}
+              <ListItem button onClick={() => handleChange(null, 0)}
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 
@@ -310,7 +382,7 @@ const TeacherDashboard = () => {
                 </ListItemIcon>
                 <ListItemText primary="Home" />
               </ListItem>
-              <ListItem button onClick={() => settabvalue(1)}
+              <ListItem button onClick={() => handleChange(null, 1)}
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 
@@ -343,13 +415,6 @@ const TeacherDashboard = () => {
             </List>
           </Drawer>          
         </Box>
-        {!isDesktop && (
-          <Box sx={{ position: 'fixed', top: '50%', right: 0, transform: 'translateY(-50%)' }}>
-            <Button variant="contained" color="primary" onClick={toggleSidebar}>
-              <Menu />
-            </Button>
-          </Box>
-        )}
       </Box>
     </ThemeProvider>
   );
