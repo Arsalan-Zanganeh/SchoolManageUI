@@ -291,7 +291,7 @@ const SignUpLogin = () => {
   const handlePrincipalSignUpClick = () => setPrincipalSignUp(true);
   const handleBackClick = () => setPrincipalSignUp(false);
   const renderForm = () => {
-    if (selectedTab === 2 && principalSignUp) {
+    if (selectedTab === 3 && principalSignUp) {
       return <PrincipalSignUpForm onBackClick={handleBackClick} />;
     }
   

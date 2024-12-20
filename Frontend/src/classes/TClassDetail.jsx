@@ -1177,14 +1177,24 @@ const TeacherClassDetail = () => {
                                 Due on {homework.DeadLine}
                               </Typography>
                             </Box>
-                            <IconButton
-                              color="primary"
-                              onClick={() =>
-                                handleDeleteAssignment(homework.id)
-                              }
-                            >
-                              <DeleteIcon />
-                            </IconButton>
+                            <Box sx={{display:'flex', flexDirection:'row', gap:'15px'}}>
+                              <Button 
+                                variant="contained" 
+                                color="primary" 
+                                size="small"
+                                onClick={() => navigate(`/teacher-dashboard/teacher-classes/${tcid}/submitted-assignments/${homework.id}`)}
+                              >
+                                View submitted assignments
+                              </Button>
+                              <IconButton
+                                color="primary"
+                                onClick={() =>
+                                  handleDeleteAssignment(homework.id)
+                                }
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Box>
                           </Box>
                         </CardContent>
                       </Card>

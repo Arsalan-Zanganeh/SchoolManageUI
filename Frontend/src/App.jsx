@@ -48,8 +48,7 @@ import TeacherResult from "./quiz/TeacherResult";
 import Discipline from "./discipline/Discipline"
 import { ParentProvider } from './context/ParentContext';
 import ParentDashboard from "./Dashboard/ParentDashboard";
-
-
+import SubmittedAssignmentsPage from './assignment/SubmittedAssignmentsPage'
 import './App.css';
 
 function App() {
@@ -321,7 +320,14 @@ function App() {
                     </PrivateRoute>
                   }
           />
-
+          <Route
+                path="/teacher-dashboard/teacher-classes/:tcid/submitted-assignments/:homeworkId"
+                element={
+                  <PrivateRoute role="teacher">
+                    <SubmittedAssignmentsPage/>
+                  </PrivateRoute>
+                }
+          />
 
 
               </Routes>

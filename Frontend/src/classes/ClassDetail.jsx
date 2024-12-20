@@ -744,7 +744,7 @@ const ClassDetails = () => {
                 paddingRight: 2,
               }}
             >
-              {homeworks.map((homework) => (
+              {homeworks.filter(homework => homework.Is_Published).map((homework) => (
                 <Card
                   key={homework.id}
                   variant="outlined"
