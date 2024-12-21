@@ -573,9 +573,9 @@ const StudentDashboard = () => {
                   <Typography
                     variant="h4"
                     sx={{
-                      fontWeight: "bold", // ضخیم‌تر کردن متن
-                      fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه متغیر برای موبایل و دسکتاپ
-                      textAlign: "center", // متن در وسط
+                      fontWeight: "bold",
+                      fontSize: { xs: "1.5rem", sm: "2rem" },
+                      textAlign: "center",
                     }}
                   >
                     Welcome, {name} {lastName}!

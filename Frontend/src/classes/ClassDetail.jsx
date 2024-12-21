@@ -134,7 +134,7 @@ const ClassDetails = () => {
   const [finishedQuizzes, setFinishedQuizzes] = useState([]);
   const isDesktop = useMediaQuery('(min-width:600px)');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const currentDate = new Date().getTime
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const drawerProps = isDesktop ? { variant: 'permanent', open: true } : { open: sidebarOpen, onClose: toggleSidebar };
 
@@ -829,10 +829,12 @@ useEffect(() => {
         <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm">
           <DialogTitle>Submit answer for homework: <strong>{selectedHomework?.Title}</strong></DialogTitle>
           <DialogContent>
-            <Box sx={{display:'flex', flexDirection:'row', gap:'5px', marginBottom:'30px'}}>
-              <Typography>Upload a new file or change existing file:</Typography>
-              <input type="file" onChange={handleFileChange}/>
-            </Box>
+            {currentDate >= new Date(selectedHomework?.DeadLine).getDate() ? (
+              <Box sx={{display:'flex', flexDirection:'row', gap:'5px', marginBottom:'30px'}}>
+                <Typography>Upload a new file or change existing file:</Typography>
+                <input type="file" onChange={handleFileChange}/>
+              </Box>
+              ) : <Typography sx={{marginBottom:'30px'}}>Deadline passed!</Typography>}
             <Box sx={{display:'flex', flexDirection:'row'}}>
               <Box sx={{display:'flex', flexDirection:'column', width:'50%', gap:'10px'}}>
                 <Typography variant="h5">Uploaded file:</Typography>
