@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AppBar, Toolbar, IconButton, Box, Container, Grid, Paper, Typography,Dialog, DialogActions,ListItemIcon ,DialogContent, DialogTitle , CssBaseline, Button, Avatar, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Box, Container, Grid, Paper, TextField, Typography,Dialog, DialogActions,ListItemIcon ,DialogContent, DialogTitle , CssBaseline, Button, Avatar, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { ExitToApp, Menu, Class, Person, PersonAdd, School, Person4, HomeWork, NotificationAdd, PermContactCalendar, Security } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HomeIcon from '@mui/icons-material/Home';
@@ -129,6 +129,23 @@ const SchoolDashboard = () => {
   const [tabvalue, settabvalue] = useState(initialTabValue);
   const [openmessagebox, setOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [openCalendar, setOpencalendar] = useState(false);
+  const [eventFlag, setEventFlag] = useState('');
+  const [description, setDescription] = useState('');
+  const [startDatetime, setStartDatetime] = useState('');
+  const [endDatetime, setEndDatetime] = useState('');
+
+  const formatDatetime = (datetime) => {
+     const date = new Date(datetime);
+    return `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)} ${('0' + date.getHours()).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}:${('0' + date.getSeconds()).slice(-2)}`;
+  };
+  const handleClickOpenCalendar = () => {
+    setOpencalendar(true);
+  };
+
+  const handleCloseClendar = () => {
+    setOpencalendar(false);
+  };
 
   const handleTabChange = (newTabValue) => {
     settabvalue(newTabValue);
@@ -146,6 +163,53 @@ const SchoolDashboard = () => {
       setOpen(false);
   };
   const [profileImage, setProfileImage] = useState(null);
+
+  const handleAddEvent = async (e) =>{
+    e.preventDefault();
+    try {
+      const submit = await fetch('http://127.0.0.1:8000/teacher/principal-add-event/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials:'include',
+      body: JSON.stringify({
+        flag: eventFlag,
+        description: description,
+        start: startDatetime,
+        end: endDatetime,
+      }),
+    })
+    if (!submit.ok) {
+      const errorData = await submit.json();
+
+      if (errorData) {
+        let errorMessage = '';
+        for (const key in errorData) {
+          if (errorData.hasOwnProperty(key)) {
+            errorMessage += `${key}: ${errorData[key].join(', ')}\n`;
+          }
+        }
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage || 'Failed to Add Event. Please check the details and try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      } else {
+        Swal.fire('Error', 'An unknown error occurred. Please try again later.', 'error');
+      }
+    } else {
+      Swal.fire('Success', 'Event Added Successfully!', 'success');
+    }
+
+  } catch (error) 
+  {
+    Swal.fire('Error', 'Connect Your Google Account First!', 'error');
+    console.error('Error:', error);
+  }
+  handleCloseClendar();
+};
 
 useEffect(() => {
   const fetchProfileImage = async () => {
@@ -387,6 +451,10 @@ const formatDate = (dateString) => {
     localStorage.removeItem('activeTab'); // حذف تب ذخیره‌شده از localStorage
     navigate('/admin-school'); // هدایت به صفحه Switch School
   };
+
+  const isFormValid = () => {
+    return eventFlag !== '' && description !== '' && startDatetime !== '' && endDatetime !== '';
+  };
   
   return (
     <ThemeProvider theme={theme}>
@@ -591,7 +659,7 @@ const formatDate = (dateString) => {
               </Grid>
 
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} onClick={fetchCalendar}>
+                  <NavigationBox elevation={3} onClick={handleClickOpenCalendar}>
                     <PermContactCalendar fontSize="large" />
                     <Typography variant="subtitle1">Calendar</Typography>
                   </NavigationBox>
@@ -775,6 +843,73 @@ const formatDate = (dateString) => {
             </Button>
           </Box>
         )} */}
+      <Dialog open={openCalendar} onClose={handleCloseClendar}>
+        <DialogTitle>Add Event</DialogTitle>
+        <DialogContent>
+        <Button variant="outlined" color="primary" onClick={fetchCalendar}>
+            Google Calendar
+          </Button>
+          <TextField
+            required
+            autoFocus
+            margin="dense"
+            id="flag"
+            label="Event Flag"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={eventFlag}
+            onChange={(e) => setEventFlag(e.target.value)}
+          />
+          <TextField
+          required
+            margin="dense"
+            id="description"
+            label="Description"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <TextField
+          required
+            margin="dense"
+            id="startDatetime"
+            label="Start Date and Time"
+            type="datetime-local"
+            fullWidth
+            variant="standard"
+            value={startDatetime}
+            onChange={(e) => setStartDatetime(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+          required
+            margin="dense"
+            id="endDatetime"
+            label="End Date and Time"
+            type="datetime-local"
+            fullWidth
+            variant="standard"
+            value={endDatetime}
+            onChange={(e) => setEndDatetime(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseClendar} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleAddEvent} color="primary" disabled={!isFormValid()}>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
             <Dialog open={openmessagebox} onClose={handleMessageClickClose}>
                 <DialogTitle>Send Notification</DialogTitle>
                 <DialogContent>

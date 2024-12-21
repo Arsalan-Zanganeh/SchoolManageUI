@@ -165,6 +165,45 @@ const TeacherDashboard = () => {
     localStorage.setItem('activeTeacherTab', newValue);
   };
 
+  const fetchCalendar = useCallback(async () => {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/teacher/calendar/",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+  
+        if (!response.ok) {
+              const errorData = await submit.json();
+        
+              if (errorData) {
+                let errorMessage = '';
+                for (const key in errorData) {
+                  if (errorData.hasOwnProperty(key)) {
+                    errorMessage += `${key}: ${errorData[key].join(', ')}\n`;
+                  }
+                }
+                Swal.fire({
+                  title: 'Error',
+                  text: errorMessage || 'Failed to Add Event. Please check the details and try again.',
+                  icon: 'error',
+                  confirmButtonText: 'OK',
+                });
+              } else {
+                Swal.fire('Error', 'An unknown error occurred. Please try again later.', 'error');
+              }
+            } 
+          } catch (error) 
+          {
+            Swal.fire('Error', 'Ask your Principal to Connect his Google Account First!', 'error');
+            console.error('Error:', error);
+          }
+        }, [token]);
+
   const fetchTeacherData = useCallback(async () => {
     try {
       const response = await fetch('http://127.0.0.1:8000/teacher/user', {
@@ -306,18 +345,17 @@ const TeacherDashboard = () => {
 
               <TabPanel value={tabvalue} index={1}>
               <Typography
-  variant="h4"
-  sx={{
-    fontWeight: "bold", // ضخیم‌تر کردن متن
-    fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه فونت در موبایل و دسکتاپ
-    textAlign: "center", // متن در وسط صفحه
-    mt: 2, // فاصله از بالا
-    mb: 3, // فاصله از پایین
-  }}
->
-  Your School
-</Typography>
-
+                variant="h4"
+                sx={{
+                  fontWeight: "bold", // ضخیم‌تر کردن متن
+                  fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه فونت در موبایل و دسکتاپ
+                  textAlign: "center", // متن در وسط صفحه
+                  mt: 2, // فاصله از بالا
+                  mb: 3, // فاصله از پایین
+                }}
+              >
+                Your School
+              </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={6} sm={4} md={6} sx={{ display: 'flex', justifyContent: 'center' }}>
                   <NavigationBox elevation={3} component="a" onClick={viewClasses}>
@@ -326,7 +364,7 @@ const TeacherDashboard = () => {
                   </NavigationBox>
                 </Grid>
                 <Grid item xs={6} sm={4} md={6} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3}>
+                  <NavigationBox elevation={3} component="a" onClick={fetchCalendar}>
                     <PermContactCalendar fontSize="large" />
                     <Typography variant="subtitle1">School Calendar</Typography>
                   </NavigationBox>

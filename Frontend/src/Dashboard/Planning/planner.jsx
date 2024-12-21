@@ -179,7 +179,7 @@ const Planner = ({ onBack }) => {
             if (startHour >= 7 && startHour < 24) {
                 const hourIndex = startHour - 7; // Adjust index for the 7:00 AM to 12:00 AM range
                 schedule[day][hourIndex].push({
-                    id: plan.ID,
+                    id: plan.id,
                     title: plan.Title,
                     startHour,
                     startMinutes,
@@ -212,12 +212,12 @@ const Planner = ({ onBack }) => {
             <Container component={Box} border={1} borderColor="grey.400" borderRadius={8} padding={3} marginTop={5}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
                     <Box>
-                        <Button variant="contained" color="primary" onClick={() => setOpen(true)} style={{ marginRight: '10px' }}>Add Task</Button>
-                        <Button variant="outlined" color="primary" onClick={handlePreviousWeek}style={{ marginRight: '10px' }}>&lt; Previous</Button>
-                        <Button variant="outlined" color="primary" onClick={handleNextWeek} style={{ marginRight: '10px' }}>Next &gt;</Button>
-                        <Button onClick={onBack} variant="contained" color="secondary" style={{ marginRight: '10px' }}>Back</Button>
+                        <Button variant="contained" color="primary" onClick={() => setOpen(true)} style={{ marginRight: '10px', marginBottom:'10px'}}>Add Task</Button>
+                        <Button onClick={onBack} variant="contained" color="secondary" style={{ marginRight: '10px' , marginBottom:'10px'}}>Back</Button>
                     </Box>
+                    <Box>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Button variant="outlined" color="primary" onClick={handlePreviousWeek} style={{ marginRight: '5px' ,maxWidth: '25px' }}>&lt; Prev</Button>
                         <DatePicker
                             views={['year', 'month','day']}
                             label="Select Week"
@@ -225,7 +225,9 @@ const Planner = ({ onBack }) => {
                             onChange={(newValue) => setSelectedDate(getStartOfWeek(newValue))}
                             renderInput={(params) => <TextField {...params} helperText={formatWeekLabel(selectedDate)} />}
                         />
+                    <Button variant="outlined" color="primary" onClick={handleNextWeek} style={{ marginLeft: '5px' ,maxWidth: '25px'}}>Next &gt;</Button>
                     </LocalizationProvider>
+                    </Box>
                 </Box>
                 <TableContainer component={Paper} style={{ position: 'relative' }}>
                     <Table>
