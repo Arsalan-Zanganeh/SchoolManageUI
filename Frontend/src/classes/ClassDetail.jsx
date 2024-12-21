@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState  , useCallback} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box, Menu , Typography, Button, Tabs, Tab, Card, CardContent, AppBar, Toolbar,
@@ -166,6 +166,34 @@ const ClassDetails = () => {
 
     fetchClassList();
   }, [cid]);
+
+  const [studentId, setStudentId] = useState(null); 
+
+const fetchStudentData = useCallback(async () => {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/student/user/", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const studentData = await response.json();
+      setStudentId(studentData.id); 
+      setName(studentData.first_name);
+      setLastName(studentData.last_name);
+    } else {
+      console.error("Failed to fetch student data");
+    }
+  } catch (error) {
+    console.error("Error fetching student data:", error);
+  }
+}, []);
+useEffect(() => {
+  fetchStudentData();
+}, [fetchStudentData]);
+
 
   useEffect(() => {
     if (classDetails) {
@@ -396,6 +424,15 @@ const ClassDetails = () => {
       });
   }, [classDetails]);
   
+  const getGradeForStudent = (studentId, recs) => {
+    const rec = recs.find(record => record.Student === studentId);
+    return rec && rec.Grade !== null ? `${rec.Grade}` : 'Not graded yet!';
+  };
+
+  const getUploadedFileForStudent = (studentId, recs) => {
+    const rec = recs.find(record => record.Student === studentId);
+    return rec && rec.HomeWorkAnswer ? extractFileName(rec.HomeWorkAnswer) : 'Not uploaded any file!';
+};
 
   if (!classDetails) {
     return (
@@ -734,7 +771,7 @@ const ClassDetails = () => {
               boxShadow:1
             }}
           >
-            <Typography variant="h5" color="primary" sx={{ marginBottom: 2, fontWeight:'bold' }}>
+            <Typography variant="h5" color="primary" sx={{ marginBottom: 2, fontWeight: 'bold' }}>
               Recent Assignments
             </Typography>
             <Box
@@ -769,7 +806,7 @@ const ClassDetails = () => {
                       onClick={() => handleDialogOpen(homework)}
                       startIcon={<Send />}
                     >
-                      Submit Homework
+                      Submit or view homework / View grade
                     </Button>
                   </CardContent>
                 </Card>
@@ -784,19 +821,23 @@ const ClassDetails = () => {
         </Paper>
 
         <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm">
-          <DialogTitle>Submit Homework</DialogTitle>
+          <DialogTitle>Submit answer for homework: <strong>{selectedHomework?.Title}</strong></DialogTitle>
           <DialogContent>
-            <Typography variant="h6" fontWeight="bold" sx={{mb:2}}>
-              {selectedHomework?.Title}
-            </Typography>
-            <input type="file" onChange={handleFileChange} style={{ marginBottom: '10px' }} />
-            <List>
-              {records.map((record) => (
-                <ListItem key={record.id}>
-                  <ListItemText primary={extractFileName(record.HomeWorkAnswer)} />
-                </ListItem>
-              ))}
-            </List>
+            <Box sx={{display:'flex', flexDirection:'row', gap:'5px', marginBottom:'30px'}}>
+              <Typography>Upload a new file or change existing file:</Typography>
+              <input type="file" onChange={handleFileChange}/>
+            </Box>
+            <Box sx={{display:'flex', flexDirection:'row'}}>
+              <Box sx={{display:'flex', flexDirection:'column', width:'50%', gap:'10px'}}>
+                <Typography variant="h5">Uploaded file:</Typography>
+                <Typography>
+                    {getUploadedFileForStudent(studentId, records)}
+                </Typography>
+              </Box>
+              <Box sx={{width:'50%'}}>
+                <Typography variant="h5">Your grade: {getGradeForStudent(studentId, records)}</Typography>
+              </Box>
+            </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleDialogClose} color="error">

@@ -126,7 +126,7 @@ const SubmittedAssignmentsPage = () => {
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'row', gap: '5%', width: '60%', alignItems: 'center' }}>
                   <Typography variant="body2" color="textSecondary">
-                  <a
+                    <a
                       href={assignment.HomeWorkAnswer}
                       target="_blank"
                       rel="noopener noreferrer"
