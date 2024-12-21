@@ -426,13 +426,19 @@ useEffect(() => {
   
   const getGradeForStudent = (studentId, recs) => {
     const rec = recs.find(record => record.Student === studentId);
-    return rec && rec.Grade !== null ? `${rec.Grade}` : 'Not graded yet!';
+    return rec && rec.Grade !== null ? `${rec.Grade}` : 'Not graded!';
   };
 
   const getUploadedFileForStudent = (studentId, recs) => {
     const rec = recs.find(record => record.Student === studentId);
-    return rec && rec.HomeWorkAnswer ? extractFileName(rec.HomeWorkAnswer) : 'Not uploaded any file!';
-};
+    return rec && rec.HomeWorkAnswer ? rec.HomeWorkAnswer : 'Not uploaded any file!';
+  };
+
+  const fileUrl = getUploadedFileForStudent(studentId, records);
+
+  const removeMediaPrefix = (fileUrl) => {
+    return fileUrl.replace('/media/profile_image/', '');
+  };
 
   if (!classDetails) {
     return (
@@ -831,7 +837,18 @@ useEffect(() => {
               <Box sx={{display:'flex', flexDirection:'column', width:'50%', gap:'10px'}}>
                 <Typography variant="h5">Uploaded file:</Typography>
                 <Typography>
-                    {getUploadedFileForStudent(studentId, records)}
+                  <a
+                    href={getUploadedFileForStudent(studentId, records)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      const fileurl = getUploadedFileForStudent(studentId, records);
+                      if (fileurl !== 'Not uploaded any file!') {window.open(`http://127.0.0.1:8000/api${fileurl}`, '_blank');}
+                      else {console.error('File path not available');}
+                    }}
+                  >
+                    {getUploadedFileForStudent(studentId, records) !== 'Not uploaded any file!' ? removeMediaPrefix(getUploadedFileForStudent(studentId, records)) : 'Not uploaded any file!'}
+                  </a>
                 </Typography>
               </Box>
               <Box sx={{width:'50%'}}>
