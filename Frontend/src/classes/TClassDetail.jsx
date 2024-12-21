@@ -162,7 +162,6 @@ const TeacherClassDetail = () => {
   const [newAssignment, setNewAssignment] = useState({
     Title: "",
     Description: "",
-    file: "",
     DeadLine: "",
   });
   const [assignments, setAssignments] = useState([]);
@@ -508,7 +507,7 @@ const TeacherClassDetail = () => {
         const data = await response.json();
         setAssignments((prev) => [...prev, data]);
         setOpenDialog(false);
-        setNewAssignment({ Title: "", Description: "", file: "", DeadLine: "" });
+        setNewAssignment({ Title: "", Description: "", DeadLine: "" });
         setMessage("Homework added successfully");
       } else {
         setMessage("Failed to add homework");
@@ -682,10 +681,6 @@ const TeacherClassDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
   };
 
   return (
@@ -1257,7 +1252,6 @@ const TeacherClassDetail = () => {
                     shrink: true,
                   }}
                 />
-                <input type="file" onChange={handleFileChange}/>
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose} color="secondary">
