@@ -113,7 +113,24 @@ const ProfilePage = ({ onBack }) => {
   
 
   return (
-    <Container>
+    <Container
+    sx={{
+      // position: { xs: "relative", sm: "absolute" },
+      left: { xs: "10px", sm: "190px" },
+      right: { xs: "10px", sm: "40px" },
+      // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+      maxWidth: { xs: "100%", sm: "1400px" },
+      height: { xs: "auto", sm: "auto" },
+      margin: "0 auto",
+      paddingup: "20px",
+      // backgroundColor: "#fff",
+      // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+      borderRadius: "8px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    }}>
       <Box display="flex" justifyContent="center" alignItems="center" mt={5}>
         <Box
           display="flex"
@@ -121,7 +138,6 @@ const ProfilePage = ({ onBack }) => {
           boxShadow={3}
           borderRadius={2}
           overflow="hidden"
-          width={{ xs: '100%', md: '70%' }}
           bgcolor="white"
         >
           {/* Sidebar */}

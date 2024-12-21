@@ -692,7 +692,7 @@ const TeacherClassDetail = () => {
         top: 0,
         left: { xs: "10px", sm: "240px" },
         right: { xs: "20px", sm: "20px" },
-        width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+        // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
         maxWidth: { xs: "100%", sm: "1600px" },
         margin: "0 auto",
         minHeight: "100vh",

@@ -532,11 +532,25 @@ const formatDate = (dateString) => {
 
 
         <Toolbar />
-        <Box sx={{ display: 'flex', flexGrow: 1 }}>
+        <Box sx={{   position: { xs: "relative", sm: "absolute" },
+        left: { xs: "10px", sm: "190px" },
+        right: { xs: "10px", sm: "80px" },
+        // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+        // maxWidth: { xs: "100%", sm: "1400px" },
+        height: { xs: "auto", sm: "auto" },
+        margin: "0 auto",
+        paddingTop: "30px",
+        // backgroundColor: "#fff",
+        // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        borderRadius: "8px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center", }}>
           <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
             <Container maxWidth="lg"
             >
-            {school && tabvalue !== 5 && tabvalue!== 4 && tabvalue !==3 && tabvalue!==6 &&( // نمایش فقط در تب‌های غیر از Manage Classes
+            {school && tabvalue !== 5 && tabvalue!== 4 && tabvalue !==3 && tabvalue!==6 && tabvalue!==7 &&( // نمایش فقط در تب‌های غیر از Manage Classes
             <SchoolInfoBox elevation={3}>
               <HomeWork fontSize="large" />
               <Box>
@@ -689,12 +703,7 @@ const formatDate = (dateString) => {
             </TabPanel>
 
             <TabPanel value={tabvalue} index={7}>
-            <Typography variant="h4" sx={{ mb: 3 }}>
-              Disciplinary Management
-            </Typography>
-            <Box>
-              <Typography>Manage disciplinary actions here.</Typography>
-            </Box>
+           
             <Discipline onBack={() => handleTabChange(2)} />
 
 </TabPanel>

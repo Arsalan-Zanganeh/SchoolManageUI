@@ -18,23 +18,21 @@ const theme = createTheme({
 });
 
 const Container = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(3),
-  backgroundColor: theme.palette.background.default,
-  width: '100vw',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  display: 'flex',
-  flexDirection: 'column',
   alignItems: 'center',
-  justifyContent: 'flex-start',
+  position: { xs: "relative", sm: "absolute" },
+  top: 0,
+  left: { xs: "10px", sm: "240px" },
+  right: { xs: "20px", sm: "20px" },
+  // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+  maxWidth: { xs: "100%", sm: "1600px" },
+  margin: "0 auto",
+  // minHeight: "100vh",
+  borderRadius: "8px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  overflow: "hidden", 
   // gap: theme.spacing(5),
-  paddingTop: theme.spacing(15), // افزایش فاصله از بالا
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2), // کاهش فاصله در موبایل
-    gap: theme.spacing(3), // کاهش فاصله بین بخش‌ها در موبایل
-    paddingTop: theme.spacing(10), // کاهش فاصله در موبایل
-  },
 }));
 
 
