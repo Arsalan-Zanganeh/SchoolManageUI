@@ -273,7 +273,7 @@ const TeacherDashboard = () => {
     }
   }, [token, fetchTeacherData]);
 
-  const editProfile = () => handleChange(null, 3);
+  const editProfile = () => handleChange(null, 6);
   const viewClasses = () => handleChange(null, 4);
 
   return (

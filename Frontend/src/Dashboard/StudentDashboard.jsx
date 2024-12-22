@@ -423,7 +423,7 @@ const StudentDashboard = () => {
     }
   }, [token, fetchStudentData]);
 
-  const editProfile = () => handleTabChange(3);
+  const editProfile = () => handleTabChange(6);
   const viewClasses = () => handleTabChange(4);
   const gotoHollandtest = () => handleTabChange(5);
   const gotoAcademicPlanning = () => handleTabChange(9);

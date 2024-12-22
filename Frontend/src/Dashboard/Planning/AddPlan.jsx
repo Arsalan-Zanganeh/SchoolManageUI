@@ -1,27 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, MenuItem } from '@mui/material';
 import { LocalizationProvider, DatePicker, MobileTimePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-
+import { format } from 'date-fns';
 
 const AddPlanForm = ({ addPlan , back}) => {
     const [startDate, setStartDate] = useState(new Date());
     const [startTime, setStartTime] = useState(new Date());
     const [title, setTitle] = useState('');
-    const [duration, setDuration] = useState('');
+    const [duration, setDuration] = useState(5);
     const [explanation, setExplanation] = useState('');
+
+    useEffect(() => {
+        const now = new Date();
+        const hours = now.getHours();
+        if (hours < 7 || hours >= 24) {
+            now.setHours(7, 0, 0, 0);
+        }
+        setStartTime(now);
+    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const formattedDate = startDate ? startDate.toISOString().split('T')[0] : '';
-        const formattedTime = startTime ? `${startTime.getHours()}:${startTime.getMinutes().toString().padStart(2, '0')}` : '';
-        const formattedStartDate = `${formattedDate} ${formattedTime}`;
+        const formattedDate = format(startDate, 'yyyy-MM-dd');
+        const formattedTime = format(startTime, 'HH:mm');
+        const formattedStartDate = `${formattedDate}T${formattedTime}:00`;
         addPlan({ StartDate: formattedStartDate, Title: title, Duration: duration, Explanation: explanation });
         back()
     };
 
     const handleBlur = (e) => {
-        const value = Math.max(15, Math.min(180, e.target.value));
+        const value = Math.max(5, Math.min(180, e.target.value));
         setDuration(value);
     };
 
@@ -60,7 +69,7 @@ const AddPlanForm = ({ addPlan , back}) => {
                     margin="normal"
                     type="number"
                     required
-                    inputProps={{ min: 10, max: 180, step: 5 }}
+                    inputProps={{ min: 5, max: 180, step: 5 }}
                     onBlur={handleBlur}
                 />
                 <TextField

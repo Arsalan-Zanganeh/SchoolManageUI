@@ -53,7 +53,7 @@ const getStartOfWeek = (date) => {
 const formatWeekLabel = (date) => {
     const start = getStartOfWeek(date);
     const end = new Date(start);
-    end.setDate(start.getDate() + 6); // Get the end of the week (Friday)
+    end.setDate(start.getDate() + 7); // Get the end of the week (Friday)
     return `${format(start, 'MMM d')} - ${format(end, 'MMM d, yyyy')}`;
 };
 
@@ -91,7 +91,8 @@ const Planner = ({ onBack }) => {
                 const planDate = new Date(plan.StartDate.replace(' ', 'T'));
                 return (planDate >= startDate && planDate <= endDate);
             });
-
+            //console.log(data)
+            //12console.log(filteredPlans)
             setPlans(filteredPlans);
         } catch (error) {
             Swal.fire('Error', error.message, 'error');
@@ -113,7 +114,7 @@ const Planner = ({ onBack }) => {
             }
             const startDate = getStartOfWeek(selectedDate);
             const endDate = new Date(startDate);
-            endDate.setDate(startDate.getDate() + 6);
+            endDate.setDate(startDate.getDate() + 7);
             fetchPlans(startDate, endDate);
         } catch (error) {
             Swal.fire('Error', 'Failed to add plan. Please try again.', 'error');
@@ -132,7 +133,7 @@ const Planner = ({ onBack }) => {
             });
             const startDate = getStartOfWeek(selectedDate);
             const endDate = new Date(startDate);
-            endDate.setDate(startDate.getDate() + 6);
+            endDate.setDate(startDate.getDate() + 7);
             fetchPlans(startDate, endDate);
             setDeleteDialogOpen(false);
             setSelectedPlan(null);
@@ -184,6 +185,7 @@ const Planner = ({ onBack }) => {
                     startHour,
                     startMinutes,
                     duration,
+                    Explanation: plan.Explanation,
                     StartDate: plan.StartDate // Include StartDate in the task object
                 });
             }
@@ -196,7 +198,7 @@ const Planner = ({ onBack }) => {
     useEffect(() => {
         const startDate = getStartOfWeek(selectedDate);
         const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + 6);
+        endDate.setDate(startDate.getDate() + 7);
         fetchPlans(startDate, endDate);
         generateSchedule();
         console.log(startDate)
