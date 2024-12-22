@@ -140,7 +140,7 @@ const ClassDetails = () => {
   const isDesktop = useMediaQuery('(min-width:600px)');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [name, setName] = useState("Loading...");
-  const currentDate = new Date().getTime;
+  const currentDate = new Date().getTime();
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const drawerProps = isDesktop ? { variant: 'permanent', open: true } : { open: sidebarOpen, onClose: toggleSidebar };
 
@@ -1033,46 +1033,86 @@ useEffect(() => {
         </Paper>
 
         <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm">
-          <DialogTitle>Submit answer for homework: <strong>{selectedHomework?.Title}</strong></DialogTitle>
-          <DialogContent>
-            {currentDate >= new Date(selectedHomework?.DeadLine).getDate() ? (
-              <Box sx={{display:'flex', flexDirection:'row', gap:'5px', marginBottom:'30px'}}>
-                <Typography>Upload a new file or change existing file:</Typography>
-                <input type="file" onChange={handleFileChange}/>
-              </Box>
-              ) : <Typography sx={{marginBottom:'30px'}}>Deadline passed!</Typography>}
-            <Box sx={{display:'flex', flexDirection:'row'}}>
-              <Box sx={{display:'flex', flexDirection:'column', width:'50%', gap:'10px'}}>
-                <Typography variant="h5">Uploaded file:</Typography>
-                <Typography>
-                  <a
-                    href={getUploadedFileForStudent(studentId, records)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      const fileurl = getUploadedFileForStudent(studentId, records);
-                      if (fileurl !== 'Not uploaded any file!') {window.open(`http://127.0.0.1:8000/api${fileurl}`, '_blank');}
-                      else {console.error('File path not available');}
-                    }}
-                  >
-                    {getUploadedFileForStudent(studentId, records) !== 'Not uploaded any file!' ? removeMediaPrefix(getUploadedFileForStudent(studentId, records)) : 'Not uploaded any file!'}
-                  </a>
-                </Typography>
-              </Box>
-              <Box sx={{width:'50%'}}>
-                <Typography variant="h5">Your grade: {getGradeForStudent(studentId, records)}</Typography>
-              </Box>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose} color="error">
-              Cancel
-            </Button>
-            <Button onClick={handleFileSubmit} color="primary" variant="contained" startIcon={<Send />}>
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
+  <DialogTitle>
+    <Typography variant="h6" fontWeight="bold">
+      Submit Answer for Homework: {selectedHomework?.Title}
+    </Typography>
+  </DialogTitle>
+  
+  <DialogContent dividers>
+  {/* بخش تعیین وضعیت مهلت (آپلود فایل یا پیغام ددلاین) */}
+  <Box sx={{ mb: 3 }}>
+    {currentDate <= new Date(selectedHomework?.DeadLine).getTime() ? (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        {/* متن اصلی */}
+        <Typography variant="body1">
+          Please upload or update your assignment file below:
+        </Typography>
+
+        {/* فیلد آپلود فایل */}
+        <Box>
+          <input type="file" onChange={handleFileChange} />
+        </Box>
+      </Box>
+    ) : (
+      <Typography variant="body1" color="error">
+        Submission deadline has passed!
+      </Typography>
+    )}
+  </Box>
+
+  {/* نمایش فایل آپلودشده و نمره در دو ستون مجزا */}
+  <Grid container spacing={2}>
+    <Grid item xs={12} sm={6}>
+      <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+        Your Submitted File
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        {(() => {
+          const fileUrl = getUploadedFileForStudent(studentId, records);
+          if (fileUrl !== 'Not uploaded any file!') {
+            return (
+              <a
+                href={`http://127.0.0.1:8000/api${fileUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none', color: '#1976d2' }}
+              >
+                {removeMediaPrefix(fileUrl)}
+              </a>
+            );
+          } else {
+            return <span style={{ color: '#666' }}>No file submitted yet.</span>;
+          }
+        })()}
+      </Typography>
+    </Grid>
+    
+    <Grid item xs={12} sm={6}>
+      <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+        Grade Received
+      </Typography>
+      <Typography variant="body2" color="text.primary">
+        {getGradeForStudent(studentId, records)}
+      </Typography>
+    </Grid>
+  </Grid>
+</DialogContent>
+  <DialogActions sx={{ justifyContent: 'space-between', px: 2, py: 1 }}>
+    <Button onClick={handleDialogClose} variant="outlined" color="error">
+      Cancel
+    </Button>
+    <Button
+      onClick={handleFileSubmit}
+      color="primary"
+      variant="contained"
+      startIcon={<Send />}
+    >
+      Submit
+    </Button>
+  </DialogActions>
+</Dialog>
+
       </Container>
       </Box>
       <Drawer anchor='left' {...drawerProps} sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.drawer, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>

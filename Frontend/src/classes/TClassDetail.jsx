@@ -1533,27 +1533,28 @@ const TeacherClassDetail = () => {
       {videos.map((video) => (
         <Grid item xs={12} sm={6} md={4} key={video.id}>
           <Paper elevation={3} sx={{ p: 2 }}>
-            <Typography variant="body1">{video.Title}</Typography> {/* Show Title */}
-            {/* Button to Watch Full Screen */}
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleOpenVideoFullScreen(video.src)}
-              sx={{ mt: 1 }}
-            >
-              Watch Full Screen
-            </Button>
-            {/* Delete Button */}
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => handleDeleteVideo(video.id)}
-              startIcon={<DeleteIcon />}
-              sx={{ mt: 1 }}
-            >
-              Delete
-            </Button>
-          </Paper>
+  <Typography variant="body1">{video.Title}</Typography> {/* Show Title */}
+  {/* Button to Watch Full Screen */}
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={() => handleOpenVideoFullScreen(video.src)}
+    sx={{ mt: 1, mr: 1 }} // فاصله از سمت راست
+  >
+    Watch Full Screen
+  </Button>
+  {/* Delete Button */}
+  <Button
+    variant="outlined"
+    color="secondary"
+    onClick={() => handleDeleteVideo(video.id)}
+    startIcon={<DeleteIcon />}
+    sx={{ mt: 1 }}
+  >
+    Delete
+  </Button>
+</Paper>
+
         </Grid>
       ))}
     </Grid>
