@@ -327,7 +327,7 @@ const handleCloseManageDialog = () => {
         position: { xs: "relative", sm: "absolute" },
         left: { xs: "10px", sm: "190px" },
         right: { xs: "10px", sm: "60px" },
-        // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+  
         maxWidth: { xs: "100%", sm: "1400px" },
         height: { xs: "auto", sm: "auto" },
         margin: "0 auto",

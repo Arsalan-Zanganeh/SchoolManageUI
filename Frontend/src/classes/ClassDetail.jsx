@@ -15,13 +15,18 @@ import {
   Quiz,
   Assessment,
   People,
+  PlayArrow,
+  InsertDriveFile,
   Send,
   HomeWork,
   EditNote
 } from '@mui/icons-material';
 import BusinessIcon from '@mui/icons-material/Business';
 import MenuIcon from '@mui/icons-material/Menu'; 
+import ChatIcon from '@mui/icons-material/Chat';
+import BookIcon from '@mui/icons-material/Book';
 
+import AppWrapper from './chatpage';
 
 import AttendanceStatus from "../Attendence-stu";
 
@@ -134,10 +139,28 @@ const ClassDetails = () => {
   const [finishedQuizzes, setFinishedQuizzes] = useState([]);
   const isDesktop = useMediaQuery('(min-width:600px)');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const currentDate = new Date().getTime
+  const [name, setName] = useState("Loading...");
+  const currentDate = new Date().getTime;
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const drawerProps = isDesktop ? { variant: 'permanent', open: true } : { open: sidebarOpen, onClose: toggleSidebar };
 
+  const [openVideoModal, setOpenVideoModal] = useState(false);
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState('');
+  
+  const [educationalVideos, setEducationalVideos] = useState([]);
+  const [educationalFiles, setEducationalFiles] = useState([]);
+
+
+  const convertToEmbedUrl = (url) => {
+    const videoId = url.split('v=')[1]?.split('&')[0];  // Extract video ID
+    return `https://www.youtube.com/embed/${videoId}`;  // Embed URL format
+};
+
+  const handleOpenVideoFullScreen = (url) => {
+      const embedUrl = convertToEmbedUrl(url);  // Convert to embed URL if it's a YouTube URL
+      setSelectedVideoUrl(embedUrl);  // Set the embed URL
+      setOpenVideoModal(true);  // Open the modal to show the video
+  };
 
 
   useEffect(() => {
@@ -241,6 +264,59 @@ useEffect(() => {
 
       fetchHomeworks();
       fetchQuizzes();
+
+       // Fetch educational videos and files for the class
+       const fetchEducationalVideos = async () => {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/discipline/student-watchvid-EC/", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Fetched educational videos:", data);  // Log the entire response
+    
+                setEducationalVideos(data);
+            } else {
+                console.error('Failed to fetch educational videos');
+            }
+        } catch (error) {
+            console.error('Error fetching educational videos:', error);
+        }
+    };
+    
+
+      const fetchEducationalFiles = async () => {
+        try {
+          const response = await fetch("http://127.0.0.1:8000/discipline/student-watchfile-EC/", {
+            method: "GET",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+          });
+      
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data); // Debug: Check the fetched data structure
+            setEducationalFiles(data);
+          } else {
+            console.error('Failed to fetch educational files');
+          }
+        } catch (error) {
+          console.error('Error fetching educational files:', error);
+        }
+      };
+      
+
+      fetchEducationalVideos();
+      fetchEducationalFiles();
+
+
     }
   }, [classDetails]);
 
@@ -625,29 +701,6 @@ useEffect(() => {
     </Grid>
   </Grid>
 </Box>
-
-
-
-
-
-
-  
-        {/* <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={6}>
-            <Paper variant="outlined" sx={{ p: 2 }}>
-              <Typography variant="body2" color="textSecondary">
-                Session 1: {classDetails.Session1Day} - {classDetails.Session1Time}
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Paper variant="outlined" sx={{ p: 2 }}>
-              <Typography variant="body2" color="textSecondary">
-                Session 2: {classDetails.Session2Day} - {classDetails.Session2Time}
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid> */}
     
         {tabValue === 0 && (
           <Box
@@ -821,6 +874,159 @@ useEffect(() => {
           </Box>
         )}
 
+      <TabPanel value={tabValue} index={4}>
+                        <AppWrapper onBack={() => handleTabChange(0)} /> {/* ارسال تابع بک */}
+      </TabPanel>
+{tabValue === 3 && (
+  <Box sx={{ padding: 2 }}>
+    {/* Container for Files and Videos */}
+    <Grid container spacing={2}>
+      {/* Left Side: Educational Files */}
+      <Grid item xs={12} md={6}>
+        <Typography variant="h6" fontWeight="bold" color="primary" sx={{ mb: 2 }}>
+          Educational Files
+        </Typography>
+        <Box sx={{
+          borderRight: '2px solid #ccc', // Add a border between the two sides
+          height: '100%', // Make sure the border stretches to the full height
+          paddingRight: 2, // Add some padding on the right of this section
+        }}>
+          <Grid container spacing={2}>
+            {educationalFiles.length > 0 ? (
+              educationalFiles.map((file) => {
+                // Debugging: Log each file to ensure we have the correct data
+                console.log('File Data:', file); // Check the data structure
+
+                return (
+                  <Grid item xs={6} sm={4} md={3} key={file.id}>
+                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                        {/* File Icon */}
+                        <InsertDriveFile sx={{ fontSize: 40, mb: 1 }} />
+                        
+                        {/* Display the file name under the icon */}
+                        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                          {file.Title} {/* Fixed here to match the correct field from API */}
+                        </Typography>
+                        
+                        {/* Button to download the file */}
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small" // Make button smaller
+                          onClick={() => {
+                            if (file.file) {
+                              const fileUrl = `http://127.0.0.1:8000/api${file.file}`;
+                              window.open(fileUrl, '_blank');
+                            } else {
+                              console.error('File path not available');
+                            }
+                          }}
+                        >
+                          Download File
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                );
+              })
+            ) : (
+              <Typography>No educational files available.</Typography>
+            )}
+          </Grid>
+        </Box>
+      </Grid>
+
+      {/* Right Side: Educational Videos */}
+      <Grid item xs={12} md={6}>
+        <Typography variant="h6" fontWeight="bold" color="primary" sx={{ mb: 2 }}>
+          Educational Videos
+        </Typography>
+        <Box sx={{
+          height: '100%',
+          paddingLeft: 2, // Add some padding on the left of this section
+        }}>
+          <Grid container spacing={2}>
+            {educationalVideos.length > 0 ? (
+              educationalVideos.map((video) => (
+                <Grid item xs={6} sm={4} md={3} key={video.id}>
+                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                      {/* Video */}
+                      <Box sx={{ 
+                        width: '100%', 
+                        height: 0, 
+                        paddingTop: '100%', // Aspect ratio 1:1 for square
+                        position: 'relative' 
+                      }}>
+                        <iframe
+                          src={video.src}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          title={video.Title}
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: '8px',
+                            objectFit: 'cover', // Ensures the video covers the area uniformly
+                          }}
+                        />
+                      </Box>
+
+                      <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                        {video.Title}
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small" // Make button smaller
+                        onClick={() => {
+                          setSelectedVideoUrl(video.src);
+                          setOpenVideoModal(true);
+                        }}
+                        startIcon={<PlayArrow />}
+                      >
+                        Watch Video
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            ) : (
+              <Typography>No educational videos available.</Typography>
+            )}
+          </Grid>
+        </Box>
+      </Grid>
+    </Grid>
+
+    {/* Full-Screen Video Modal */}
+    <Dialog open={openVideoModal} onClose={() => setOpenVideoModal(false)} fullWidth maxWidth="lg">
+      <DialogTitle>Watch Full-Screen Video</DialogTitle>
+      <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+        <iframe
+          width="100%"
+          height="500"
+          src={selectedVideoUrl} // Use the selected video URL
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpenVideoModal(false)}>Close</Button>
+      </DialogActions>
+    </Dialog>
+  </Box>
+)}
+
+
+
+
         <TabPanel value={tabValue} index={2}>
           <AttendanceStatus Topic={classDetails.Topic}/>
         </TabPanel>
@@ -916,6 +1122,40 @@ useEffect(() => {
         <People />
       </ListItemIcon>
       <ListItemText primary="Attendence" />
+    </ListItem>
+    <ListItem
+              button
+              onClick={() => setTabValue(4)}
+              sx={{
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.light,
+                  transition: "background-color 0.3s",
+                },
+                cursor: "pointer",
+                borderRadius: 1,
+                padding: theme.spacing(1),
+              }}
+            >
+              <ListItemIcon sx={{ color: "#fff" }}>
+                <ChatIcon />
+              </ListItemIcon>
+              <ListItemText primary="Chat" />
+            </ListItem>
+            
+    <ListItem button onClick={() => setTabValue(3)}
+        sx={{
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light, 
+            transition: 'background-color 0.3s', 
+          },
+          cursor: 'pointer', 
+          borderRadius: 1, 
+          padding: theme.spacing(1), 
+        }}>
+         <ListItemIcon sx={{ color: "#fff" }}>
+           <BookIcon />
+         </ListItemIcon>
+      <ListItemText primary="Educational Content" />
     </ListItem>
     <ListItem
   button

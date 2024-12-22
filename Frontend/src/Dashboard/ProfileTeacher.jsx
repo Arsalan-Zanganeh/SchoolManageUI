@@ -1,140 +1,310 @@
 import React, { useState, useEffect } from 'react';
-import { useTeacher } from '../context/TeacherContext';
-import { useNavigate } from 'react-router-dom';
 import {
-  Container,
-  Typography,
-  Avatar,
   Box,
   Button,
-  CircularProgress,
-  Alert,
-  Grid
+  TextField,
+  Avatar,
+  Container,
+  Grid,
+  Typography,
 } from '@mui/material';
+import Swal from 'sweetalert2';
 
-const ShowProfile = () => {
-  const { teacher } = useTeacher();
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+const ProfilePage = ({ onBack }) => {
+  const [isEditMode, setEditMode] = useState(false);
+  const [profile, setProfile] = useState({
+    first_name: '',
+    last_name: '',
+    Email: '',
+    Address: '',
+    bio: '',
+    profile_image: null,
+    Old_Password: '',
+    New_Password: '',
+  });
+  
 
-  const handleEdit = () => {
-    navigate('/dashboard/edit-teacher');
-  };
+  const [imagePreview, setImagePreview] = useState(null);
 
-  const handleDashboard = () => {
-    navigate('/teacher-dashboard');
-  };
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:8000/api/teacher/profile/', {
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${teacher?.jwt}`,
-          },
+  const fetchProfileData = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/teacher/profile/', {
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Fetched Data:', data);  // Log fetched data
+  
+        const teacherProfile = data.TeacherProfile?.[0] || {};
+        setProfile({
+          first_name: data.first_name || '',
+          last_name: data.last_name || '',
+          Email: data.Email || '',
+          Address: data.Address || '', // Update to use data.Address directly
+          bio: teacherProfile.bio || '',
+          profile_image: teacherProfile.profile_image || null,
+          Old_Password: '',
+          New_Password: '',
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          setProfile(data);
-        } else {
-          throw new Error('Failed to fetch profile');
+  
+        if (teacherProfile.profile_image) {
+          setImagePreview(`http://127.0.0.1:8000/api${teacherProfile.profile_image}`);
         }
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
+      } else {
+        console.error('Failed to fetch profile data');
       }
-    };
-
-    if (teacher?.jwt) {
-      fetchProfile();
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
     }
-  }, [teacher]);
+  };
+  
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+  
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+   // Empty dependency array means this runs only once on mount
 
-  if (loading) {
-    return (
-      <Container>
-        <CircularProgress />
-      </Container>
-    );
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfile({ ...profile, [name]: value });
+  };
 
-  if (error) {
-    return (
-      <Container>
-        <Alert severity="error">Error: {error}</Alert>
-      </Container>
-    );
-  }
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfile({ ...profile, profile_image: file });
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
-  if (!profile) {
-    return (
-      <Container>
-        <Typography variant="h6">No teacher profile data available</Typography>
-      </Container>
-    );
-  }
+  const handleSave = async () => {
+    try {
+      const formData = new FormData();
+
+      // Append form data - If address is empty, it will be sent as an empty string.
+      formData.append('Address', profile.Address || ''); // Empty address allowed
+      formData.append('Email', profile.Email);
+      formData.append('bio', profile.bio);
+      formData.append('Old_Password', profile.Old_Password);
+      formData.append('New_Password', profile.New_Password);
+
+      if (profile.profile_image instanceof File) {
+        formData.append('profile_image', profile.profile_image);
+      }
+
+      const response = await fetch('http://127.0.0.1:8000/api/teacher/profile_edit/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        body: formData,
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          title: 'Success',
+          text: 'Profile updated successfully',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        throw new Error('Failed to update profile');
+      }
+    } catch (error) {
+      Swal.fire('Error', 'Failed to save changes', 'error');
+    }
+  };
 
   return (
-    <Container sx={{ mt: 4, backgroundColor: '#9de2ff', padding: '20px', borderRadius: '16px' }}>
-      <Grid container spacing={2}>
-        {/* Profile Photo */}
-        <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Avatar 
-            src={`http://127.0.0.1:8000/api${profile.TeacherProfile[0].profile_image}`}
-            alt="Teacher Profile"
-            sx={{ width: 160, height: 160, borderRadius: '10px' }} // Increased size and set border radius to 10px
-          />
-        </Grid>
+        <Container
+        sx={{
+          // position: { xs: "relative", sm: "absolute" },
+          left: { xs: "10px", sm: "190px" },
+          right: { xs: "10px", sm: "40px" },
+          // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+          maxWidth: { xs: "100%", sm: "1400px" },
+          height: { xs: "auto", sm: "auto" },
+          margin: "0 auto",
+          paddingup: "20px",
+          // backgroundColor: "#fff",
+          // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          borderRadius: "8px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}>
+      <Box display="flex" justifyContent="center" alignItems="center" mt={5}>
+        <Box
+          display="flex"
+          flexDirection={{ xs: 'column', md: 'row' }}
+          boxShadow={3}
+          borderRadius={2}
+          overflow="hidden"
+          bgcolor="white"
+        >
+          {/* Sidebar */}
+          <Box bgcolor="#1e3a8a" p={4} display="flex" flexDirection="column" alignItems="center">
+            <Avatar
+              src={imagePreview || '/default-avatar.png'}
+              sx={{ width: 180, height: 180, mb: 2 }}
+            />
+            {isEditMode && (
+              <label htmlFor="upload-photo">
+                <input
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  id="upload-photo"
+                  type="file"
+                  onChange={handleImageChange}
+                />
+                <Button
+                  variant="contained"
+                  component="span"
+                  sx={{
+                    backgroundColor: '#1976D2',
+                    '&:hover': { backgroundColor: '#1565C0' },
+                    color: 'white',
+                  }}
+                >
+                  Upload Photo
+                </Button>
+              </label>
+            )}
+          </Box>
 
-        {/* Profile Information */}
-        <Grid item xs={8}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-            <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}> {/* Added margin bottom */}
-              {profile.first_name || 'Not provided'} {profile.last_name || 'Not provided'}
+          {/* Main Content */}
+          <Box p={4} bgcolor="#f4f6ff" flex={1}>
+            <Typography variant="h5" gutterBottom textAlign="center">
+              {isEditMode ? 'Edit Profile' : 'Profile Details'}
             </Typography>
-            <Typography variant="body1" sx={{ mt: 1, fontSize: '1.2rem', mb: 1 }}> 
-              <strong>Bio:</strong> {profile.TeacherProfile[0]?.bio || 'Not provided'}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: '1.2rem' }}>
-              <strong>Address:</strong> {profile.Address || 'Not provided'}
-            </Typography>
+            <Grid container spacing={3}>
+              {/* Full Name */}
+              <Grid item xs={12}>
+                <TextField
+                  label="First Name"
+                  name="first_name"
+                  value={profile.first_name}
+                  fullWidth
+                  InputProps={{ readOnly: !isEditMode }}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Last Name"
+                  name="last_name"
+                  value={profile.last_name}
+                  fullWidth
+                  InputProps={{ readOnly: !isEditMode }}
+                  onChange={handleChange}
+                />
+              </Grid>
 
-            {/* Buttons */}
-            <Box sx={{ mt: 2, display: 'flex', gap: 1 }}> {/* Reduced gap between buttons */}
-              <Button 
-                onClick={handleEdit} 
-                variant="contained" 
-                sx={{ backgroundColor: '#11566f', color: '#FFFFFF' }} // Custom color
-                size="small" // Made button smaller
-              >
-                Edit Profile
-              </Button>
-              <Button 
-                onClick={handleDashboard} 
-                variant="outlined" 
-                sx={{ borderColor: '#11566f', color: '#11566f' }} // Custom color for outlined button
-                size="small" // Made button smaller
-              >
-                Dashboard
-              </Button>
+              {/* Email Field - Always Read-Only */}
+              <Grid item xs={12}>
+                <TextField
+                  label="Email"
+                  name="Email"
+                  value={profile.Email}
+                  onChange={handleChange}
+                  fullWidth
+                  InputProps={{ readOnly: true }} // Email is always read-only
+                />
+              </Grid>
+
+              {/* Editable Fields */}
+              <Grid item xs={12}>
+                <TextField
+                  label="Address"
+                  name="Address"
+                  value={profile.Address}
+                  onChange={handleChange}
+                  fullWidth
+                  InputProps={{ readOnly: !isEditMode }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Bio"
+                  name="bio"
+                  value={profile.bio}
+                  onChange={handleChange}
+                  fullWidth
+                  multiline
+                  rows={3}
+                  InputProps={{ readOnly: !isEditMode }}
+                />
+              </Grid>
+
+              {/* Password Fields - Only visible in edit mode */}
+              {isEditMode && (
+                <>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Old Password"
+                      type="password"
+                      name="Old_Password"
+                      value={profile.Old_Password}
+                      onChange={handleChange}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="New Password"
+                      type="password"
+                      name="New_Password"
+                      value={profile.New_Password}
+                      onChange={handleChange}
+                      fullWidth
+                    />
+                  </Grid>
+                </>
+              )}
+            </Grid>
+            <Box display="flex" justifyContent="center" mt={3}>
+              {!isEditMode && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={onBack}
+                  sx={{ mr: 2 }}
+                >
+                  Back
+                </Button>
+              )}
+              {isEditMode ? (
+                <>
+                  <Button variant="contained" color="primary" onClick={handleSave}>
+                    Save
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => setEditMode(false)}
+                    sx={{ ml: 2 }}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
+                  Edit Profile
+                </Button>
+              )}
             </Box>
           </Box>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Container>
   );
 };
 
-const AppWrapper = () => (
-  <div style={{ backgroundColor: '#FFFFFF', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-    <ShowProfile />
-  </div>
-);
-
-export default AppWrapper;
+export default ProfilePage;

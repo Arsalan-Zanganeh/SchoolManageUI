@@ -18,6 +18,7 @@ const theme = createTheme({
 });
 
 const Container = styled(Box)(({ theme }) => ({
+
   alignItems: 'center',
   position: { xs: "relative", sm: "absolute" },
   top: 0,
@@ -32,7 +33,7 @@ const Container = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   justifyContent: "center",
   overflow: "hidden", 
-  // gap: theme.spacing(5),
+  
 }));
 
 

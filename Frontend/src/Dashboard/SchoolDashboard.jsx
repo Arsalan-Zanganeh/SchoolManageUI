@@ -550,7 +550,7 @@ const formatDate = (dateString) => {
           <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
             <Container maxWidth="lg"
             >
-            {school && tabvalue !== 5 && tabvalue!== 4 && tabvalue !==3 && tabvalue!==6 && tabvalue!==7 &&( // نمایش فقط در تب‌های غیر از Manage Classes
+             {school && tabvalue !== 5 && tabvalue!== 4 && tabvalue !==3 && tabvalue!==6 && tabvalue!==7 &&(  // نمایش فقط در تب‌های غیر از Manage Classes
             <SchoolInfoBox elevation={3}>
               <HomeWork fontSize="large" />
               <Box>
@@ -703,7 +703,7 @@ const formatDate = (dateString) => {
             </TabPanel>
 
             <TabPanel value={tabvalue} index={7}>
-           
+
             <Discipline onBack={() => handleTabChange(2)} />
 
 </TabPanel>

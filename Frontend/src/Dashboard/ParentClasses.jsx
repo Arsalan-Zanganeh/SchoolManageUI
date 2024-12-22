@@ -101,7 +101,7 @@ const ParentClasses = ({ goBack }) => {
         position: { xs: 'relative', sm: 'absolute' },
         left: { xs: '10px', sm: '190px' },
         right: { xs: '10px', sm: '20px' },
-        // width: { xs: 'calc(100% - 20px)', sm: 'calc(100% - 40px)' },
+        width: { xs: 'calc(100% - 20px)', sm: 'calc(100% - 40px)' },
         maxWidth: { xs: '100%', sm: '1600px' },
         margin: '0 auto',
         padding: '20px',

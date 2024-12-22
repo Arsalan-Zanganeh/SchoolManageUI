@@ -158,6 +158,7 @@ const TeacherDashboard = () => {
   const token = teacher?.jwt;
   const [nofunseen, setcount] = useState(0);
   const isDesktop = useMediaQuery('(min-width:600px)');
+  const [profileImage, setProfileImage] = useState(null);
   const drawerProps = isDesktop ? { variant: 'permanent', open: true } : { open: sidebarOpen, onClose: toggleSidebar };
 
   const handleChange = (event, newValue) => {
@@ -165,6 +166,12 @@ const TeacherDashboard = () => {
     localStorage.setItem('activeTeacherTab', newValue);
   };
 
+  const handleTabChange = (newTabValue) => {
+    settabvalue(newTabValue);
+    localStorage.setItem('activeTab', newTabValue); // Save active tab to localStorage
+  };
+
+  
   const fetchCalendar = useCallback(async () => {
       try {
         const response = await fetch(
@@ -225,6 +232,35 @@ const TeacherDashboard = () => {
     }
   }, [token]);
 
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/teacher/profile/", {
+          credentials: "include", // ensures cookies/session are sent
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          // Ensure the response contains the profile image
+          const profileImageUrl = data?.TeacherProfile?.[0]?.profile_image;
+          
+          if (profileImageUrl) {
+            setProfileImage(`http://127.0.0.1:8000/api${profileImageUrl}`);
+          } else {
+            setProfileImage(null); // If there's no image, reset the profileImage state
+          }
+        } else {
+          console.error("Failed to fetch profile image.");
+        }
+      } catch (error) {
+        console.error("Error fetching profile image:", error);
+      }
+    };
+  
+    fetchProfileImage();
+  }, []); // Empty dependency array ensures this effect runs only once after initial render
+  
+
   const handleLogout = () => {
     logoutTeacher();
     localStorage.removeItem('activeTeacherTab'); // حذف تب ذخیره‌شده هنگام خروج
@@ -260,19 +296,21 @@ const TeacherDashboard = () => {
             <Menu />
           </IconButton>
         )}
-        <Avatar
-          alt="Profile Picture"
-          src="/src/1.jpg"
-          sx={{
-            cursor: 'pointer',
-            '&:hover': {
-              boxShadow: 3,
-              transform: 'scale(1.1)',
-              transition: 'transform 0.2s ease-in-out',
-            },
-          }}
-          onClick={() => handleChange(null, 3)}
-        />
+           <Avatar
+  alt="Profile Picture"
+  src={profileImage || "/default-avatar.png"} // default avatar fallback
+  sx={{
+    marginRight: 2,
+    cursor: "pointer",
+    "&:hover": {
+      boxShadow: 3,
+      transform: "scale(1.1)",
+      transition: "transform 0.2s ease-in-out",
+    },
+  }}
+  onError={(e) => e.target.src = '/default-avatar.png'} // Fallback to default if image fails to load
+  onClick={() => handleTabChange(6)} // Go to profile on click
+/>
       </Grid>
 
       {/* ستون دوم */}
@@ -377,8 +415,8 @@ const TeacherDashboard = () => {
                 Test & Planning
               </Typography>
             </TabPanel>
-            <TabPanel value={tabvalue} index={3}>
-              <AppWrapper goBack={() => handleChange(null, 0)}/>
+            <TabPanel value={tabvalue} index={6}>
+              <AppWrapper onBack={() => handleTabChange(0)} /> {/* ارسال تابع بک */}
             </TabPanel>
             <TabPanel value={tabvalue} index={4}>
               <TeacherClassList goBack={() => handleChange(null, 1) }/>

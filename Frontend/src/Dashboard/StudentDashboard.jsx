@@ -192,6 +192,7 @@ const StudentDashboard = () => {
   const [name, setName] = useState(student ? student.first_name : "");
   const [nofunseen, setcount] = useState(0);
   const [lastName, setLastName] = useState(student ? student.last_name : "");
+  const [profileImage, setProfileImage] = useState(null);
   const isDesktop = useMediaQuery("(min-width:600px)");
   const token = student?.jwt;
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -206,9 +207,9 @@ const StudentDashboard = () => {
       settabvalue(Number(savedTab));
     }
   }, []);
-  const handleTabChange = (value) => {
-    settabvalue(value);
-    localStorage.setItem("student-dashboard-tab", value); // Save tab value
+  const handleTabChange = (newTabValue) => {
+    settabvalue(newTabValue);
+    localStorage.setItem('activeTab', newTabValue); // Save active tab to localStorage
   };
   const handleNotificationClick = (notification) => {
     setSelectedNotification(notification);
@@ -231,11 +232,40 @@ const StudentDashboard = () => {
     setOpen(false);
   };
 
+
   const createPreview = (message) => {
     const plainText = message.replace(/<[^>]+>/g, ""); // Strip HTML tags
     const preview = plainText.split(" ").slice(0, 10).join(" ") + "..."; // Take first 10 words
     return preview;
   };
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/student/profile/", {
+          credentials: "include", // ensures cookies/session are sent
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          // Ensure the response contains the profile image
+          const profileImageUrl = data?.StudentProfile?.[0]?.profile_image;
+          
+          if (profileImageUrl) {
+            setProfileImage(`http://127.0.0.1:8000/api${profileImageUrl}`);
+          } else {
+            setProfileImage(null); // If there's no image, reset the profileImage state
+          }
+        } else {
+          console.error("Failed to fetch profile image.");
+        }
+      } catch (error) {
+        console.error("Error fetching profile image:", error);
+      }
+    };
+  
+    fetchProfileImage();
+  }, []); // Empty dependency array ensures this effect runs only once after initial render
 
   const formatDate = (dateString) => {
     const options = {
@@ -452,20 +482,21 @@ const StudentDashboard = () => {
                   flexGrow: 1,
                 }}
               >
-                <Avatar
-                  alt="Profile Picture"
-                  src="/src/1.jpg"
-                  sx={{
-                    marginRight: 1,
-                    cursor: "pointer",
-                    "&:hover": {
-                      boxShadow: 3,
-                      transform: "scale(1.1)",
-                      transition: "transform 0.2s ease-in-out",
-                    },
-                  }}
-                  onClick={() => handleTabChange(3)}
-                />
+          <Avatar
+              alt="Profile Picture"
+              src={profileImage || "/default-avatar.png"} // fallback to default avatar
+              sx={{
+                marginRight: 2,
+                cursor: "pointer",
+                "&:hover": {
+                  boxShadow: 3,
+                  transform: "scale(1.1)",
+                  transition: "transform 0.2s ease-in-out",
+                },
+              }}
+              onError={(e) => e.target.src = '/default-avatar.png'}
+              onClick={() => handleTabChange(6)} // Go to profile on click
+            />
                 <Typography
                   variant="h6"
                   sx={{
@@ -573,9 +604,9 @@ const StudentDashboard = () => {
                   <Typography
                     variant="h4"
                     sx={{
-                      fontWeight: "bold",
-                      fontSize: { xs: "1.5rem", sm: "2rem" },
-                      textAlign: "center",
+                      fontWeight: "bold", // ضخیم‌تر کردن متن
+                      fontSize: { xs: "1.5rem", sm: "2rem" }, // اندازه متغیر برای موبایل و دسکتاپ
+                      textAlign: "center", // متن در وسط
                     }}
                   >
                     Welcome, {name} {lastName}!
@@ -728,20 +759,18 @@ const StudentDashboard = () => {
                   </Grid>
                 </Grid>
               </TabPanel>
-              <TabPanel value={tabvalue} index={3}>
-                <AppWrapper />
-              </TabPanel>
+              <TabPanel value={tabvalue} index={6}>
+              <AppWrapper onBack={() => handleTabChange(0)} /> {/* ارسال تابع بک */}
+            </TabPanel>
               <TabPanel value={tabvalue} index={4}>
                 <StudentClassList goBack={() => handleTabChange(1)} />
               </TabPanel>
               <TabPanel value={tabvalue} index={5}>
-                <HollandTest
-                  goBack={() => handleTabChange(2)}
-                  gotoQuestions={() => handleTabChange(6)}
-                  gotoResults={() => handleTabChange(8)}
-                />
+              <TabPanel value={tabvalue} index={5}>
+              <HollandTest goBack={() => settabvalue(2)} gotoQuestions={() => settabvalue(10)} gotoResults={() => settabvalue(8)}/>
+            </TabPanel>
               </TabPanel>
-              <TabPanel value={tabvalue} index={6}>
+              <TabPanel value={tabvalue} index={10}>
                 <HollandQuestions gotoAnalize={() => handleTabChange(7)} />
               </TabPanel>
               <TabPanel value={tabvalue} index={7}>

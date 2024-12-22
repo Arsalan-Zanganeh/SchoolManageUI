@@ -7,17 +7,15 @@ import {
   Container,
   Grid,
   Typography,
-  InputAdornment,
-  IconButton,
 } from '@mui/material';
 import Swal from 'sweetalert2';
-
 
 const ProfilePage = ({ onBack }) => {
   const [isEditMode, setEditMode] = useState(false);
   const [profile, setProfile] = useState({
     first_name: '',
     last_name: '',
+    email: '',
     Phone_Number: '',
     bio: '',
     profile_image: null,
@@ -26,8 +24,6 @@ const ProfilePage = ({ onBack }) => {
   });
 
   const [imagePreview, setImagePreview] = useState(null);
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
 
   // Fetch profile data
   useEffect(() => {
@@ -42,6 +38,7 @@ const ProfilePage = ({ onBack }) => {
           setProfile({
             first_name: data.first_name || '',
             last_name: data.last_name || '',
+            email: data.email || '',
             Phone_Number: data.Phone_Number || '',
             bio: data.UserProfile[0]?.bio || '',
             profile_image: data.UserProfile[0]?.profile_image || null,
@@ -78,21 +75,22 @@ const ProfilePage = ({ onBack }) => {
     try {
       const formData = new FormData();
       formData.append('Phone_Number', profile.Phone_Number);
+      formData.append('email', profile.email);  // Ensure email is appended
       formData.append('bio', profile.bio);
       formData.append('Old_Password', profile.Old_Password);
       formData.append('New_Password', profile.New_Password);
-  
+
       if (profile.profile_image instanceof File) {
         formData.append('profile_image', profile.profile_image);
       }
-  
+
       const response = await fetch('http://127.0.0.1:8000/api/user/profile_edit/', {
         method: 'POST',
         credentials: 'include',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: formData,
       });
-  
+
       if (response.ok) {
         Swal.fire({
           title: 'Success',
@@ -100,7 +98,6 @@ const ProfilePage = ({ onBack }) => {
           icon: 'success',
           confirmButtonText: 'OK',
         }).then(() => {
-          // رفرش صفحه
           window.location.reload();
         });
       } else {
@@ -110,7 +107,6 @@ const ProfilePage = ({ onBack }) => {
       Swal.fire('Error', 'Failed to save changes', 'error');
     }
   };
-  
 
   return (
     <Container
@@ -183,7 +179,7 @@ const ProfilePage = ({ onBack }) => {
                   name="first_name"
                   value={profile.first_name}
                   fullWidth
-                  InputProps={{ readOnly: true, style: { backgroundColor: '#f0f0f0' } }}
+                  InputProps={{ readOnly: true }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -192,7 +188,19 @@ const ProfilePage = ({ onBack }) => {
                   name="last_name"
                   value={profile.last_name}
                   fullWidth
-                  InputProps={{ readOnly: true, style: { backgroundColor: '#f0f0f0' } }}
+                  InputProps={{ readOnly: true }}
+                />
+              </Grid>
+
+              {/* Email Field - Always Read-Only */}
+              <Grid item xs={12}>
+                <TextField
+                  label="Email"
+                  name="email"
+                  value={profile.email}
+                  onChange={handleChange}
+                  fullWidth
+                  InputProps={{ readOnly: true }} // Email is always read-only
                 />
               </Grid>
 
@@ -220,39 +228,31 @@ const ProfilePage = ({ onBack }) => {
                 />
               </Grid>
 
-              {/* Password Fields */}
-              <Grid item xs={12}>
-              <TextField
-                label="Old Password"
-                type={showOldPassword ? 'text' : 'password'}
-                name="Old_Password"
-                value={profile.Old_Password}
-                onChange={handleChange}
-                fullWidth
-                inputProps={{
-                  'data-lpignore': 'true', 
-                }}
-                InputProps={{
-                  readOnly: !isEditMode, 
-                }}
-              />
-            </Grid>
-
-
-            <Grid item xs={12}>
-              <TextField
-                label="New Password"
-                type={showNewPassword ? 'text' : 'password'}
-                name="New_Password"
-                value={profile.New_Password}
-                onChange={handleChange}
-                fullWidth
-                InputProps={{
-                  readOnly: !isEditMode,
-                }}
-              />
-            </Grid>
-
+              {/* Password Fields - Only visible in edit mode */}
+              {isEditMode && (
+                <>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Old Password"
+                      type="password"
+                      name="Old_Password"
+                      value={profile.Old_Password}
+                      onChange={handleChange}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="New Password"
+                      type="password"
+                      name="New_Password"
+                      value={profile.New_Password}
+                      onChange={handleChange}
+                      fullWidth
+                    />
+                  </Grid>
+                </>
+              )}
             </Grid>
             <Box display="flex" justifyContent="center" mt={3}>
               {!isEditMode && (

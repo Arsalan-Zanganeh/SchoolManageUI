@@ -26,6 +26,7 @@ import {
   TextField, 
   Container, 
   IconButton,
+  CircularProgress,
   Chip,
   Stack
 } from '@mui/material';
@@ -46,7 +47,10 @@ import { useTeacher } from "../context/TeacherContext";
 import { useMediaQuery } from '@mui/material';
 import {Menu} from '@mui/icons-material';
 import BusinessIcon from '@mui/icons-material/Business';
+import ChatIcon from '@mui/icons-material/Chat';
+import BookIcon from '@mui/icons-material/Book';
 import Attendance from "../Attendence";
+import AppWrapper from './chatpage';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -152,7 +156,6 @@ const TeacherClassDetail = () => {
   const [openTime, setOpenTime] = useState("");
   const [durationHour, setDurationHour] = useState("");
   const [durationMinute, setDurationMinute] = useState("");
-
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // برای شناسایی حالت موبایل
 
   const [classes, setClasses] = useState([]);
@@ -179,7 +182,48 @@ const TeacherClassDetail = () => {
     ? { variant: "permanent", open: true }
     : { open: sidebarOpen, onClose: toggleSidebar };
 
+  const [chatOpen, setChatOpen] = useState(false); // State to control chat dialog visibility
+  const [messages, setMessages] = useState([]);
+
+  const [openFileDialog, setOpenFileDialog] = useState(false);
+  const [openVideoDialog, setOpenVideoDialog] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [fileTitle, setFileTitle] = useState('');
+  const [videoTitle, setVideoTitle] = useState('');
+  const [openFullScreen, setOpenFullScreen] = useState(false);
+  const [selectedVideoSrc, setSelectedVideoSrc] = useState('');  
+  const [contentTabValue, setContentTabValue] = useState(0); // 0: Files, 1: Video
+
+  const handleChange = (event, newValue) => {
+    settabvalue(newValue);
+    localStorage.setItem('activeTeacherTab', newValue);
+  };
+
+  const handleCloseChat = () => {
+    setChatOpen(false); // Close the chat dialog
+  };
+  
+    
+  const handleContentTabChange = (event, newValue) => {
+    setContentTabValue(newValue);
+  };
+
+  const handleOpenVideoFullScreen = (videoSrc) => {
+    setSelectedVideoSrc(videoSrc);
+    setOpenFullScreen(true);
+  };
+
+  const handleCloseFullScreen = () => {
+    setOpenFullScreen(false);
+  };
+  
+
+
   const handleQuizDialogOpen = () => setQuizDialogOpen(true);
+  
   const handleQuizDialogClose = () => {
     setQuizDialogOpen(false);
     setQuizTitle("");
@@ -266,21 +310,206 @@ const TeacherClassDetail = () => {
     }
   };
 
-  // useEffect(() => {
-  //   setQuizzes((prevQuizzes) =>
-  //     prevQuizzes.map((quiz) => {
-  //       const openTime = new Date(quiz.OpenTime);
-  //       const endTime = new Date(openTime);
-  //       endTime.setHours(openTime.getHours() + (quiz.DurationHour || 0));
-  //       endTime.setMinutes(openTime.getMinutes() + (quiz.DurationMinute || 0));
+    
+  useEffect(() => {
+    const fetchFiles = async () => {
+      if (!teacherToken || !classToken) {
+        console.error('No token found');
+        return;
+      }
 
-  //       return {
-  //         ...quiz,
-  //         endTime, // زمان پایان به‌روز شده
-  //       };
-  //     })
-  //   );
-  // }, [quizzes]); // وابسته به تغییرات `quizzes`
+      try {
+        const response = await fetch('http://127.0.0.1:8000/discipline/teacher-watchfile-EC/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setFiles(data);
+        } else {
+          console.error('Failed to fetch files');
+        }
+      } catch (error) {
+        console.error('Error fetching files:', error);
+      }
+    };
+
+    fetchFiles();
+  }, [teacherToken, classToken]);
+
+  // Fetch Class Videos
+  useEffect(() => {
+    const fetchVideos = async () => {
+      if (!teacherToken || !classToken) {
+        console.error('No token found');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/discipline/teacher-watchvid-EC/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setVideos(data);
+        } else {
+          console.error('Failed to fetch videos');
+        }
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      }
+    };
+
+    fetchVideos();
+  }, [teacherToken, classToken]);
+
+  // Handle File Upload
+  const handleFileUpload = async () => {
+    if (!selectedFile || !fileTitle) {
+      setMessage('Please select a file and provide a title.');
+      return;
+    }
+    setLoading(true);
+    setMessage('');
+  
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('Title', fileTitle);  // Add the title
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8000/discipline/teacher-addfile-EC/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${teacherToken}`,
+        },
+        body: formData,
+        credentials: 'include',
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setFiles((prevFiles) => [...prevFiles, data]);
+        setMessage('File uploaded successfully.');
+        setOpenFileDialog(false);
+      } else {
+        const errorData = await response.json();
+        setMessage(`Failed to upload file: ${errorData.error}`);
+      }
+    } catch (error) {
+      setMessage('An error occurred while uploading the file.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+  // Handle Video Upload
+  const handleVideoUpload = async () => {
+    if (!selectedVideo || !videoTitle) {
+      setMessage('Please select a video and provide a title.');
+      return;
+    }
+    setLoading(true);
+    setMessage('');
+  
+    const formData = new FormData();
+    formData.append('src', selectedVideo);
+    formData.append('Title', videoTitle);  // Add the title
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8000/discipline/teacher-addvid-EC/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${teacherToken}`,
+        },
+        body: formData,
+        credentials: 'include',
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setVideos((prevVideos) => [...prevVideos, data]);
+        setMessage('Video uploaded successfully.');
+        setOpenVideoDialog(false);
+      } else {
+        const errorData = await response.json();
+        setMessage(`Failed to upload video: ${errorData.error}`);
+      }
+    } catch (error) {
+      setMessage('An error occurred while uploading the video.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+
+  // Handle Delete File
+  const handleDeleteFile = async (fileId) => {
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/discipline/teacher-delfile-EC/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ id: fileId }),
+      });
+
+      if (response.ok) {
+        setFiles((prevFiles) => prevFiles.filter(file => file.id !== fileId));
+        setMessage('File deleted successfully.');
+      } else {
+        const errorData = await response.json();
+        setMessage(`Failed to delete file: ${errorData.error}`);
+      }
+    } catch (error) {
+      setMessage('An error occurred while deleting the file.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Delete Video
+  const handleDeleteVideo = async (videoId) => {
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/discipline/teacher-delvid-EC/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ id: videoId }),
+      });
+
+      if (response.ok) {
+        setVideos((prevVideos) => prevVideos.filter(video => video.id !== videoId));
+        setMessage('Video deleted successfully.');
+      } else {
+        const errorData = await response.json();
+        setMessage(`Failed to delete video: ${errorData.error}`);
+      }
+    } catch (error) {
+      setMessage('An error occurred while deleting the video.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -1039,6 +1268,9 @@ const TeacherClassDetail = () => {
   </Box>
 )}
 
+      <TabPanel value={tabValue} index={7}>
+                  <AppWrapper onBack={() => handleTabChange(0)} /> {/* ارسال تابع بک */}
+      </TabPanel>
 
               
 {tabValue === 1 && (
@@ -1201,7 +1433,226 @@ const TeacherClassDetail = () => {
                     ))}
                   </Stack>
                 </Box>
+                
               )}
+
+{tabValue === 4 && ( 
+  <Box>
+    <Typography variant="h4" sx={{ mt: 4 }}>
+      Class Educational Content
+    </Typography>
+
+    {/* Educational Files and Educational Videos Tabs */}
+    <Tabs
+      value={contentTabValue}
+      onChange={handleContentTabChange}
+      variant="fullWidth"
+      textColor="primary"
+      indicatorColor="primary"
+      sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}
+    >
+      <Tab label="Educational Files" />
+      <Tab label="Educational Videos" />
+    </Tabs>
+
+    {/* Educational Files Section */}
+    {contentTabValue === 0 && (
+      <Box>
+        <Typography variant="h6">Educational Files</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setOpenFileDialog(true)}
+          startIcon={<AddIcon />}
+        >
+          Add File
+        </Button>
+        <Grid container spacing={2} sx={{ mt: 2 }}>
+          {files.map((file) => (
+            <Grid item xs={12} sm={6} md={4} key={file.id}>
+              <Paper elevation={3} sx={{ p: 2 }}>
+                <Typography variant="body1">{file.Title}</Typography> {/* Show Title */}
+                <Typography variant="body2">{file.name}</Typography> {/* Show File Name */}
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => handleDeleteFile(file.id)}
+                  startIcon={<DeleteIcon />}
+                >
+                  Delete
+                </Button>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    )}
+
+    {/* Add File Dialog */}
+    <Dialog open={openFileDialog} onClose={() => setOpenFileDialog(false)}>
+      <DialogTitle>Upload Educational File</DialogTitle>
+      <DialogContent>
+        <TextField
+          fullWidth
+          label="File Title"
+          variant="outlined"
+          value={fileTitle}
+          onChange={(e) => setFileTitle(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <input
+          type="file"
+          accept="application/*"
+          onChange={(e) => setSelectedFile(e.target.files[0])}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpenFileDialog(false)}>Cancel</Button>
+        <Button onClick={handleFileUpload} disabled={loading}>
+          {loading ? <CircularProgress size={24} /> : 'Upload'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+    {/* Educational Videos Section */}
+    {/* Educational Videos Section */}
+{contentTabValue === 1 && (
+  <Box>
+    <Typography variant="h6" sx={{ mb: 2 }}>
+      Educational Videos
+    </Typography>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => setOpenVideoDialog(true)}
+      startIcon={<AddIcon />}
+    >
+      Add Video (Embed YouTube Link)
+    </Button>
+    <Grid container spacing={2} sx={{ mt: 2 }}>
+      {videos.map((video) => (
+        <Grid item xs={12} sm={6} md={4} key={video.id}>
+          <Paper elevation={3} sx={{ p: 2 }}>
+            <Typography variant="body1">{video.Title}</Typography> {/* Show Title */}
+            {/* Button to Watch Full Screen */}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleOpenVideoFullScreen(video.src)}
+              sx={{ mt: 1 }}
+            >
+              Watch Full Screen
+            </Button>
+            {/* Delete Button */}
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => handleDeleteVideo(video.id)}
+              startIcon={<DeleteIcon />}
+              sx={{ mt: 1 }}
+            >
+              Delete
+            </Button>
+          </Paper>
+        </Grid>
+      ))}
+    </Grid>
+  </Box>
+)}
+
+{/* Add Video Dialog */}
+<Dialog open={openVideoDialog} onClose={() => setOpenVideoDialog(false)}>
+  <DialogTitle>Upload Educational Video (Embed Link)</DialogTitle>
+  <DialogContent>
+    <TextField
+      fullWidth
+      label="Video Title"
+      variant="outlined"
+      value={videoTitle}
+      onChange={(e) => setVideoTitle(e.target.value)}
+      sx={{ mb: 2 }}
+    />
+    <TextField
+      fullWidth
+      label="Enter YouTube Video URL"
+      variant="outlined"
+      value={selectedVideo}
+      onChange={(e) => setSelectedVideo(e.target.value)}
+      sx={{ mb: 2 }}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenVideoDialog(false)}>Cancel</Button>
+    <Button onClick={handleVideoUpload} disabled={loading}>
+      {loading ? <CircularProgress size={24} /> : 'Upload'}
+    </Button>
+  </DialogActions>
+</Dialog>
+
+{/* Full Screen Video Modal */}
+<Dialog open={openFullScreen} onClose={handleCloseFullScreen} fullWidth maxWidth="lg">
+  <DialogTitle>Watch Full-Screen Video</DialogTitle>
+  <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+    <iframe
+      width="100%"
+      height="500"
+      src={selectedVideoSrc}
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseFullScreen}>Close</Button>
+  </DialogActions>
+</Dialog>
+
+  </Box>
+)}
+
+{/* Feedback Message */}
+{message && <Typography color="error">{message}</Typography>}
+
+{/* Chat Modal */}
+<Dialog open={chatOpen} onClose={handleCloseChat} fullWidth maxWidth="sm">
+  <DialogTitle>Class Chat</DialogTitle>
+  <DialogContent>
+    <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
+      <Stack spacing={2}>
+        {messages.map((message) => (
+          <Box key={message.id} sx={{ p: 2, border: '1px solid #ccc', borderRadius: 2 }}>
+            <Typography variant="body2" color="textSecondary">
+              {message.sender} ({message.email}):
+            </Typography>
+            <Typography variant="body1">{message.content}</Typography>
+          </Box>
+        ))}
+      </Stack>
+    </Box>
+
+    {/* Send Message */}
+    <TextField
+      label="Type a message"
+      variant="outlined"
+      fullWidth
+      margin="dense"
+      multiline
+      rows={3}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && e.target.value) {
+          handleSendMessage(e.target.value);
+          e.target.value = ''; // Clear the message input after sending
+        }
+      }}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseChat} color="secondary">
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
+
               <TabPanel value={tabValue} index={3}>
                 <Attendance />
               </TabPanel>
@@ -1383,10 +1834,47 @@ const TeacherClassDetail = () => {
                 padding: theme.spacing(1),
               }}
             >
-              <ListItemIcon sx={{ color: "#fff" }}>
+            <ListItemIcon sx={{ color: "#fff" }}>
                 <People />
               </ListItemIcon>
-              <ListItemText primary="Attendence" />
+              <ListItemText primary="Attendance" />
+            </ListItem>
+            <ListItem
+              button
+              onClick={() => setTabValue(7)}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "gray", // Test with a solid color
+                  transition: "background-color 0.3s",
+                },
+                cursor: "pointer",
+                borderRadius: 1,
+                padding: theme.spacing(1),
+              }}
+            >
+              <ListItemIcon sx={{ color: "#fff" }}>
+                <ChatIcon />
+              </ListItemIcon>
+              <ListItemText primary="Chat" />
+            </ListItem>
+
+            <ListItem
+              button
+              onClick={() => setTabValue(4)}
+              sx={{
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.light,
+                  transition: "background-color 0.3s",
+                },
+                cursor: "pointer",
+                borderRadius: 1,
+                padding: theme.spacing(1),
+              }}
+            >
+              <ListItemIcon sx={{ color: "#fff" }}>
+                <BookIcon />
+              </ListItemIcon>
+              <ListItemText primary="Educational Content" />
             </ListItem>
             <ListItem
               button
