@@ -298,16 +298,32 @@ const StudentDashboard = () => {
         }
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
+      if (!response.ok) {
+      const errorData = await submit.json();
+
+      if (errorData) {
+        let errorMessage = '';
+        for (const key in errorData) {
+          if (errorData.hasOwnProperty(key)) {
+            errorMessage += `${key}: ${errorData[key].join(', ')}\n`;
+          }
+        }
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage || 'Failed to Add Event. Please check the details and try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
       } else {
-        console.error("Failed to fetch class list");
+        Swal.fire('Error', 'An unknown error occurred. Please try again later.', 'error');
       }
-    } catch (error) {
-      console.error("Error fetching class list:", error);
-    }
-  }, [token]);
+    } 
+  } catch (error) 
+  {
+    Swal.fire('Error', 'Ask your Principal to Connect his Google Account First!', 'error');
+    console.error('Error:', error);
+  }
+}, [token]);
 
   const fetchUnreadNotifications = useCallback(async () => {
     try {

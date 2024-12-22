@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
 import { useStudent } from '../context/StudentContext'; 
 import { useNavigate } from 'react-router-dom';
 
-const ShowProfile = () => {
+const ShowProfile = ({onBack}) => {
   const { student } = useStudent();
   const [profile, setProfile] = useState({
     first_name: '',
@@ -134,7 +134,7 @@ const ShowProfile = () => {
   };
 
   const handleBackToDashboard = () => {
-    navigate('/student-dashboard');
+    onBack();
   };
 
   return (

@@ -12,7 +12,7 @@ const ContainerStyled = styled(Container)(({ theme }) => ({
 }));
 
 const TableCellStyled = styled(TableCell)(({ theme }) => ({
-  padding: theme.spacing(0),
+  padding: theme.spacing(1),
 }));
 
 
