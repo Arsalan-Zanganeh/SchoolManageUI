@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography,IconButton,Menu, MenuItem, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled, useMediaQuery } from '@mui/material';
-import AddPlanForm from './AddPlan';
+import { Container, Typography, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Menu, MenuItem, IconButton, Tabs, Tab, styled, useMediaQuery } from '@mui/material';
+import AddPlanFormT from './AddPlanT';
 import Swal from 'sweetalert2';
-import { useStudent } from '../../context/StudentContext';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import { MoreVert as MoreVertIcon, Comment as CommentIcon, Delete as DeleteIcon, ArrowBack as ArrowBackIcon, Visibility as VisibilityIcon}  from '@mui/icons-material';
+import { MoreVert as MoreVertIcon, Comment as CommentIcon, Delete as DeleteIcon, ArrowBack as ArrowBackIcon , Visibility as VisibilityIcon, AddComment as AddCommentIcon} from '@mui/icons-material';
 import { startOfWeek, format, addWeeks, subWeeks } from 'date-fns';
 
 
@@ -58,37 +57,39 @@ const formatWeekLabel = (date) => {
     return `${format(start, 'MMM d')} - ${format(end, 'MMM d, yyyy')}`;
 };
 
-
 const formatTime = (hours, minutes) => {
     const formattedHours = String(hours).padStart(2, '0');
     const formattedMinutes = String(minutes).padStart(2, '0');
     return `${formattedHours}:${formattedMinutes}`;
 };
 
-const Planner = ({ onBack }) => {
+const TeacherViewPlanner = ({ onBack, studentid }) => {
     const [plans, setPlans] = useState([]);
-    const { student, logoutStudent } = useStudent();
     const [schedule, setSchedule] = useState({});
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+    const [addCommentDialogOpen, setAddCommentDialogOpen] = useState(false);
+    const [newComment, setNewComment] = useState('');
     const [selectedPlan, setSelectedPlan] = useState(null);
-    const token = student?.jwt;
     const [comments, setComments] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
     const [tabValue, setTabValue] = useState(0);
     const commentsPerPage = 5;
-    const [currentPage, setCurrentPage] = useState(0);
     const isMobile = useMediaQuery('(max-width:600px)');
     const [open, setOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [anchorEl, setAnchorEl] = useState(null);
-    
+
+
     const fetchPlans = async (startDate, endDate) => {
         try {
-            const response = await fetch(`${apiBaseUrl}/student-watch-plans/`, {
+            const response = await fetch(`${apiBaseUrl}/teacher-watch-student-plans/`, {
+                method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 credentials: 'include',
-              });
+                body: JSON.stringify({ Student_ID: studentid })
+            });
             if (!response.ok) {
                 throw new Error('Server error');
             }
@@ -97,8 +98,6 @@ const Planner = ({ onBack }) => {
                 const planDate = new Date(plan.StartDate.replace(' ', 'T'));
                 return (planDate >= startDate && planDate <= endDate);
             });
-            //console.log(data)
-            //12console.log(filteredPlans)
             setPlans(filteredPlans);
         } catch (error) {
             Swal.fire('Error', error.message, 'error');
@@ -106,28 +105,28 @@ const Planner = ({ onBack }) => {
     };
 
     const fetchComments = async (planId) => {
-            try {
-                const response = await fetch(`${apiBaseUrl}/teacher-watch-feedbacks/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: "include",
-                    body: JSON.stringify({ StudentPlanning_ID: planId })
-                });
-                if (!response.ok) {
-                    throw new Error('Server error');
-                }
-                const data = await response.json();
-                setComments(data);
-            } catch (error) {
-                Swal.fire('Error', 'Failed to fetch comments. Please try again.', 'error');
+        try {
+            const response = await fetch(`${apiBaseUrl}/teacher-watch-feedbacks/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: "include",
+                body: JSON.stringify({ StudentPlanning_ID: planId })
+            });
+            if (!response.ok) {
+                throw new Error('Server error');
             }
-        };
+            const data = await response.json();
+            setComments(data);
+        } catch (error) {
+            Swal.fire('Error', 'Failed to fetch comments. Please try again.', 'error');
+        }
+    };
 
     const addPlan = async (plan) => {
         try {
-            const response = await fetch(`${apiBaseUrl}/student-add-plan/`, {
+            const response = await fetch(`${apiBaseUrl}/teacher-add-student-plan/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -149,7 +148,7 @@ const Planner = ({ onBack }) => {
 
     const deletePlan = async () => {
         try {
-            await fetch(`${apiBaseUrl}/student-delete-plan/`, {
+            await fetch(`${apiBaseUrl}/teacher-delete-plan/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -181,6 +180,47 @@ const Planner = ({ onBack }) => {
         setDetailsDialogOpen(true);
     };
 
+    const handleAddComment = async () => {
+        try {
+            const response = await fetch(`${apiBaseUrl}/teacher-add-feed-back/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: "include",
+                body: JSON.stringify({ StudentPlanning_ID: selectedPlan.id, Feedback: newComment })
+            });
+            if (!response.ok) {
+                throw new Error('Server error');
+            }
+            await fetchComments(selectedPlan.id);
+            setAddCommentDialogOpen(false);
+            setNewComment('');
+        } catch (error) {
+            Swal.fire('Error', 'Failed to add comment. Please try again.', 'error');
+        }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            const response = await fetch(`${apiBaseUrl}/teacher-delete-feedback/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: "include",
+                body: JSON.stringify({ TeacherFeedback_ID: commentId })
+            });
+            if (!response.ok) {
+                throw new Error('Server error');
+            }
+            await fetchComments(selectedPlan.id);
+        } catch (error) {
+            Swal.fire('Error', 'You can only delete your own comments!', 'error');
+            setDetailsDialogOpen(false);
+        }
+    };
+
     const handlePreviousWeek = () => {
         setSelectedDate(prevDate => subWeeks(prevDate, 1));
     };
@@ -208,41 +248,37 @@ const Planner = ({ onBack }) => {
             const duration = parseInt(plan.Duration, 10);
 
             if (!schedule[day]) {
-                schedule[day] = Array(17).fill([]); // Initialize for hours from 7:00 AM to 12:00 AM
+                schedule[day] = Array(17).fill([]); // Initialize for hours from
             }
-
-            if (startHour >= 7 && startHour < 24) {
-                const hourIndex = startHour - 7; // Adjust index for the 7:00 AM to 12:00 AM range
-                schedule[day][hourIndex].push({
-                    id: plan.id,
-                    title: plan.Title,
-                    startHour,
-                    startMinutes,
-                    duration,
-                    Explanation: plan.Explanation,
-                    StartDate: plan.StartDate // Include StartDate in the task object
-                });
-            }
-        });
-
-        setSchedule(schedule);
-    };
+                if (startHour >= 7 && startHour < 24) {
+                    const hourIndex = startHour - 7; // Adjust index for the 7:00 AM to 12:00 AM range
+                    schedule[day][hourIndex].push({
+                        id: plan.id,
+                        title: plan.Title,
+                        startHour,
+                        startMinutes,
+                        duration,
+                        Explanation: plan.Explanation,
+                        StartDate: plan.StartDate,
+                    });
+                }
+            });
     
-
-    useEffect(() => {
-        const startDate = getStartOfWeek(selectedDate);
-        const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + 7);
-        fetchPlans(startDate, endDate);
-        generateSchedule();
-        console.log(startDate)
-        console.log(endDate)
-    }, [token,selectedDate]);
-
-    useEffect(() => {
-        generateSchedule();
-    }, [plans]);
-
+            setSchedule(schedule);
+        };
+    
+        useEffect(() => {
+            const startDate = getStartOfWeek(selectedDate);
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 7);
+            fetchPlans(startDate, endDate);
+            generateSchedule();
+        }, [selectedDate]);
+    
+        useEffect(() => {
+            generateSchedule();
+        }, [plans]);
+    
     const handlePrevComments = () => {
         setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
     };
@@ -258,21 +294,21 @@ const Planner = ({ onBack }) => {
             <Container component={Box} border={1} borderColor="grey.400" borderRadius={8} padding={3} marginTop={5}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
                     <Box>
-                        <Button variant="contained" color="primary" onClick={() => setOpen(true)} style={{ marginRight: '10px', marginBottom:'10px'}}>Add Task</Button>
-                        <Button onClick={onBack} variant="contained" color="secondary" style={{ marginRight: '10px' , marginBottom:'10px'}}>Back</Button>
+                        <Button variant="contained" color="primary" onClick={() => setOpen(true)} style={{ marginRight: '10px', marginBottom: '10px' }}>Add Task</Button>
+                        <Button onClick={onBack} variant="contained" color="secondary" style={{ marginRight: '10px', marginBottom: '10px' }}>Back</Button>
                     </Box>
                     <Box>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <Button variant="outlined" color="primary" onClick={handlePreviousWeek} style={{ marginRight: '5px' ,maxWidth: '25px' }}>&lt; Prev</Button>
-                        <DatePicker
-                            views={['year', 'month','day']}
-                            label="Select Week"
-                            value={selectedDate}
-                            onChange={(newValue) => setSelectedDate(getStartOfWeek(newValue))}
-                            renderInput={(params) => <TextField {...params} helperText={formatWeekLabel(selectedDate)} />}
-                        />
-                    <Button variant="outlined" color="primary" onClick={handleNextWeek} style={{ marginLeft: '5px' ,maxWidth: '25px'}}>Next &gt;</Button>
-                    </LocalizationProvider>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <Button variant="outlined" color="primary" onClick={handlePreviousWeek} style={{ marginRight: '5px', maxWidth: '25px' }}>&lt; Prev</Button>
+                            <DatePicker
+                                views={['year', 'month', 'day']}
+                                label="Select Week"
+                                value={selectedDate}
+                                onChange={(newValue) => setSelectedDate(getStartOfWeek(newValue))}
+                                renderInput={(params) => <TextField {...params} helperText={formatWeekLabel(selectedDate)} />}
+                            />
+                            <Button variant="outlined" color="primary" onClick={handleNextWeek} style={{ marginLeft: '5px', maxWidth: '25px' }}>Next &gt;</Button>
+                        </LocalizationProvider>
                     </Box>
                 </Box>
                 <TableContainer component={Paper} style={{ position: 'relative' }}>
@@ -305,6 +341,13 @@ const Planner = ({ onBack }) => {
                                                         isMobile={isMobile}
                                                     >
                                                         {task.title}
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={(event) => handleContextMenu(event, task)}
+                                                            style={{ color: 'white', marginLeft: 'auto' }}
+                                                        >
+                                                            <MoreVertIcon />
+                                                        </IconButton>
                                                     </TaskBox>
                                                 ))}
                                             </TableCell>
@@ -325,6 +368,13 @@ const Planner = ({ onBack }) => {
                                                         isMobile={isMobile}
                                                     >
                                                         {task.title}
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={(event) => handleContextMenu(event, task)}
+                                                            style={{ color: 'white', marginLeft: 'auto' }}
+                                                        >
+                                                            <MoreVertIcon />
+                                                        </IconButton>
                                                     </TaskBox>
                                                 ))}
                                             </TableCell>
@@ -343,6 +393,10 @@ const Planner = ({ onBack }) => {
                     <MenuItem onClick={handleOpenDetails}>
                     <VisibilityIcon style={{ color: 'black', marginRight:'5px'}}/>
                     See Details
+                    </MenuItem>
+                    <MenuItem onClick={() => setAddCommentDialogOpen(true)}>
+                    <AddCommentIcon style={{ color: 'black' , marginRight:'5px'}}/>
+                    Add Comment
                     </MenuItem>
                     <MenuItem onClick={deletePlan}>
                     <DeleteIcon style={{ color: 'red' , marginRight:'5px'}}/>
@@ -373,12 +427,15 @@ const Planner = ({ onBack }) => {
                         )}
                         {tabValue === 1 && (
                             <>
-                                
                                 <Box>
                                 {currentComments.length ? (
                                     currentComments.map((comment, index) => (
                                         <Box key={index} display="flex" alignItems="center" justifyContent="space-between" mb={2} p={2} bgcolor="grey.100" borderRadius= {theme.shape.borderRadius} backgroundColor= {theme.palette.background} elevation={3}>
+                                            
                                             <Typography>{comment.Teacher_First_Name}{comment.Teacher_Last_Name}: <br />{comment.Feedback}</Typography>
+                                            <IconButton onClick={() => handleDeleteComment(comment.id)} style={{ color: 'red' }}>
+                                                <DeleteIcon />
+                                            </IconButton>
                                         </Box>
                                     ))
                                 ) : (
@@ -397,18 +454,38 @@ const Planner = ({ onBack }) => {
                         <Button onClick={deletePlan} color="secondary">Delete Task</Button>
                     </DialogActions>
                 </Dialog>
-            <Dialog open={open} onClose={() => setOpen(false)}>
-                <DialogTitle>Add New Plan</DialogTitle>
-                <DialogContent>
-                    <AddPlanForm addPlan={addPlan} back={()=> setOpen(false)}/>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpen(false)} color="primary">Cancel</Button>
-                </DialogActions>
-            </Dialog>
-        </Container>
+                <Dialog open={addCommentDialogOpen} onClose={() => setAddCommentDialogOpen(false)}>
+                    <DialogTitle>Add Comment</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Comment"
+                            type="text"
+                            fullWidth
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            inputProps={{ maxLength: 100 }}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setAddCommentDialogOpen(false)} color="primary">Cancel</Button>
+                        <Button onClick={handleAddComment} color="primary">Add Comment</Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog open={open} onClose={() => setOpen(false)}>
+                    <DialogTitle>Add New Plan</DialogTitle>
+                    <DialogContent>
+                        <AddPlanFormT addPlan={addPlan} back={() => setOpen(false)} student_id={studentid}/>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpen(false)} color="primary">Cancel</Button>
+                    </DialogActions>
+                </Dialog>
+            </Container>
         </ThemeProvider>
     );
-};
+    };
+    
 
-export default Planner;
+export default TeacherViewPlanner;

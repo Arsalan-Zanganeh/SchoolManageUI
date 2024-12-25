@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button,Typography, Box } from '@mui/material';
+import { TextField, Button, Typography,Box,MenuItem } from '@mui/material';
 import { LocalizationProvider, DatePicker, MobileTimePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { format } from 'date-fns';
 
-const AddPlanForm = ({ addPlan , back}) => {
+const AddPlanFormT = ({ addPlan , back,student_id}) => {
     const [startDate, setStartDate] = useState(new Date());
     const [startTime, setStartTime] = useState(new Date());
     const [title, setTitle] = useState('');
-    const [timeError, setTimeError] = useState('');
     const [duration, setDuration] = useState(5);
+    const [timeError, setTimeError] = useState('');
     const [explanation, setExplanation] = useState('');
 
     useEffect(() => {
@@ -32,12 +32,11 @@ const AddPlanForm = ({ addPlan , back}) => {
             setTimeError('The task duration extends beyond midnight. Please adjust the duration or start time.');
             return;
         }
-
         setTimeError('');
         const formattedDate = format(startDate, 'yyyy-MM-dd');
         const formattedTime = format(startTime, 'HH:mm');
         const formattedStartDate = `${formattedDate}T${formattedTime}:00`;
-        addPlan({ StartDate: formattedStartDate, Title: title, Duration: duration, Explanation: explanation });
+        addPlan({ Student_ID: student_id,StartDate: formattedStartDate, Title: title, Duration: duration, Explanation: explanation });
         back()
     };
 
@@ -104,4 +103,4 @@ const AddPlanForm = ({ addPlan , back}) => {
     );
 };
 
-export default AddPlanForm;
+export default AddPlanFormT;

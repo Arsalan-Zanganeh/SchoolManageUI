@@ -40,7 +40,9 @@ import {
   Assessment,
   People,
   HomeWork,
-  EditNote
+  EditNote,
+  NoteAdd,
+  NoteAlt
 } from '@mui/icons-material';
 import { useClass } from "../context/ClassContext";
 import { useTeacher } from "../context/TeacherContext";
@@ -51,6 +53,8 @@ import ChatIcon from '@mui/icons-material/Chat';
 import BookIcon from '@mui/icons-material/Book';
 import Attendance from "../Attendence";
 import AppWrapper from './chatpage';
+import ClassList from "../Dashboard/Planning/ClassList";
+import TeacherViewPlanner from "../Dashboard/Planning/teacherWatchPlan";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -196,6 +200,7 @@ const TeacherClassDetail = () => {
   const [openFullScreen, setOpenFullScreen] = useState(false);
   const [selectedVideoSrc, setSelectedVideoSrc] = useState('');  
   const [contentTabValue, setContentTabValue] = useState(0); // 0: Files, 1: Video
+  const [selectedStudentPlan, setSelectedStudentPlan] = useState(0); // 0: Files, 1: Video
 
   const handleChange = (event, newValue) => {
     settabvalue(newValue);
@@ -912,6 +917,10 @@ const TeacherClassDetail = () => {
     }
   };
 
+  const gotoPlanningStudent = (studentid) => {
+    setSelectedStudentPlan(studentid)
+    setTabValue(13);
+  }
   return (
     <ThemeProvider theme={theme}>
 
@@ -985,7 +994,6 @@ const TeacherClassDetail = () => {
           p: 3,
           mb: 3,
           backgroundColor: "#DCE8FD",
-          height: "100%",
           justifyContent: "center",
           alignItems: "center",
           padding: "20px",
@@ -1269,10 +1277,15 @@ const TeacherClassDetail = () => {
 )}
 
       <TabPanel value={tabValue} index={7}>
-                  <AppWrapper onBack={() => handleTabChange(0)} /> {/* ارسال تابع بک */}
+                  <AppWrapper/>
       </TabPanel>
 
-              
+      <TabPanel value={tabValue} index={12}>
+                  <ClassList gotoplanning={gotoPlanningStudent}/>
+      </TabPanel>
+      <TabPanel value={tabValue} index={13}>
+                  <TeacherViewPlanner onBack={() => setTabValue(12)} studentid={selectedStudentPlan}/>
+      </TabPanel>
 {tabValue === 1 && (
   <Box>
     <Stack spacing={2}>
@@ -1859,6 +1872,24 @@ const TeacherClassDetail = () => {
               <ListItemText primary="Chat" />
             </ListItem>
 
+            <ListItem
+              button
+              onClick={() => setTabValue(12)}
+              sx={{
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.light,
+                  transition: "background-color 0.3s",
+                },
+                cursor: "pointer",
+                borderRadius: 1,
+                padding: theme.spacing(1),
+              }}
+            >
+              <ListItemIcon sx={{ color: "#fff" }}>
+                <NoteAlt />
+              </ListItemIcon>
+              <ListItemText primary="Students Planning" />
+            </ListItem>
             <ListItem
               button
               onClick={() => setTabValue(4)}
