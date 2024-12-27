@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react
 import SignUpLogin from './signup-login/signup-login'
 import LoginPrincipal from './login-page/principal';
 import LoginStudent from './login-page/student';
-import LoginTeacher from './login-page/Teacher';
+import LoginTeacher from './login-page/teacher';
 import Dashboard from './Dashboard/Dashboard';
 import StuDashboard from './Dashboard/StudentDashboard';
 import TeacherDashboard from './Dashboard/TeacherDashboard';
