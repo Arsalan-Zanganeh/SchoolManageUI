@@ -52,62 +52,49 @@ function TabPanel(props) {
 
 const styles = {
   list: {
-      width: '100%',
-      backgroundColor: '#f9f9f9',
-      borderRadius: '8px',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      padding: '8px',
-  },
-  listItem: {
-      borderBottom: '1px solid #ddd',
-      padding: '16px',
-      cursor: 'pointer',
-      '&:hover': {
-          backgroundColor: '#0036AB',
-      },
-  },
-  listItemText: {
-      fontWeight: 500,
-  },
-  previewText: {
-      color: '#555',
-  },
-  dialogTitle: {
-      textAlign: 'center',
-      fontWeight: 'bold',
-  },
-  dialogContent: {
-      padding: '16px',
-  },
-  list: {
     width: '95%',
     backgroundColor: '#f9f9f9',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     padding: '8px',
-},
-listItemHighlight: {
-  padding: '20px',
-},
-previewTextGray: {
-    color: '#C8C6C6', 
-},
-previewTextBlack: {
-    color: '#000', 
-},
-dialogTitle: {
+  },
+  listItem: {
+    borderBottom: '1px solid #ddd',
+    padding: '16px',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: '#0036AB',
+    },
+  },
+  listItemHighlight: {
+    padding: '20px',
+  },
+  listItemText: {
+    fontWeight: 500,
+  },
+  previewText: {
+    color: '#555',
+  },
+  previewTextGray: {
+    color: '#C8C6C6',
+  },
+  previewTextBlack: {
+    color: '#000',
+  },
+  dialogTitle: {
     textAlign: 'center',
     fontWeight: 'bold',
-},
-dialogContent: {
+  },
+  dialogContent: {
     padding: '16px',
-},
-dateText: {
-    fontWeight: 'bold', 
+  },
+  dateText: {
+    fontWeight: 'bold',
     marginRight: '16px',
     color: '#aaa',
-},
+  },
 };
+
 
 const theme = createTheme({
   palette: {
@@ -129,8 +116,11 @@ const ClassDetails = () => {
   const navigate = useNavigate();
   const [classList, setClassList] = useState([]); 
   const [classDetails, setClassDetails] = useState(null); 
-  const [tabValue, setTabValue] = useState(0); 
-  const [homeworks, setHomeworks] = useState([]); 
+  const [tabValue, setTabValue] = useState(() => {
+    const savedTab = localStorage.getItem("activeClassTab");
+    return savedTab !== null ? parseInt(savedTab) : 0; // اگر مقدار ذخیره‌شده وجود دارد، از آن استفاده کن، در غیر این صورت مقدار 0
+  });
+    const [homeworks, setHomeworks] = useState([]); 
   const [quizzes, setQuizzes] = useState([]); 
   const [selectedHomework, setSelectedHomework] = useState(null); 
   const [records, setRecords] = useState([]); 
@@ -149,6 +139,73 @@ const ClassDetails = () => {
   
   const [educationalVideos, setEducationalVideos] = useState([]);
   const [educationalFiles, setEducationalFiles] = useState([]);
+  const [descriptiveQuizzes, setDescriptiveQuizzes] = useState([]);
+  // const handleTabChange = (event, newValue) => {
+  //   setTabValue(newValue); // تغییر مقدار تب
+  //   localStorage.setItem("activeClassTab", newValue); // ذخیره مقدار در localStorage
+  // };
+  
+  useEffect(() => {
+    const savedTab = localStorage.getItem("activeClassTab");
+    if (savedTab !== null) {
+      setTabValue(parseInt(savedTab)); // مقدار ذخیره‌شده را بازیابی و تنظیم کنید
+    }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDescriptiveQuizzes((prevQuizzes) => {
+        const now = new Date();
+        return prevQuizzes.map((quiz) => {
+          const openTime = new Date(quiz.OpenTime);
+          const endTime = new Date(openTime);
+          endTime.setHours(endTime.getHours() + quiz.DurationHour || 0);
+          endTime.setMinutes(endTime.getMinutes() + quiz.DurationMinute || 0);
+  
+          const isQuizOpen = now >= openTime && now <= endTime;
+          const isQuizEnded = now > endTime;
+  
+          return {
+            ...quiz,
+            isQuizOpen,
+            isQuizEnded,
+          };
+        });
+      });
+    }, 1000);
+  
+    return () => clearInterval(interval);
+  }, []);
+  
+  useEffect(() => {
+    const fetchDescriptiveQuizzes = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/quiz/student_quizzes/", {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+  
+          // فیلتر فقط کوییزهای تشریحی، اگر نیاز باشد
+          const descriptiveQuizzes = data.filter(quiz => quiz.Is_Published); // فرض: "Is_Published" معیار انتشار است
+          setDescriptiveQuizzes(descriptiveQuizzes);
+        } else {
+          console.error('Failed to fetch quizzes');
+        }
+      } catch (error) {
+        console.error('Error fetching descriptive quizzes:', error);
+      }
+    };
+  
+    fetchDescriptiveQuizzes();
+  }, []);
+  
+  
 
 
   const convertToEmbedUrl = (url) => {
@@ -278,7 +335,7 @@ useEffect(() => {
     
             if (response.ok) {
                 const data = await response.json();
-                console.log("Fetched educational videos:", data);  // Log the entire response
+                // console.log("Fetched educational videos:", data);  // Log the entire response
     
                 setEducationalVideos(data);
             } else {
@@ -398,7 +455,60 @@ useEffect(() => {
       return false;
     }
   };
-
+  useEffect(() => {
+    const fetchDescriptiveQuizStatuses = async () => {
+      const openQuizzes = descriptiveQuizzes.filter((quiz) => quiz.isQuizOpen || quiz.isQuizEnded === false);
+  
+      if (openQuizzes.length === 0) {
+        return;
+      }
+  
+      const statuses = await Promise.all(
+        openQuizzes.map(async (quiz) => {
+          const isFinished = await checkDescriptiveQuizStatus(quiz.id);
+          return { id: quiz.id, finished: isFinished };
+        })
+      );
+  
+      setFinishedQuizzes((prev) => {
+        const prevMap = new Map(prev.map(obj => [obj.id, obj.finished]));
+        statuses.forEach(s => {
+          prevMap.set(s.id, s.finished);
+        });
+        return Array.from(prevMap, ([id, finished]) => ({ id, finished }));
+      });
+    };
+  
+    if (descriptiveQuizzes.length > 0) {
+      fetchDescriptiveQuizStatuses();
+    }
+  }, [descriptiveQuizzes]);
+  
+  const checkDescriptiveQuizStatus = async (quizId) => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/quiz/student-quiz-finished-boolean/", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ QuizTeacherExplan_ID: quizId }), 
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        return data.boolean === true;
+      } else {
+        console.error("Failed to check descriptive quiz status.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error checking descriptive quiz status:", error);
+      return false;
+    }
+  };
+  
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -542,7 +652,7 @@ useEffect(() => {
     {{
       position: { xs: "relative", sm: "absolute" },
       top: 0,
-      left: { xs: "10px", sm: "240px" },
+      left: { xs: "0px", sm: "240px" },
       right: { xs: "20px", sm: "20px" },
       // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
       maxWidth: { xs: "100%", sm: "1600px" },
@@ -627,8 +737,10 @@ useEffect(() => {
     {/* ستون سمت راست - آیکن بازگشت */}
     <Grid item xs={2} sm={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
       <IconButton
-  onClick={() => navigate('/student-dashboard')}
-  sx={{
+onClick={() => {
+  localStorage.removeItem("activeClassTab"); // پاک کردن مقدار از localStorage
+  navigate('/student-dashboard'); // هدایت به داشبورد
+}}  sx={{
           padding: { xs: '6px', sm: '8px' },
           '& svg': { fontSize: { xs: '1.2rem', sm: '1.5rem' } },
           backgroundColor: '#fff',
@@ -875,7 +987,10 @@ useEffect(() => {
         )}
 
       <TabPanel value={tabValue} index={4}>
-                        <AppWrapper onBack={() => handleTabChange(0)} /> {/* ارسال تابع بک */}
+                        <AppWrapper onBack={() => {
+  localStorage.setItem("activeClassTab", 0); // ذخیره مقدار در localStorage
+  setTabValue(0); // تنظیم مقدار جدید
+}} /> {/* ارسال تابع بک */}
       </TabPanel>
 {tabValue === 3 && (
   <Box sx={{ padding: 2 }}>
@@ -1023,6 +1138,115 @@ useEffect(() => {
     </Dialog>
   </Box>
 )}
+{tabValue === 5 && ( // مقدار جدید تب
+  <Box
+    sx={{
+      backgroundColor: 'rgba(255,255,255,0.8)',
+      borderRadius: 2,
+      p: 2,
+      boxShadow: 1,
+    }}
+  >
+    <Typography
+      variant="h5"
+      color="primary"
+      sx={{ marginBottom: 2, fontWeight: 'bold' }}
+    >
+      Descriptive Quizzes
+    </Typography>
+    <Box
+      sx={{
+        maxHeight: '400px',
+        overflowY: 'auto',
+        paddingRight: 2,
+      }}
+    >
+   {descriptiveQuizzes.length > 0 ? (
+  descriptiveQuizzes.map((quiz) => {
+    const isQuizFinished = finishedQuizzes.find((q) => q.id === quiz.id)?.finished || false;
+
+    // محاسبه زمان پایان امتحان
+    const openTime = new Date(quiz.OpenTime);
+    const quizEnd = new Date(openTime);
+    quizEnd.setHours(quizEnd.getHours() + (quiz.DurationHour || 0));
+    quizEnd.setMinutes(quizEnd.getMinutes() + (quiz.DurationMinute || 0));
+
+    return (
+      <Card
+        key={quiz.id}
+        variant="outlined"
+        sx={{
+          marginBottom: 2,
+          transition: '0.3s',
+          '&:hover': {
+            boxShadow: quiz.isQuizOpen && !isQuizFinished ? 3 : 1,
+            backgroundColor: quiz.isQuizOpen && !isQuizFinished ? '#f0f0f0' : 'transparent',
+          },
+        }}
+      >
+        <CardContent>
+          <Typography variant="h6" fontWeight="bold" color="text.primary">
+            {quiz.Title}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Opens on: {openTime.toLocaleString()}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Duration: 
+            {quiz.DurationHour > 0 ? `${quiz.DurationHour} hour(s)` : ''}
+            {quiz.DurationMinute > 0 ? ` ${quiz.DurationMinute} minute(s)` : ''}
+          </Typography>
+
+          {/* مدیریت دکمه‌ها بر اساس وضعیت */}
+          {quiz.isQuizEnded ? (
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: 1 }}
+              onClick={() => {
+                navigate(`/student-dashboard/student-classes/${cid}/descriptive-quiz/${quiz.id}/results`);
+              }}
+            >
+              Show Results
+            </Button>
+          ) : isQuizFinished ? (
+            <Typography variant="body2" color="primary" sx={{ mt: 1 }}>
+              You have already finished this quiz. Results will be available on: {quizEnd.toLocaleString()}
+            </Typography>
+          ) : quiz.isQuizOpen ? (
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: 1 }}
+              onClick={() => {
+                navigate(`/student-dashboard/student-classes/${cid}/descriptive-quiz/${quiz.id}`, {
+                  state: { quizEndTime: quizEnd.toISOString(), cid },
+                });
+              }}
+            >
+              Start Quiz
+            </Button>
+          ) : (
+            <Button variant="contained" color="secondary" sx={{ mt: 1 }} disabled>
+              Quiz Not Started
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+    );
+  })
+) : (
+  <Typography variant="body1" color="textSecondary">
+    No descriptive quizzes available.
+  </Typography>
+)}
+
+
+
+    </Box>
+  </Box>
+)}
+
 
 
 
@@ -1118,7 +1342,10 @@ useEffect(() => {
       <Drawer anchor='left' {...drawerProps} sx={{ '& .MuiDrawer-paper': { bgcolor: theme.palette.primary.drawer, color: theme.palette.text.primary, '& .MuiListItemText-primary': { color: '#fff' } } }}>
     <Toolbar />
   <List>
-    <ListItem button onClick={() => setTabValue(0)}
+    <ListItem button onClick={() => {
+  localStorage.setItem("activeClassTab", 0); // ذخیره مقدار در localStorage
+  setTabValue(0); // تنظیم مقدار جدید
+}}
         sx={{
           '&:hover': {
             backgroundColor: theme.palette.primary.light, 
@@ -1133,7 +1360,10 @@ useEffect(() => {
       </ListItemIcon>
       <ListItemText primary="Quizzes" />
     </ListItem>
-    <ListItem button onClick={() => setTabValue(1)}
+    <ListItem button onClick={() => {
+  localStorage.setItem("activeClassTab", 1); // ذخیره مقدار در localStorage
+  setTabValue(1); // تنظیم مقدار جدید
+}}
         sx={{
           '&:hover': {
             backgroundColor: theme.palette.primary.light, 
@@ -1148,7 +1378,10 @@ useEffect(() => {
       </ListItemIcon>
       <ListItemText primary="Assignments" />
     </ListItem>
-    <ListItem button onClick={() => setTabValue(2)}
+    <ListItem button onClick={() => {
+  localStorage.setItem("activeClassTab", 2); // ذخیره مقدار در localStorage
+  setTabValue(2); // تنظیم مقدار جدید
+}}
         sx={{
           '&:hover': {
             backgroundColor: theme.palette.primary.light, 
@@ -1165,7 +1398,10 @@ useEffect(() => {
     </ListItem>
     <ListItem
               button
-              onClick={() => setTabValue(4)}
+              onClick={() => {
+                localStorage.setItem("activeClassTab", 4); // ذخیره مقدار در localStorage
+                setTabValue(4); // تنظیم مقدار جدید
+              }}
               sx={{
                 "&:hover": {
                   backgroundColor: theme.palette.primary.light,
@@ -1182,7 +1418,10 @@ useEffect(() => {
               <ListItemText primary="Chat" />
             </ListItem>
             
-    <ListItem button onClick={() => setTabValue(3)}
+    <ListItem button onClick={() => {
+  localStorage.setItem("activeClassTab", 3); // ذخیره مقدار در localStorage
+  setTabValue(3); // تنظیم مقدار جدید
+}}
         sx={{
           '&:hover': {
             backgroundColor: theme.palette.primary.light, 
@@ -1197,9 +1436,30 @@ useEffect(() => {
          </ListItemIcon>
       <ListItemText primary="Educational Content" />
     </ListItem>
-    <ListItem
+<ListItem button onClick={() => {
+  localStorage.setItem("activeClassTab", 5); // ذخیره مقدار در localStorage
+  setTabValue(5); // تنظیم مقدار جدید
+}} // مقدار جدید برای این تب
+    sx={{
+      '&:hover': {
+        backgroundColor: theme.palette.primary.light, 
+        transition: 'background-color 0.3s', 
+      },
+      cursor: 'pointer', 
+      borderRadius: 1, 
+      padding: theme.spacing(1), 
+    }}>
+  <ListItemIcon sx={{ color: '#fff' }}>
+    <Assessment /> {/* آیکون مناسب */}
+  </ListItemIcon>
+  <ListItemText primary="Descriptive Quizzes" />
+</ListItem>
+<ListItem
   button
-  onClick={() => navigate('/student-dashboard')}
+  onClick={() => {
+    localStorage.removeItem("activeClassTab"); // پاک کردن مقدار از localStorage
+    navigate('/student-dashboard'); // هدایت به داشبورد
+  }}
   sx={{
     '&:hover': {
       backgroundColor: theme.palette.primary.light,

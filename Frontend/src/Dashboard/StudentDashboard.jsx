@@ -76,7 +76,7 @@ function TabPanel(props) {
 
 const styles = {
   list: {
-    width: "100%",
+    width: "95%", // مقدار دوم برای کلید `list` انتخاب شد
     backgroundColor: "#f9f9f9",
     borderRadius: "8px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -87,39 +87,7 @@ const styles = {
     padding: "16px",
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: "#0036AB",
-    },
-  },
-  listItemText: {
-    fontWeight: 500,
-  },
-  previewText: {
-    color: "#555",
-  },
-  dialogTitle: {
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  dialogContent: {
-    padding: "16px",
-  },
-  dateText: {
-    marginRight: "16px",
-    color: "#aaa",
-  },
-  list: {
-    width: "95%",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    padding: "8px",
-  },
-  listItem: {
-    borderBottom: "1px solid #ddd",
-    padding: "16px",
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: "#f1f1f1",
+      backgroundColor: "#f1f1f1", // مقدار دوم برای کلید `listItem` انتخاب شد
     },
   },
   listItemHighlight: {
@@ -127,6 +95,9 @@ const styles = {
   },
   listItemText: {
     fontWeight: 500,
+  },
+  previewText: {
+    color: "#555",
   },
   previewTextGray: {
     color: "#C8C6C6", // Gray for seen notifications

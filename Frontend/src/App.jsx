@@ -49,6 +49,11 @@ import Discipline from "./discipline/Discipline"
 import { ParentProvider } from './context/ParentContext';
 import ParentDashboard from "./Dashboard/ParentDashboard";
 import SubmittedAssignmentsPage from './assignment/SubmittedAssignmentsPage'
+import ManageQuestionsPage from "./quiz/ManageQuestionsPage";
+import DescriptiveQuizPage from "./quiz/DescriptiveQuizPage";
+import DescriptiveQuizResultsPage from "./quiz/DescriptiveQuizResultsPage";
+import TeacherQuizResults from "./quiz/TeacherQuizResults";
+import StudentAnswersPage from "./quiz/StudentAnswersPage";
 import './App.css';
 
 function App() {
@@ -328,6 +333,48 @@ function App() {
                   </PrivateRoute>
                 }
           />
+          <Route
+  path="/teacher-dashboard/teacher-classes/:tcid/essay-quizzes/:quizId"
+  element={
+    <PrivateRoute role="teacher">
+      <ManageQuestionsPage />
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/student-dashboard/student-classes/:cid/descriptive-quiz/:quizId"
+  element={
+    <PrivateRoute role="student">
+      <DescriptiveQuizPage />
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/student-dashboard/student-classes/:cid/descriptive-quiz/:quizId/results"
+  element={
+    <PrivateRoute role="student">
+      <DescriptiveQuizResultsPage />
+    </PrivateRoute>
+  }
+/>
+<Route
+  path="/teacher-dashboard/teacher-classes/:tcid/essay-quizzes/:quizId/results"
+  element={
+    <PrivateRoute role="teacher">
+      <TeacherQuizResults />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/teacher-dashboard/teacher-classes/:tcid/essay-quizzes/:quizId/student-records/:recordId"
+  element={
+    <PrivateRoute role="teacher">
+      <StudentAnswersPage />
+    </PrivateRoute>
+  }
+/>
+
 
 
               </Routes>

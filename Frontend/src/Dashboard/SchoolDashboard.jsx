@@ -533,7 +533,7 @@ const formatDate = (dateString) => {
 
         <Toolbar />
         <Box sx={{   position: { xs: "relative", sm: "absolute" },
-        left: { xs: "10px", sm: "190px" },
+        left: { xs: "0px", sm: "190px" },
         right: { xs: "10px", sm: "80px" },
         // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
         // maxWidth: { xs: "100%", sm: "1400px" },

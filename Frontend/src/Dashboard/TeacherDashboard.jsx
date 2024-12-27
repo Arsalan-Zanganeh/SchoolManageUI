@@ -41,76 +41,47 @@ function TabPanel(props) {
 
 const styles = {
   list: {
-      width: '100%',
-      backgroundColor: '#f9f9f9',
-      borderRadius: '8px',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      padding: '8px',
-  },
-  listItem: {
-      borderBottom: '1px solid #ddd',
-      padding: '16px',
-      cursor: 'pointer',
-      '&:hover': {
-          backgroundColor: '#0036AB',
-      },
-  },
-  listItemText: {
-      fontWeight: 500,
-  },
-  previewText: {
-      color: '#555',
-  },
-  dialogTitle: {
-      textAlign: 'center',
-      fontWeight: 'bold',
-  },
-  dialogContent: {
-      padding: '16px',
-  },
-  dateText: {
-      marginRight: '16px',
-      color: '#aaa',
-  },
-  list: {
     width: '95%',
     backgroundColor: '#f9f9f9',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     padding: '8px',
-},
-listItem: {
+  },
+  listItem: {
     borderBottom: '1px solid #ddd',
     padding: '16px',
     cursor: 'pointer',
     '&:hover': {
-        backgroundColor: '#f1f1f1',
+      backgroundColor: '#f1f1f1',
     },
-},
-listItemHighlight: {
-  padding: '20px',
-},
-listItemText: {
+  },
+  listItemHighlight: {
+    padding: '20px',
+  },
+  listItemText: {
     fontWeight: 500,
-},
-previewTextGray: {
+  },
+  previewText: {
+    color: '#555',
+  },
+  previewTextGray: {
     color: '#C8C6C6', // Gray for seen notifications
-},
-previewTextBlack: {
+  },
+  previewTextBlack: {
     color: '#000', // Black for unseen notifications
-},
-dialogTitle: {
+  },
+  dialogTitle: {
     textAlign: 'center',
     fontWeight: 'bold',
-},
-dialogContent: {
+  },
+  dialogContent: {
     padding: '16px',
-},
-dateText: {
+  },
+  dateText: {
     fontWeight: 'bold', // Bold date
     marginRight: '16px',
     color: '#aaa',
-},
+  },
 };
 
 const theme = createTheme({

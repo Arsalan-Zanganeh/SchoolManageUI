@@ -135,11 +135,10 @@ const handleCloseManageDialog = () => {
         credentials: "include",
         body: JSON.stringify(newClassData),
       });
-
+  
       if (response.ok) {
-        const newClass = await response.json();
-        setClasses((prevClasses) => [...prevClasses, newClass]);
         Swal.fire("Success", "Class added successfully", "success");
+        fetchClasses(); // مجدداً کلاس‌ها را از سرور بگیر
         setNewClassData({
           Topic: "",
           National_ID: "",
@@ -148,6 +147,7 @@ const handleCloseManageDialog = () => {
           Session2Day: "",
           Session2Time: "",
         });
+        handleCloseAddDialog();
       } else {
         Swal.fire("Error", "Failed to add class", "error");
       }
@@ -156,6 +156,7 @@ const handleCloseManageDialog = () => {
       Swal.fire("Error", "Network error while adding class", "error");
     }
   };
+  
 
   const handleOpenDialog = async (cls) => {
     setCurrentClass({
@@ -209,29 +210,24 @@ const handleCloseManageDialog = () => {
       const classData = {
         id: currentClass.id,
         Topic: currentClass.Topic,
-        Teacher: currentClass.National_ID, 
+        Teacher: currentClass.National_ID,
         Session1Day: currentClass.Session1Day,
         Session1Time: currentClass.Session1Time,
-        Session2Day: currentClass.Session2Day || null, 
+        Session2Day: currentClass.Session2Day || null,
         Session2Time: currentClass.Session2Time || null,
       };
   
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/edit_class/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(classData), 
-        }
-      );
-  
-      console.log(classData); 
+      const response = await fetch(`http://127.0.0.1:8000/api/edit_class/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(classData),
+      });
   
       if (response.ok) {
         Swal.fire("Success", "Class updated successfully", "success");
+        fetchClasses(); // بعد از ویرایش، مجدداً کلاس‌ها را از سرور بگیر
         setOpenDialog(false);
-        fetchClasses();
       } else {
         Swal.fire("Error", "Failed to update class", "error");
       }
@@ -241,6 +237,7 @@ const handleCloseManageDialog = () => {
     }
   };
   
+  
   const handleDeleteClass = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/delete_class/`, {
@@ -249,14 +246,12 @@ const handleCloseManageDialog = () => {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ id: currentClass.id }), 
+        body: JSON.stringify({ id: currentClass.id }),
       });
   
       if (response.ok) {
         Swal.fire("Success", "Class deleted successfully", "success");
-        setClasses((prevClasses) =>
-          prevClasses.filter((cls) => cls.id !== currentClass.id)
-        );
+        fetchClasses(); // بعد از حذف، مجدداً کلاس‌ها را از سرور بگیر
         setOpenDialog(false);
       } else {
         Swal.fire("Error", "Failed to delete class", "error");
@@ -266,6 +261,7 @@ const handleCloseManageDialog = () => {
       Swal.fire("Error", "Network error while deleting class", "error");
     }
   };
+  
   const [openAddDialog, setOpenAddDialog] = useState(false);
 
   const handleOpenAddDialog = () => {
@@ -325,7 +321,7 @@ const handleCloseManageDialog = () => {
     <Box
       sx={{
         position: { xs: "relative", sm: "absolute" },
-        left: { xs: "10px", sm: "190px" },
+        left: { xs: "-4px", sm: "190px" },
         right: { xs: "10px", sm: "60px" },
   
         maxWidth: { xs: "100%", sm: "1400px" },

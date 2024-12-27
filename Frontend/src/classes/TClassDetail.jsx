@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import DescriptionIcon from '@mui/icons-material/Description';
+
 import { 
   Box, 
   Typography, 
@@ -55,7 +57,7 @@ import Attendance from "../Attendence";
 import AppWrapper from './chatpage';
 import ClassList from "../Dashboard/Planning/ClassList";
 import TeacherViewPlanner from "../Dashboard/Planning/teacherWatchPlan";
-
+import TeacherEssayQuiz from "../quiz/TeacherEssayQuiz";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -77,62 +79,49 @@ function TabPanel(props) {
 
 const styles = {
   list: {
-      width: '100%',
-      backgroundColor: '#f9f9f9',
-      borderRadius: '8px',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      padding: '8px',
-  },
-  listItem: {
-      borderBottom: '1px solid #ddd',
-      padding: '16px',
-      cursor: 'pointer',
-      '&:hover': {
-          backgroundColor: '#0036AB',
-      },
-  },
-  listItemText: {
-      fontWeight: 500,
-  },
-  previewText: {
-      color: '#555',
-  },
-  dialogTitle: {
-      textAlign: 'center',
-      fontWeight: 'bold',
-  },
-  dialogContent: {
-      padding: '16px',
-  },
-  list: {
-    width: '95%',
+    width: '95%', // مقدار آخرین تعریف `list` نگه داشته شد
     backgroundColor: '#f9f9f9',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     padding: '8px',
-},
-listItemHighlight: {
-  padding: '20px',
-},
-previewTextGray: {
+  },
+  listItem: {
+    borderBottom: '1px solid #ddd',
+    padding: '16px',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: '#0036AB',
+    },
+  },
+  listItemHighlight: {
+    padding: '20px',
+  },
+  listItemText: {
+    fontWeight: 500,
+  },
+  previewText: {
+    color: '#555',
+  },
+  previewTextGray: {
     color: '#C8C6C6', // Gray for seen notifications
-},
-previewTextBlack: {
+  },
+  previewTextBlack: {
     color: '#000', // Black for unseen notifications
-},
-dialogTitle: {
+  },
+  dialogTitle: {
     textAlign: 'center',
     fontWeight: 'bold',
-},
-dialogContent: {
+  },
+  dialogContent: {
     padding: '16px',
-},
-dateText: {
+  },
+  dateText: {
     fontWeight: 'bold', // Bold date
     marginRight: '16px',
     color: '#aaa',
-},
+  },
 };
+
 
 const theme = createTheme({
   palette: {
@@ -164,8 +153,10 @@ const TeacherClassDetail = () => {
 
   const [classes, setClasses] = useState([]);
   const [classDetails, setClassDetails] = useState(null);
-  const [tabValue, setTabValue] = useState(0);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [tabValue, setTabValue] = useState(() => {
+    const savedTab = localStorage.getItem("activeTeacherTab");
+    return savedTab ? parseInt(savedTab, 10) : 0; // مقدار پیش‌فرض
+  });  const [openDialog, setOpenDialog] = useState(false);
   const [newAssignment, setNewAssignment] = useState({
     Title: "",
     Description: "",
@@ -919,28 +910,30 @@ const TeacherClassDetail = () => {
 
   const gotoPlanningStudent = (studentid) => {
     setSelectedStudentPlan(studentid)
-    setTabValue(13);
+      setTabValue(13);
+      localStorage.setItem("activeTeacherTab", 13);
   }
   return (
     <ThemeProvider theme={theme}>
 
-    <Box
-      sx={{
-        position: { xs: "relative", sm: "absolute" },
-        top: 0,
-        left: { xs: "10px", sm: "240px" },
-        right: { xs: "20px", sm: "20px" },
-        // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
-        maxWidth: { xs: "100%", sm: "1600px" },
-        margin: "0 auto",
-        minHeight: "100vh",
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        overflow: "hidden", 
-      }}
-    >
+<Box
+  sx={{
+    position: { xs: "relative", sm: "absolute" },
+    top: 0,
+    left: { xs: "0px", sm: "240px" },
+    right: { xs: "20px", sm: "20px" },
+    // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+    maxWidth: { xs: "100%", sm: "1600px" },
+    margin: "0 auto",
+    minHeight: "100vh",
+    borderRadius: "8px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    overflow: "hidden", 
+  
+  }}
+>
      <AppBar
       position="fixed"
       sx={{
@@ -1015,7 +1008,10 @@ const TeacherClassDetail = () => {
           </Box>
           <IconButton
             color="default"
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              localStorage.removeItem("activeTeacherTab"); // پاک کردن مقدار خاص از localStorage
+              navigate("/teacher-dashboard"); // تغییر مسیر به صفحه داشبورد
+            }}            
             sx={{
               border: "1px solid",
               borderColor: "divider",
@@ -1284,7 +1280,10 @@ const TeacherClassDetail = () => {
                   <ClassList gotoplanning={gotoPlanningStudent}/>
       </TabPanel>
       <TabPanel value={tabValue} index={13}>
-                  <TeacherViewPlanner onBack={() => setTabValue(12)} studentid={selectedStudentPlan}/>
+                  <TeacherViewPlanner onBack={() => {
+        setTabValue(12);
+        localStorage.setItem("activeTeacherTab", 12);
+      }} studentid={selectedStudentPlan}/>
       </TabPanel>
 {tabValue === 1 && (
   <Box>
@@ -1500,6 +1499,8 @@ const TeacherClassDetail = () => {
         </Grid>
       </Box>
     )}
+  
+
 
     {/* Add File Dialog */}
     <Dialog open={openFileDialog} onClose={() => setOpenFileDialog(false)}>
@@ -1574,6 +1575,7 @@ const TeacherClassDetail = () => {
   </Box>
 )}
 
+
 {/* Add Video Dialog */}
 <Dialog open={openVideoDialog} onClose={() => setOpenVideoDialog(false)}>
   <DialogTitle>Upload Educational Video (Embed Link)</DialogTitle>
@@ -1622,6 +1624,13 @@ const TeacherClassDetail = () => {
 </Dialog>
 
   </Box>
+)}
+{tabValue === 9 && (
+  <>
+    <Box sx={{ p: 3, backgroundColor: "#DCE8FD", borderRadius: "8px" }}>
+      <TeacherEssayQuiz />
+    </Box>
+  </>
 )}
 
 {/* Feedback Message */}
@@ -1769,165 +1778,205 @@ const TeacherClassDetail = () => {
           </Container>
         </Box>
         <Drawer
-          anchor="left"
-          {...drawerProps}
-          sx={{
-            "& .MuiDrawer-paper": {
-              bgcolor: theme.palette.primary.drawer,
-              color: theme.palette.text.primary,
-              "& .MuiListItemText-primary": { color: "#fff" },
-            },
-          }}
-        >
-          <Toolbar />
-          <List>
-            <ListItem
-              button
-              onClick={() => setTabValue(0)}
-              sx={{
-                "&:hover": {
-                  backgroundColor: theme.palette.primary.light,
-                  transition: "background-color 0.3s",
-                },
-                cursor: "pointer",
-                borderRadius: 1,
-                padding: theme.spacing(1),
-              }}
-            >
-              <ListItemIcon sx={{ color: "#fff" }}>
-                <Quiz />
-              </ListItemIcon>
-              <ListItemText primary="Quizzes" />
-            </ListItem>
-            <ListItem
-              button
-              onClick={() => setTabValue(1)}
-              sx={{
-                "&:hover": {
-                  backgroundColor: theme.palette.primary.light,
-                  transition: "background-color 0.3s",
-                },
-                cursor: "pointer",
-                borderRadius: 1,
-                padding: theme.spacing(1),
-              }}
-            >
-              <ListItemIcon sx={{ color: "#fff" }}>
-                <EditNote />
-              </ListItemIcon>
-              <ListItemText primary="Assignments" />
-            </ListItem>
-            <ListItem
-              button
-              onClick={() => setTabValue(2)}
-              sx={{
-                "&:hover": {
-                  backgroundColor: theme.palette.primary.light,
-                  transition: "background-color 0.3s",
-                },
-                cursor: "pointer",
-                borderRadius: 1,
-                padding: theme.spacing(1),
-              }}
-            >
-              <ListItemIcon sx={{ color: "#fff" }}>
-                <BusinessIcon />
-              </ListItemIcon>
-              <ListItemText primary="Published Homeworks" />
-            </ListItem>
-            <ListItem
-              button
-              onClick={() => setTabValue(3)}
-              sx={{
-                "&:hover": {
-                  backgroundColor: theme.palette.primary.light,
-                  transition: "background-color 0.3s",
-                },
-                cursor: "pointer",
-                borderRadius: 1,
-                padding: theme.spacing(1),
-              }}
-            >
-            <ListItemIcon sx={{ color: "#fff" }}>
-                <People />
-              </ListItemIcon>
-              <ListItemText primary="Attendance" />
-            </ListItem>
-            <ListItem
-              button
-              onClick={() => setTabValue(7)}
-              sx={{
-                "&:hover": {
-                  backgroundColor: "gray", // Test with a solid color
-                  transition: "background-color 0.3s",
-                },
-                cursor: "pointer",
-                borderRadius: 1,
-                padding: theme.spacing(1),
-              }}
-            >
-              <ListItemIcon sx={{ color: "#fff" }}>
-                <ChatIcon />
-              </ListItemIcon>
-              <ListItemText primary="Chat" />
-            </ListItem>
+  anchor="left"
+  {...drawerProps}
+  sx={{
+    "& .MuiDrawer-paper": {
+      bgcolor: theme.palette.primary.drawer,
+      color: theme.palette.text.primary,
+      "& .MuiListItemText-primary": { color: "#fff" },
+    },
+  }}
+>
+  <Toolbar />
+  <List>
+    <ListItem
+      button
+      onClick={() => {
+        setTabValue(0);
+        localStorage.setItem("activeTeacherTab", 0);
+      }}
+      sx={{
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          transition: "background-color 0.3s",
+        },
+        cursor: "pointer",
+        borderRadius: 1,
+        padding: theme.spacing(1),
+      }}
+    >
+      <ListItemIcon sx={{ color: "#fff" }}>
+        <Quiz />
+      </ListItemIcon>
+      <ListItemText primary="Quizzes" />
+    </ListItem>
+    <ListItem
+      button
+      onClick={() => {
+        setTabValue(1);
+        localStorage.setItem("activeTeacherTab", 1);
+      }}
+      sx={{
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          transition: "background-color 0.3s",
+        },
+        cursor: "pointer",
+        borderRadius: 1,
+        padding: theme.spacing(1),
+      }}
+    >
+      <ListItemIcon sx={{ color: "#fff" }}>
+        <EditNote />
+      </ListItemIcon>
+      <ListItemText primary="Assignments" />
+    </ListItem>
+    <ListItem
+      button
+      onClick={() => {
+        setTabValue(2);
+        localStorage.setItem("activeTeacherTab", 2);
+      }}
+      sx={{
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          transition: "background-color 0.3s",
+        },
+        cursor: "pointer",
+        borderRadius: 1,
+        padding: theme.spacing(1),
+      }}
+    >
+      <ListItemIcon sx={{ color: "#fff" }}>
+        <BusinessIcon />
+      </ListItemIcon>
+      <ListItemText primary="Published Homeworks" />
+    </ListItem>
+    <ListItem
+      button
+      onClick={() => {
+        setTabValue(3);
+        localStorage.setItem("activeTeacherTab", 3);
+      }}      sx={{
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          transition: "background-color 0.3s",
+        },
+        cursor: "pointer",
+        borderRadius: 1,
+        padding: theme.spacing(1),
+      }}
+    >
+      <ListItemIcon sx={{ color: "#fff" }}>
+        <People />
+      </ListItemIcon>
+      <ListItemText primary="Attendance" />
+    </ListItem>
+    <ListItem
+      button
+      onClick={() => {
+        setTabValue(7);
+        localStorage.setItem("activeTeacherTab", 7);
+      }}      sx={{
+        "&:hover": {
+          backgroundColor: "gray", // Test with a solid color
+          transition: "background-color 0.3s",
+        },
+        cursor: "pointer",
+        borderRadius: 1,
+        padding: theme.spacing(1),
+      }}
+    >
+      <ListItemIcon sx={{ color: "#fff" }}>
+        <ChatIcon />
+      </ListItemIcon>
+      <ListItemText primary="Chat" />
+    </ListItem>
 
-            <ListItem
-              button
-              onClick={() => setTabValue(12)}
-              sx={{
-                "&:hover": {
-                  backgroundColor: theme.palette.primary.light,
-                  transition: "background-color 0.3s",
-                },
-                cursor: "pointer",
-                borderRadius: 1,
-                padding: theme.spacing(1),
-              }}
-            >
-              <ListItemIcon sx={{ color: "#fff" }}>
-                <NoteAlt />
-              </ListItemIcon>
-              <ListItemText primary="Students Planning" />
-            </ListItem>
-            <ListItem
-              button
-              onClick={() => setTabValue(4)}
-              sx={{
-                "&:hover": {
-                  backgroundColor: theme.palette.primary.light,
-                  transition: "background-color 0.3s",
-                },
-                cursor: "pointer",
-                borderRadius: 1,
-                padding: theme.spacing(1),
-              }}
-            >
-              <ListItemIcon sx={{ color: "#fff" }}>
-                <BookIcon />
-              </ListItemIcon>
-              <ListItemText primary="Educational Content" />
-            </ListItem>
-            <ListItem
-              button
-              onClick={() => navigate(-1)}
-              sx={{
-                "&:hover": {
-                  backgroundColor: theme.palette.primary.light,
-                  transition: "background-color 0.3s",
-                },
-                cursor: "pointer",
-                borderRadius: 1,
-                padding: theme.spacing(1),
-              }}
-            >
-              <ListItemIcon sx={{ color: "#fff" }}>
-                <BackIcon />
-              </ListItemIcon>
-              <ListItemText primary="Back to Dashboard" />
-            </ListItem>
-          </List>
-        </Drawer>
+    <ListItem
+      button
+      onClick={() => {
+        setTabValue(12);
+        localStorage.setItem("activeTeacherTab", 12);
+      }}      sx={{
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          transition: "background-color 0.3s",
+        },
+        cursor: "pointer",
+        borderRadius: 1,
+        padding: theme.spacing(1),
+      }}
+    >
+      <ListItemIcon sx={{ color: "#fff" }}>
+        <NoteAlt />
+      </ListItemIcon>
+      <ListItemText primary="Students Planning" />
+    </ListItem>
+    <ListItem
+      button
+      onClick={() => {
+        setTabValue(4);
+        localStorage.setItem("activeTeacherTab", 4);
+      }}      sx={{
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          transition: "background-color 0.3s",
+        },
+        cursor: "pointer",
+        borderRadius: 1,
+        padding: theme.spacing(1),
+      }}
+    >
+      <ListItemIcon sx={{ color: "#fff" }}>
+        <BookIcon />
+      </ListItemIcon>
+      <ListItemText primary="Educational Content" />
+    </ListItem>
+    <ListItem
+      button
+      onClick={() => {
+        setTabValue(9);
+        localStorage.setItem("activeTeacherTab", 9);
+      }}      sx={{
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          transition: "background-color 0.3s",
+        },
+        cursor: "pointer",
+        borderRadius: 1,
+        padding: theme.spacing(1),
+      }}
+    >
+      <ListItemIcon sx={{ color: "#fff" }}>
+        <DescriptionIcon />
+      </ListItemIcon>
+      <ListItemText primary="Essay Quizzes" />
+    </ListItem>
+    <ListItem
+      button
+      onClick={() => {
+        localStorage.removeItem("activeTeacherTab"); // پاک کردن مقدار خاص از localStorage
+        navigate("/teacher-dashboard"); // تغییر مسیر به صفحه داشبورد
+      }}      sx={{
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          transition: "background-color 0.3s",
+        },
+        cursor: "pointer",
+        borderRadius: 1,
+        padding: theme.spacing(1),
+      }}
+    >
+      <ListItemIcon sx={{ color: "#fff" }}>
+        <BackIcon />
+      </ListItemIcon>
+      <ListItemText primary="Back to Dashboard" />
+    </ListItem>
+  </List>
+</Drawer>
+
       </Box>
     </Box>
     </ThemeProvider>
