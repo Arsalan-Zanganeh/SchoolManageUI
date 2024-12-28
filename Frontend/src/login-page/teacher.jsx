@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useTeacher } from '../context/TeacherContext';
-import './login.css';
 
 function LoginTeacher() {
   const navigate = useNavigate();
