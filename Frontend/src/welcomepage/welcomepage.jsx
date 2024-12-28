@@ -59,7 +59,6 @@ const globalStyles = (
         lineHeight: '1.1',
         fontSize: '2.8rem',
         fontWeight: 600,
-        lineHeight: '1.3',
       },
       p: {
         marginTop: 0,
