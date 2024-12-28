@@ -1,4 +1,5 @@
 import React from "react";
+import LandingPage from "./welcomepage/welcomepage";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import SignUpLogin from './signup-login/signup-login'
 import LoginPrincipal from './login-page/principal';
@@ -66,7 +67,8 @@ function App() {
             <SchoolProvider>
               <ClassProvider>
               <Routes>
-                <Route path="/" element={<SignUpLogin/>} />
+                <Route path="/" element={<LandingPage/>} />
+                <Route path="/signup-login" element={<SignUpLogin/>} />
                 <Route path="/principal-login" element={<LoginPrincipal />} />
                 <Route path="/student-login" element={<LoginStudent />} />
                 <Route path="/teacher-login" element={<LoginTeacher />} />
