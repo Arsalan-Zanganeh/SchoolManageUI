@@ -25,7 +25,8 @@ import BusinessIcon from '@mui/icons-material/Business';
 import MenuIcon from '@mui/icons-material/Menu'; 
 import ChatIcon from '@mui/icons-material/Chat';
 import BookIcon from '@mui/icons-material/Book';
-
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AppWrapper from './chatpage';
 
 import AttendanceStatus from "../Attendence-stu";
@@ -612,7 +613,16 @@ useEffect(() => {
   
   const getGradeForStudent = (studentId, recs) => {
     const rec = recs.find(record => record.Student === studentId);
-    return rec && rec.Grade !== null ? `${rec.Grade}` : 'Not graded!';
+    return rec && rec.Grade !== null ? (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <span>{rec.Grade}</span>
+      <CheckCircleOutlineIcon sx={{ ml: 0.5 }} />
+    </Box>) : (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <span>Not graded!</span>
+        <AccessTimeIcon sx={{ ml: 0.5 }} />
+      </Box>
+    );
   };
 
   const getUploadedFileForStudent = (studentId, recs) => {
@@ -977,7 +987,7 @@ onClick={() => {
                       onClick={() => handleDialogOpen(homework)}
                       startIcon={<Send />}
                     >
-                      Submit or view homework / View grade
+                      Submit or view answer / View grade
                     </Button>
                   </CardContent>
                 </Card>
@@ -1257,85 +1267,86 @@ onClick={() => {
         </Paper>
 
         <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm">
-  <DialogTitle>
-    <Typography variant="h6" fontWeight="bold">
-      Submit Answer for Homework: {selectedHomework?.Title}
-    </Typography>
-  </DialogTitle>
-  
-  <DialogContent dividers>
-  {/* بخش تعیین وضعیت مهلت (آپلود فایل یا پیغام ددلاین) */}
-  <Box sx={{ mb: 3 }}>
-    {currentDate <= new Date(selectedHomework?.DeadLine).getTime() ? (
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        {/* متن اصلی */}
-        <Typography variant="body1">
-          Please upload or update your assignment file below:
-        </Typography>
+          <DialogTitle>
+            <Typography variant="h6">
+              Submit Answer for Homework: <strong>{selectedHomework?.Title}</strong>
+            </Typography>
+          </DialogTitle>
+          <DialogContent dividers>
+            <Box sx={{ mb: 3 }}>
+              {currentDate <= new Date(selectedHomework?.DeadLine).getTime() && (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Typography variant="body1">
+                    Please upload or update your assignment file below:
+                  </Typography>
+                  <Box>
+                    <input type="file" onChange={handleFileChange} />
+                  </Box>
+                </Box>
+              )}
+            </Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                  Your Submitted File:
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {(() => {
+                    const fileUrl = getUploadedFileForStudent(studentId, records);
+                    if (fileUrl !== 'Not uploaded any file!') {
+                      return (
+                        <a
+                          href={`http://127.0.0.1:8000/api${fileUrl}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ textDecoration: 'none', color: '#1976d2' }}
+                        >
+                          {removeMediaPrefix(fileUrl)}
+                        </a>
+                      );
+                    } else {
+                      return <span style={{ color: '#666' }}>No file submitted yet.</span>;
+                    }
+                  })()}
+                </Typography>
+              </Grid>
 
-        {/* فیلد آپلود فایل */}
-        <Box>
-          <input type="file" onChange={handleFileChange} />
-        </Box>
-      </Box>
-    ) : (
-      <Typography variant="body1" color="error">
-        Submission deadline has passed!
-      </Typography>
-    )}
-  </Box>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                  Grade Received:
+                </Typography>
+                <Typography variant="body2" color="text.primary">
+                  {getGradeForStudent(studentId, records)}
+                </Typography>
+              </Grid>
+            </Grid>
+          </DialogContent>
 
-  {/* نمایش فایل آپلودشده و نمره در دو ستون مجزا */}
-  <Grid container spacing={2}>
-    <Grid item xs={12} sm={6}>
-      <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-        Your Submitted File
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {(() => {
-          const fileUrl = getUploadedFileForStudent(studentId, records);
-          if (fileUrl !== 'Not uploaded any file!') {
-            return (
-              <a
-                href={`http://127.0.0.1:8000/api${fileUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: 'none', color: '#1976d2' }}
+          <DialogActions sx={{ justifyContent: 'space-between', px: 2, py: 1 }}>
+            <Button onClick={handleDialogClose} variant="outlined" color="error">
+              Cancel
+            </Button>
+            {currentDate <= new Date(selectedHomework?.DeadLine).getTime() ? (
+              <Button
+                onClick={handleFileSubmit}
+                color="primary"
+                variant="contained"
+                startIcon={<Send />}
               >
-                {removeMediaPrefix(fileUrl)}
-              </a>
-            );
-          } else {
-            return <span style={{ color: '#666' }}>No file submitted yet.</span>;
-          }
-        })()}
-      </Typography>
-    </Grid>
-    
-    <Grid item xs={12} sm={6}>
-      <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-        Grade Received
-      </Typography>
-      <Typography variant="body2" color="text.primary">
-        {getGradeForStudent(studentId, records)}
-      </Typography>
-    </Grid>
-  </Grid>
-</DialogContent>
-  <DialogActions sx={{ justifyContent: 'space-between', px: 2, py: 1 }}>
-    <Button onClick={handleDialogClose} variant="outlined" color="error">
-      Cancel
-    </Button>
-    <Button
-      onClick={handleFileSubmit}
-      color="primary"
-      variant="contained"
-      startIcon={<Send />}
-    >
-      Submit
-    </Button>
-  </DialogActions>
-</Dialog>
+                Submit
+              </Button>
+            ) : (
+              <Typography
+                variant="body1"
+                color={getUploadedFileForStudent(studentId, records) !== 'Not uploaded any file!' ? 'green' : 'red'}
+              >
+                {getUploadedFileForStudent(studentId, records) !== 'Not uploaded any file!'
+                  ? 'Your answer is submitted and deadline is passed!'
+                  : 'You did not send anything and deadline is passed!'}
+              </Typography>
+            )}
+          </DialogActions>
+        </Dialog>
 
       </Container>
       </Box>

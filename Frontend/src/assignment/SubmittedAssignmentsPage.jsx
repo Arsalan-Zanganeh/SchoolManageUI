@@ -110,21 +110,32 @@ const SubmittedAssignmentsPage = () => {
   }
 
   return (
-    <Box p={3} sx={{ width: '100%' }}>
-      <Typography variant="h3" gutterBottom>
+    <Box p={3} sx={{ 
+        width: '100%',
+        position: 'absolute',
+        top: { xs: '10%', sm: '5%' },
+        left: 0, right: 0,
+        bottom: { xs: 'auto', sm: '5%' },
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '10px',
+        boxSizing: 'border-box'
+      }}
+      >
+      <Typography variant="h3" gutterBottom sx={{backgroundColor:'#dce8fd', borderRadius:'1rem', padding:'20px 10px' }}>
         Submitted Assignments for Homework with ID: {homeworkId}
       </Typography>
       {submittedAssignments.length === 0 ? (
         <Typography variant="h5">No submissions found!</Typography>
       ) : (
-        <Box>
+        <Box sx={{backgroundColor:'#dce8fd', borderRadius:'0.5rem' }}>
           {submittedAssignments.map((assignment) => (
-            <Card key={assignment.id} variant="outlined" sx={{ mb: 2 }}>
+            <Card key={assignment.id} variant="outlined" sx={{ mb: 2}}>
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="body1" sx={{width:'30%'}}>
+                <Typography variant="body1" sx={{width:'25%'}}>
                   {assignment.Student_firstname} {assignment.Student_lastname} ({assignment.Student_National_ID})
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: '5%', width: '60%', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', gap: '10%', width: '65%', alignItems: 'center' }}>
                   <Typography variant="body2" color="textSecondary">
                     <a
                       href={assignment.HomeWorkAnswer}
@@ -134,6 +145,7 @@ const SubmittedAssignmentsPage = () => {
                         if (assignment.HomeWorkAnswer) {window.open(`http://127.0.0.1:8000/api${assignment.HomeWorkAnswer}`, '_blank');}
                         else {console.error('File path not available');}
                       }}
+                      style={{ color: 'primary.main', textDecoration: 'none' }}
                     >
                       View Answer
                     </a>
@@ -141,8 +153,16 @@ const SubmittedAssignmentsPage = () => {
                   <Typography variant="body2" color="textSecondary">
                     <strong>Sending Time:</strong> {new Date(assignment.SendingTime).toLocaleString()}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    <strong>Graded:</strong> {assignment.Graded ? `Yes, Grade: ${assignment.Grade}` : 'No'}
+                  <Typography variant="body2">
+                    <strong>Graded:</strong> {assignment.Graded ? (
+                      <Box component="span" sx={{ color: 'primary.main' }}>
+                        Yes, Grade: {assignment.Grade}
+                      </Box>
+                    ) : (
+                      <Box component="span" sx={{ color: 'red' }}>
+                        No
+                      </Box>
+                    )}
                   </Typography>
                 </Box>
                 <Button variant="contained" color="primary" onClick={() => openDialog(assignment)} sx={{width:'10%'}}>
