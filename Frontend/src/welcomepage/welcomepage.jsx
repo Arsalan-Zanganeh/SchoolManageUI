@@ -38,6 +38,7 @@ const globalStyles = (
         fontFamily: 'Inter, Arial, Helvetica, sans-serif',
         fontSize: '2rem',
         lineHeight: '1.5',
+        'place-items': 'normal',
         display: 'block',
         color: 'var(--color-body)',
       },
@@ -110,10 +111,10 @@ function LandingPage() {
       <div className="container grid grid--1x2">
         <header className="block__header hero__content">
           <h1 data-aos="zoom-in-up" className="block__heading">
-            Cloud Hosting for Pros
+            Bright Campus
           </h1>
           <p className="hero__tagline">
-            Deploy your websites in less than 60 seconds.
+            .
           </p>
           <a
             target="_blank"
