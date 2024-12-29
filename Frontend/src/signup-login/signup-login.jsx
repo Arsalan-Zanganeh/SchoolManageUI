@@ -42,7 +42,7 @@ const PrincipalSignUpForm = ({ onBackClick }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const submit = await fetch("http://127.0.0.1:8000/api/register/", {
+      const submit = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/register/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +111,7 @@ const PrincipalForm = ({ onSignUpClick }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/login/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/login/`, {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         credentials: 'include',
@@ -173,7 +173,7 @@ const StudentForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8000/student/login/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/login/`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -234,7 +234,7 @@ const TeacherForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8000/teacher/login/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/login/`, {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -318,7 +318,7 @@ const SignUpLogin = () => {
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-        const response = await fetch("http://127.0.0.1:8000/student/parent-login/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-login/`, {
           method: "POST",
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',

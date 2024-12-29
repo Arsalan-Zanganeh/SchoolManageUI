@@ -11,8 +11,8 @@ const DisciplinaryStatus = ({ goBack }) => {
     const fetchData = async () => {
       try {
         const [caseRes, scoreRes] = await Promise.all([
-          fetch('http://127.0.0.1:8000/student/parent-disciplinary-cases/', { credentials: 'include' }),
-          fetch('http://127.0.0.1:8000/student/parent-discipline-score/', { credentials: 'include' }),
+          fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-disciplinary-cases/`, { credentials: 'include' }),
+          fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-discipline-score/`, { credentials: 'include' }),
         ]);
 
         if (caseRes.ok) {

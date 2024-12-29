@@ -213,7 +213,7 @@ const StudentDashboard = () => {
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/student/profile/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student/profile/`, {
           credentials: "include", // ensures cookies/session are sent
         });
   
@@ -223,7 +223,7 @@ const StudentDashboard = () => {
           const profileImageUrl = data?.StudentProfile?.[0]?.profile_image;
           
           if (profileImageUrl) {
-            setProfileImage(`http://127.0.0.1:8000/api${profileImageUrl}`);
+            setProfileImage(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${profileImageUrl}`);
           } else {
             setProfileImage(null); // If there's no image, reset the profileImage state
           }
@@ -260,7 +260,7 @@ const StudentDashboard = () => {
   const fetchCalendar = useCallback(async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/student-google-calendar/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-google-calendar/`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -299,7 +299,7 @@ const StudentDashboard = () => {
   const fetchUnreadNotifications = useCallback(async () => {
     try {
       const fetchnotifresponse = await fetch(
-        "http://127.0.0.1:8000/api/notifications/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/notifications/`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -322,7 +322,7 @@ const StudentDashboard = () => {
 
   const fetchStudentData = useCallback(async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/student/user/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/user/`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -344,7 +344,7 @@ const StudentDashboard = () => {
   const fetchnumberofunread = useCallback(async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/unseen_notifications/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/unseen_notifications/`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -375,7 +375,7 @@ const StudentDashboard = () => {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/student-single-notif-seen/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-single-notif-seen/`,
         {
           method: "POST",
           headers: {

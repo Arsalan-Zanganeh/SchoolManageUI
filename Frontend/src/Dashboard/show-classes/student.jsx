@@ -76,7 +76,7 @@ const StudentClassList = ({goBack}) => {
 
   const fetchClassesData = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/student/classes/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/classes/`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${studentToken}`, 
@@ -113,7 +113,7 @@ const StudentClassList = ({goBack}) => {
   const handleClassClick = async (id) => {
     try {
       const loginResponse = await fetch(
-        `http://127.0.0.1:8000/api/student-login-class/`, 
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-login-class/`, 
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

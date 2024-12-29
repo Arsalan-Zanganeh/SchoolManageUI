@@ -72,7 +72,7 @@ const PreviousResults = ({goBack}) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/student-watch-halland-records/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-watch-halland-records/`,
           {
             credentials: "include",
           }

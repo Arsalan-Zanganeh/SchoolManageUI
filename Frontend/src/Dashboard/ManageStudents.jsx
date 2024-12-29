@@ -21,7 +21,7 @@ const ManageStudents = ({ classId }) => {
   // Fetch students in the class
   const fetchStudents = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/class_student/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/class_student/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -44,7 +44,7 @@ const ManageStudents = ({ classId }) => {
   const fetchAvailableStudents = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/discipline/school-students/`,
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/school-students/`,
         {
           method: "GET",
           credentials: "include",
@@ -79,7 +79,7 @@ const ManageStudents = ({ classId }) => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/add_class_student/`,
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/add_class_student/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -108,7 +108,7 @@ const ManageStudents = ({ classId }) => {
   const handleRemoveStudent = async (studentId) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/delete_class_student/`,
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/delete_class_student/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

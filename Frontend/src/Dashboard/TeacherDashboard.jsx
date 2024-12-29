@@ -146,7 +146,7 @@ const TeacherDashboard = () => {
   const fetchCalendar = useCallback(async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/teacher/calendar/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/calendar/`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -184,7 +184,7 @@ const TeacherDashboard = () => {
 
   const fetchTeacherData = useCallback(async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/teacher/user', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/user`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -206,7 +206,7 @@ const TeacherDashboard = () => {
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/teacher/profile/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher/profile/`, {
           credentials: "include", // ensures cookies/session are sent
         });
   
@@ -216,7 +216,7 @@ const TeacherDashboard = () => {
           const profileImageUrl = data?.TeacherProfile?.[0]?.profile_image;
           
           if (profileImageUrl) {
-            setProfileImage(`http://127.0.0.1:8000/api${profileImageUrl}`);
+            setProfileImage(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${profileImageUrl}`);
           } else {
             setProfileImage(null); // If there's no image, reset the profileImage state
           }

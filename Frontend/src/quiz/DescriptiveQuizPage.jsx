@@ -32,7 +32,7 @@ const DescriptiveQuizPage = () => {
 
     const fetchQuestions = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/quiz/student-show-questions/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/student-show-questions/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -73,7 +73,7 @@ const DescriptiveQuizPage = () => {
   const submitAnswer = async (isFinish = false) => {
     const currentQuestion = questions[currentQuestionIndex];
     try {
-      await fetch("http://127.0.0.1:8000/quiz/student-answer-question/", {
+      await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/student-answer-question/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -96,7 +96,7 @@ const DescriptiveQuizPage = () => {
 
   const finishQuiz = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/quiz/student-finish-exam/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/student-finish-exam/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

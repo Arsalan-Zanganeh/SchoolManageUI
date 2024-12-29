@@ -21,7 +21,7 @@ function SignUp() {
     }
 
     try {
-      const submit = await fetch("http://127.0.0.1:8000/api/register/", {
+      const submit = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/register/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

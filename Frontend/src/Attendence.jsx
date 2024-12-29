@@ -29,7 +29,7 @@ const Attendance = () => {
 
   const fetchAttendance = async (selectedDate) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/teacher/watch-attendance/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/watch-attendance/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -96,7 +96,7 @@ const Attendance = () => {
     try {
       const dateStr = date.toISOString().split('T')[0];
       for (const National_ID in attendance) {
-        const response = await fetch(`http://127.0.0.1:8000/teacher/check-student-attendance/`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/check-student-attendance/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",

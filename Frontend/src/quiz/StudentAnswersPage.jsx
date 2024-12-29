@@ -22,7 +22,7 @@ const StudentAnswersPage = () => {
       try {
         // Fetch questions and answers
         const response = await fetch(
-          "http://127.0.0.1:8000/quiz/teacher-watch-student-answers/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-watch-student-answers/`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -62,7 +62,7 @@ const StudentAnswersPage = () => {
       // Submit scores for each question
       await Promise.all(
         questions.map((q) =>
-          fetch("http://127.0.0.1:8000/quiz/teacher-mark-student-answer/", {
+          fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-mark-student-answer/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -75,7 +75,7 @@ const StudentAnswersPage = () => {
       );
 
       // Finish marking
-      await fetch("http://127.0.0.1:8000/quiz/teacher-finish-mark/", {
+      await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-finish-mark/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

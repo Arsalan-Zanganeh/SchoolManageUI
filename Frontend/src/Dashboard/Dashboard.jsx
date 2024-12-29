@@ -11,7 +11,7 @@ const Dashboard = () => {
 
     const fetchUserData = useCallback(async () => {
         try {
-            const userResponse = await fetch('http://127.0.0.1:8000/api/user/', {
+            const userResponse = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/user/`, {
                 headers: {
                     'Content-Type': 'application/json',
                     // Uncomment and add Authorization header if needed

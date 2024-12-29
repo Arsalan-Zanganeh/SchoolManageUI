@@ -126,7 +126,7 @@ const AdminSchoolPage = () => {
   useEffect(() => {
     const fetchSchools = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/school/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/school/`, {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
         });
@@ -172,7 +172,7 @@ const AdminSchoolPage = () => {
 
   const handleSaveSchool = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/add_school/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/add_school/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newSchool),
@@ -204,7 +204,7 @@ const AdminSchoolPage = () => {
   const handleNavigateToDashboard = async (schoolId, Postal_Code) => {
     try {
       const loginResponse = await fetch(
-        `http://127.0.0.1:8000/api/login_school/`,
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/login_school/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -238,7 +238,7 @@ const AdminSchoolPage = () => {
   const handleLogout = async () => {
     try {
       const adminLogoutResponse = await fetch(
-        "http://127.0.0.1:8000/api/logout_school/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/logout_school/`,
         {
           method: "POST",
           credentials: "include",
@@ -248,7 +248,7 @@ const AdminSchoolPage = () => {
         throw new Error("Failed to logout admin");
       }
       const schoolLogoutResponse = await fetch(
-        "http://127.0.0.1:8000/api/logout/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/logout/`,
         {
           method: "POST",
           credentials: "include",

@@ -24,7 +24,7 @@ const ResultsPage = () => {
     const fetchAllData = async () => {
       try {
         // 1) سوالات + پاسخ صحیح
-        const answersResponse = await fetch("http://127.0.0.1:8000/api/student-show-answers/", {
+        const answersResponse = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-show-answers/`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -32,7 +32,7 @@ const ResultsPage = () => {
         });
 
         // 2) پاسخ های دانش آموز
-        const prevAnswersResponse = await fetch("http://127.0.0.1:8000/api/student-quiz-prev-answers/", {
+        const prevAnswersResponse = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-quiz-prev-answers/`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -40,7 +40,7 @@ const ResultsPage = () => {
         });
 
         // 3) رکورد نهایی (Degree)
-        const recordResponse = await fetch("http://127.0.0.1:8000/api/student-show-record/", {
+        const recordResponse = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-show-record/`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },

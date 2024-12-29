@@ -167,7 +167,7 @@ const SchoolDashboard = () => {
   const handleAddEvent = async (e) =>{
     e.preventDefault();
     try {
-      const submit = await fetch('http://127.0.0.1:8000/teacher/principal-add-event/', {
+      const submit = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/principal-add-event/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -214,7 +214,7 @@ const SchoolDashboard = () => {
 useEffect(() => {
   const fetchProfileImage = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/user/profile/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/user/profile/`, {
         credentials: "include",
         // headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
@@ -222,7 +222,7 @@ useEffect(() => {
       if (response.ok) {
         const data = await response.json();
         if (data.UserProfile[0]?.profile_image) {
-          setProfileImage(`http://127.0.0.1:8000/api${data.UserProfile[0]?.profile_image}`);
+          setProfileImage(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${data.UserProfile[0]?.profile_image}`);
         } else {
           setProfileImage(null); // مسیر پیش‌فرض اگر تصویر نباشد
         }
@@ -240,7 +240,7 @@ useEffect(() => {
     handleMessageClickClose();
       e.preventDefault();
       try {
-        const submit = await fetch("http://127.0.0.1:8000/api/add_notification/", {
+        const submit = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/add_notification/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -309,7 +309,7 @@ const formatDate = (dateString) => {
   const fetchSentNotifications = useCallback(async () => {
     if (!schoolToken) return;
     try {
-      const fetchnotifresponse = await fetch("http://127.0.0.1:8000/api/notify/", {
+      const fetchnotifresponse = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/notify/`, {
         headers: {
           'Content-Type': 'application/json',
           // Authorization: `Bearer ${token}`,
@@ -330,7 +330,7 @@ const formatDate = (dateString) => {
   const handleLogout = async () => {
     try {
       const adminLogoutResponse = await fetch(
-        "http://127.0.0.1:8000/api/logout_school/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/logout_school/`,
         {
           method: "POST",
           credentials: "include",
@@ -340,7 +340,7 @@ const formatDate = (dateString) => {
         throw new Error("Failed to logout admin");
       }
       const schoolLogoutResponse = await fetch(
-        "http://127.0.0.1:8000/api/logout/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/logout/`,
         {
           method: "POST",
           credentials: "include",
@@ -372,7 +372,7 @@ const formatDate = (dateString) => {
   const fetchSchoolData = useCallback(async () => {
     if (!schoolToken) return;
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/school/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/school/`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -392,7 +392,7 @@ const formatDate = (dateString) => {
 
   const fetchCalendar = useCallback(async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/prinicipal-google-calendar/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/prinicipal-google-calendar/`, {
         credentials: "include",
       });
       if (response.ok) {
@@ -410,7 +410,7 @@ const formatDate = (dateString) => {
   const fetchPrincipalData = useCallback(async () => {
     if (!principal?.jwt) return;
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/user/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/user/`, {
         headers: {
           'Content-Type': 'application/json',
         },

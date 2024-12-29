@@ -19,9 +19,9 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const CREATE_ESSAY_QUIZ_ENDPOINT = 'http://127.0.0.1:8000/quiz/create_quiz/';
-const GET_ESSAY_QUIZZES_ENDPOINT = 'http://127.0.0.1:8000/quiz/teacher_quizzes/';
-const START_QUIZ_ENDPOINT = 'http://127.0.0.1:8000/quiz/start_quiz/';
+const CREATE_ESSAY_QUIZ_ENDPOINT = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/create_quiz/`;
+const GET_ESSAY_QUIZZES_ENDPOINT = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher_quizzes/`;
+const START_QUIZ_ENDPOINT = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/start_quiz/`;
 
 // توابع کمکی
 function parseCustomDateString(dateString) {

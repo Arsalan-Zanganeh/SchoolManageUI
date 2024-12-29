@@ -29,7 +29,7 @@ const QuizPageStudent = () => {
   useEffect(() => {
     const checkQuizStatus = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/student-quiz-finished-boolean/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-quiz-finished-boolean/`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ const QuizPageStudent = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/student-show-questions/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-show-questions/`, {
           method: "POST",
           credentials: 'include',
           headers: {
@@ -113,7 +113,7 @@ const QuizPageStudent = () => {
   const submitAnswer = async (isFinish = false) => {
     const currentQuestion = questions[currentQuestionIndex];
     try {
-      await fetch("http://127.0.0.1:8000/api/student-answer-question/", {
+      await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-answer-question/`, {
         method: "POST",
         credentials: 'include',
         headers: {
@@ -140,7 +140,7 @@ const QuizPageStudent = () => {
 
   const finishQuiz = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/student-finish-exam/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-finish-exam/`, {
         method: "POST",
         credentials: 'include',
         headers: {

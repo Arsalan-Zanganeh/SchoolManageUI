@@ -43,10 +43,10 @@ const customTheme = createTheme({
 });
 
 // API Endpoints
-const QUESTIONS_API_ENDPOINT = 'http://127.0.0.1:8000/quiz/teacher-quiz-questions/';
-const ADD_QUESTION_API_ENDPOINT = 'http://127.0.0.1:8000/quiz/teacher-add-quiz-question/';
-const EDIT_QUESTION_API_ENDPOINT = 'http://127.0.0.1:8000/quiz/teacher-edit-quiz-question/';
-const DELETE_QUESTION_API_ENDPOINT = 'http://127.0.0.1:8000/quiz/teacher-delete-quiz-question/';
+const QUESTIONS_API_ENDPOINT = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-quiz-questions/`;
+const ADD_QUESTION_API_ENDPOINT = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-add-quiz-question/`;
+const EDIT_QUESTION_API_ENDPOINT = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-edit-quiz-question/`;
+const DELETE_QUESTION_API_ENDPOINT = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-delete-quiz-question/`;
 
 const ManageQuestionsPage = () => {
   const { quizId } = useParams();

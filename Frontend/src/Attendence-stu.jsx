@@ -22,7 +22,7 @@ const AttendanceStatus = ({Topic}) => {
 
   const fetchAttendance =  useCallback(async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/student/parent-attendance/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-attendance/`, {
         headers: {
           'Content-Type': 'application/json',
         },

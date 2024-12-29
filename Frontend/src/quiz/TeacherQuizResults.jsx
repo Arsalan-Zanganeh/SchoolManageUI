@@ -25,7 +25,7 @@ const TeacherQuizResults = () => {
       try {
         // Fetch student records
         const response = await fetch(
-          "http://127.0.0.1:8000/quiz/teacher-watch-records/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-watch-records/`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -39,7 +39,7 @@ const TeacherQuizResults = () => {
         const updatedRecords = await Promise.all(
           records.map(async (record) => {
             const detailsResponse = await fetch(
-              "http://127.0.0.1:8000/quiz/teacher-watch-record/",
+              `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-watch-record/`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

@@ -79,7 +79,7 @@ const Discipline = ({ onBack }) => {
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/discipline/case-list/', {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/case-list/`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -100,7 +100,7 @@ const Discipline = ({ onBack }) => {
 
     const fetchStudents = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/discipline/school-students/', {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/school-students/`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -121,7 +121,7 @@ const Discipline = ({ onBack }) => {
 
     const fetchScores = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/discipline/score-list/', {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/score-list/`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -155,7 +155,7 @@ const Discipline = ({ onBack }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/discipline/case-add/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/case-add/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -184,7 +184,7 @@ const Discipline = ({ onBack }) => {
 
   const handleDeleteCase = async (id) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/discipline/case-delete/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/case-delete/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -216,7 +216,7 @@ const Discipline = ({ onBack }) => {
 
   const handleEditSubmit = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/discipline/score-change/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/score-change/`, {
         method: 'POST',
         credentials: 'include',
         headers: {

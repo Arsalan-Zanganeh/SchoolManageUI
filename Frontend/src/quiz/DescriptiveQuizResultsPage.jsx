@@ -23,7 +23,7 @@ const DescriptiveQuizResultsPage = () => {
     const fetchQuestionsAndAnswers = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/quiz/student-show-answers/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/student-show-answers/`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -45,7 +45,7 @@ const DescriptiveQuizResultsPage = () => {
     const fetchQuizRecord = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/quiz/student-show-record/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/student-show-record/`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

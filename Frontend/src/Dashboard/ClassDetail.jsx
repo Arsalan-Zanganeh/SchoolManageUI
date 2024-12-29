@@ -25,9 +25,9 @@ const ClassDetails = ({ classItem, goBack }) => {
     const fetchData = async () => {
       try {
         const [quizRes, homeworkRes, attendanceRes] = await Promise.all([
-          fetch('http://127.0.0.1:8000/student/parent-quiz-records/', { credentials: 'include' }),
-          fetch('http://127.0.0.1:8000/student/parent-see-homeworks/', { credentials: 'include' }),
-          fetch('http://127.0.0.1:8000/student/parent-attendance/', { credentials: 'include' }),
+          fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-quiz-records/`, { credentials: 'include' }),
+          fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-see-homeworks/`, { credentials: 'include' }),
+          fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-attendance/`, { credentials: 'include' }),
         ]);
 
         if (quizRes.ok) setQuizRecords(await quizRes.json());

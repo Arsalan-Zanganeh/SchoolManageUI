@@ -28,7 +28,7 @@ const ProfilePage = ({ onBack }) => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/teacher/profile/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher/profile/`, {
         credentials: 'include',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
@@ -50,7 +50,7 @@ const ProfilePage = ({ onBack }) => {
         });
   
         if (teacherProfile.profile_image) {
-          setImagePreview(`http://127.0.0.1:8000/api${teacherProfile.profile_image}`);
+          setImagePreview(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${teacherProfile.profile_image}`);
         }
       } else {
         console.error('Failed to fetch profile data');
@@ -97,7 +97,7 @@ const ProfilePage = ({ onBack }) => {
         formData.append('profile_image', profile.profile_image);
       }
 
-      const response = await fetch('http://127.0.0.1:8000/api/teacher/profile_edit/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher/profile_edit/`, {
         method: 'POST',
         credentials: 'include',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },

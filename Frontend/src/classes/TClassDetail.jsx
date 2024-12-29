@@ -254,7 +254,7 @@ const TeacherClassDetail = () => {
 
   const handlePublish = async (data) => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/start_quiz/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/start_quiz/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -315,7 +315,7 @@ const TeacherClassDetail = () => {
       }
 
       try {
-        const response = await fetch('http://127.0.0.1:8000/discipline/teacher-watchfile-EC/', {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-watchfile-EC/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -346,7 +346,7 @@ const TeacherClassDetail = () => {
       }
 
       try {
-        const response = await fetch('http://127.0.0.1:8000/discipline/teacher-watchvid-EC/', {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-watchvid-EC/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -382,7 +382,7 @@ const TeacherClassDetail = () => {
     formData.append('Title', fileTitle);  // Add the title
   
     try {
-      const response = await fetch('http://127.0.0.1:8000/discipline/teacher-addfile-EC/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-addfile-EC/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${teacherToken}`,
@@ -422,7 +422,7 @@ const TeacherClassDetail = () => {
     formData.append('Title', videoTitle);  // Add the title
   
     try {
-      const response = await fetch('http://127.0.0.1:8000/discipline/teacher-addvid-EC/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-addvid-EC/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${teacherToken}`,
@@ -455,7 +455,7 @@ const TeacherClassDetail = () => {
     setMessage('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/discipline/teacher-delfile-EC/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-delfile-EC/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -484,7 +484,7 @@ const TeacherClassDetail = () => {
     setMessage('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/discipline/teacher-delvid-EC/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-delvid-EC/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -515,7 +515,7 @@ const TeacherClassDetail = () => {
       }
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/teacher/classes/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/classes/`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -555,7 +555,7 @@ const TeacherClassDetail = () => {
 
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/teacher-all-homeworks/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-all-homeworks/`,
           {
             method: "GET",
             headers: {
@@ -601,7 +601,7 @@ const TeacherClassDetail = () => {
 
   const fetchTeacherData = useCallback(async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/teacher/user", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/user`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -629,7 +629,7 @@ const TeacherClassDetail = () => {
       setLoadingQuizzes(true);
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/teacher_quizzes/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher_quizzes/`,
           {
             method: "GET",
             credentials: "include",
@@ -717,7 +717,7 @@ const TeacherClassDetail = () => {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/teacher-add-homework/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-add-homework/`,
         {
           method: "POST",
           headers: {
@@ -758,7 +758,7 @@ const TeacherClassDetail = () => {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/teacher-publish-homework/",
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-publish-homework/`,
         {
           method: "POST",
           headers: {
@@ -824,7 +824,7 @@ const TeacherClassDetail = () => {
     setMessage("");
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/create_quiz/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/create_quiz/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -866,7 +866,7 @@ const TeacherClassDetail = () => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/teacher-delete-homework/`,
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-delete-homework/`,
         {
           method: "POST",
           headers: {

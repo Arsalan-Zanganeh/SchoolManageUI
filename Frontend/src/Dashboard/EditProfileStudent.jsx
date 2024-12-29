@@ -38,7 +38,7 @@ function EditProfile() {
 
     const fetchProfileData = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/student/profile/', {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student/profile/`, {
                 credentials: 'include',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -114,7 +114,7 @@ function EditProfile() {
             formData.append('Old_Password', passwordData.Old_Password);
             formData.append('New_Password', passwordData.New_Password);
 
-            const response = await fetch('http://127.0.0.1:8000/api/student/profile_edit/', {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student/profile_edit/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

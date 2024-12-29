@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Nav = ({ name, setName }) => {
     const logout = async () => {
-        await fetch('http://localhost:8000/api/logout', {
+        await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/logout`, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain', },
             credentials: 'include',

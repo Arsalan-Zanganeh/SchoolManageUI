@@ -56,7 +56,7 @@ const handleCloseManageDialog = () => {
 
   const fetchTeacherInfo = async (teacherId) => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/othersides-watch-teacher-info/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/othersides-watch-teacher-info/`, {
         method: "POST",
         credentials: 'include',
 
@@ -80,7 +80,7 @@ const handleCloseManageDialog = () => {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/school-teachers/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/school-teachers/`, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -106,7 +106,7 @@ const handleCloseManageDialog = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/classes/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/classes/`, {
         credentials: "include",
       });
       if (response.ok) {
@@ -129,7 +129,7 @@ const handleCloseManageDialog = () => {
 
   const handleAddClass = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/add_class/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/add_class/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -168,7 +168,7 @@ const handleCloseManageDialog = () => {
     if (cls.Teacher) {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/othersides-watch-teacher-info/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/othersides-watch-teacher-info/`,
           {
             method: "POST",
             credentials: "include",
@@ -217,7 +217,7 @@ const handleCloseManageDialog = () => {
         Session2Time: currentClass.Session2Time || null,
       };
   
-      const response = await fetch(`http://127.0.0.1:8000/api/edit_class/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/edit_class/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -240,7 +240,7 @@ const handleCloseManageDialog = () => {
   
   const handleDeleteClass = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/delete_class/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/delete_class/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

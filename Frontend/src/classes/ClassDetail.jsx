@@ -181,7 +181,7 @@ const ClassDetails = () => {
   useEffect(() => {
     const fetchDescriptiveQuizzes = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/quiz/student_quizzes/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/student_quizzes/`, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
@@ -224,7 +224,7 @@ const ClassDetails = () => {
   useEffect(() => {
     const fetchClassList = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/student/classes/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/classes/`, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -252,7 +252,7 @@ const ClassDetails = () => {
 
 const fetchStudentData = useCallback(async () => {
   try {
-    const response = await fetch("http://127.0.0.1:8000/student/user/", {
+    const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/user/`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -280,7 +280,7 @@ useEffect(() => {
     if (classDetails) {
       const fetchHomeworks = async () => {
         try {
-          const response = await fetch("http://127.0.0.1:8000/api/student-see-homeworks/", {
+          const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-see-homeworks/`, {
             method : "GET",
             headers: {
               'Content-Type': 'application/json',
@@ -301,7 +301,7 @@ useEffect(() => {
 
       const fetchQuizzes = async () => {
         try {
-          const response = await fetch("http://127.0.0.1:8000/api/student_quizzes/", {
+          const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student_quizzes/`, {
             method: "GET",
             headers: {
               'Content-Type': 'application/json',
@@ -326,7 +326,7 @@ useEffect(() => {
        // Fetch educational videos and files for the class
        const fetchEducationalVideos = async () => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/discipline/student-watchvid-EC/", {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/student-watchvid-EC/`, {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -350,7 +350,7 @@ useEffect(() => {
 
       const fetchEducationalFiles = async () => {
         try {
-          const response = await fetch("http://127.0.0.1:8000/discipline/student-watchfile-EC/", {
+          const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/student-watchfile-EC/`, {
             method: "GET",
             headers: {
               'Content-Type': 'application/json',
@@ -434,7 +434,7 @@ useEffect(() => {
 
   const checkQuizStatus = async (quizId) => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/student-quiz-finished-boolean/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-quiz-finished-boolean/`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -487,7 +487,7 @@ useEffect(() => {
   
   const checkDescriptiveQuizStatus = async (quizId) => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/quiz/student-quiz-finished-boolean/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/student-quiz-finished-boolean/`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -536,7 +536,7 @@ useEffect(() => {
 
   const fetchHomeworkRecords = async (homeworkId) => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/student-homework-records/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-homework-records/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -567,7 +567,7 @@ useEffect(() => {
     formData.append('HomeWorkAnswer', file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/student-send-homework/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-send-homework/`, {
         method: 'POST',
         headers: {},
         credentials: 'include',
@@ -593,7 +593,7 @@ useEffect(() => {
   
     const teacherId = classDetails.Teacher;
     // از اینجا به بعد مطمئن هستیم که teacherId تعریف شده است
-    fetch('http://127.0.0.1:8000/api/othersides-watch-teacher-info/', {
+    fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/othersides-watch-teacher-info/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -1041,7 +1041,7 @@ onClick={() => {
                           size="small" // Make button smaller
                           onClick={() => {
                             if (file.file) {
-                              const fileUrl = `http://127.0.0.1:8000/api${file.file}`;
+                              const fileUrl = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${file.file}`;
                               window.open(fileUrl, '_blank');
                             } else {
                               console.error('File path not available');
@@ -1296,7 +1296,7 @@ onClick={() => {
                     if (fileUrl !== 'Not uploaded any file!') {
                       return (
                         <a
-                          href={`http://127.0.0.1:8000/api${fileUrl}`}
+                          href={`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${fileUrl}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           style={{ textDecoration: 'none', color: '#1976d2' }}

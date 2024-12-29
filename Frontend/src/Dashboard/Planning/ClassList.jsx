@@ -42,7 +42,7 @@ const ClassList = ({ gotoplanning }) => {
   
   const fetchStudents = useCallback(async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/teacher/class-students/", {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/class-students/`, {
         headers: {
           'Content-Type': 'application/json',
         },

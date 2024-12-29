@@ -18,7 +18,7 @@ const SubmittedAssignmentsPage = () => {
       setError(null);
 
       try {
-        const response = await fetch('http://127.0.0.1:8000/discipline/teacher-watch-homework-answers/', {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-watch-homework-answers/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const SubmittedAssignmentsPage = () => {
       };
       console.log('Submitting Grade:', payload);
 
-      const response = await fetch('http://127.0.0.1:8000/discipline/teacher-addorchange-homework-grade/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-addorchange-homework-grade/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ const SubmittedAssignmentsPage = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => {
-                        if (assignment.HomeWorkAnswer) {window.open(`http://127.0.0.1:8000/api${assignment.HomeWorkAnswer}`, '_blank');}
+                        if (assignment.HomeWorkAnswer) {window.open(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${assignment.HomeWorkAnswer}`, '_blank');}
                         else {console.error('File path not available');}
                       }}
                       style={{ color: 'primary.main', textDecoration: 'none' }}

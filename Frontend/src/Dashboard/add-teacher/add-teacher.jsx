@@ -29,7 +29,7 @@ function SignUpTeacher({ goBack }) {
     }
 
     try {
-      const submit = await fetch("http://127.0.0.1:8000/api/add_teacher/", {
+      const submit = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/add_teacher/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -9,7 +9,7 @@ import { MoreVert as MoreVertIcon, Comment as CommentIcon, Delete as DeleteIcon,
 import { startOfWeek, format, addWeeks, subWeeks } from 'date-fns';
 
 
-const apiBaseUrl = 'http://127.0.0.1:8000/discipline';
+const apiBaseUrl = '${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline';
 
 const TaskBox = styled(Box)(({ theme, startTime, duration, isMobile }) => ({
     backgroundColor: theme.palette.primary.light,

@@ -39,7 +39,7 @@ const ShowProfile = ({onBack}) => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/student/profile/', {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student/profile/`, {
           credentials: 'include',
           headers: { Authorization: `Bearer ${student?.jwt}` },
         });
@@ -58,7 +58,7 @@ const ShowProfile = ({onBack}) => {
             New_Password: '',
           });
           if (data.StudentProfile[0]?.profile_image) {
-            setImagePreview(`http://127.0.0.1:8000/api${data.StudentProfile[0]?.profile_image}`);
+            setImagePreview(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${data.StudentProfile[0]?.profile_image}`);
           }
         } else {
           throw new Error('Failed to fetch profile');
@@ -99,7 +99,7 @@ const ShowProfile = ({onBack}) => {
         formData.append('profile_image', profile.profile_image);
       }
   
-      const response = await fetch('http://127.0.0.1:8000/api/student/profile_edit/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student/profile_edit/`, {
         method: 'POST',
         credentials: 'include',
         headers: { Authorization: `Bearer ${student?.jwt}` },

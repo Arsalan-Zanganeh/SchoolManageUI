@@ -27,7 +27,7 @@ const TeacherResult = () => {
 
         // Fetch quiz records
         const response = await fetch(
-          "http://127.0.0.1:8000/api/teacher-watch-records/",
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-watch-records/`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -45,7 +45,7 @@ const TeacherResult = () => {
           records.map(async (record) => {
             try {
               const studentResponse = await fetch(
-                "http://127.0.0.1:8000/api/teacher-watch-record/",
+                `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-watch-record/`,
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

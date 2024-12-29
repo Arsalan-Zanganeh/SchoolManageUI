@@ -48,7 +48,7 @@ const QuizPage = () => {
   const fetchQuestions = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://127.0.0.1:8000/api/teacher-quiz-questions/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-quiz-questions/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const QuizPage = () => {
   const addQuestion = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://127.0.0.1:8000/api/teacher-add-quiz-question/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-add-quiz-question/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const QuizPage = () => {
   const updateQuestion = async (id) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://127.0.0.1:8000/api/teacher-edit-quiz-question/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-edit-quiz-question/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -187,7 +187,7 @@ const QuizPage = () => {
   const deleteQuestion = async (id) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://127.0.0.1:8000/api/teacher-delete-quiz-question/`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-delete-quiz-question/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
