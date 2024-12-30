@@ -135,6 +135,85 @@ const SchoolDashboard = () => {
   const [startDatetime, setStartDatetime] = useState('');
   const [endDatetime, setEndDatetime] = useState('');
 
+  const [openParentMessageBox, setOpenParentMessageBox] = useState(false);
+const [parentMessage, setParentMessage] = useState('');
+const [parentNotifications, setParentNotifications] = useState([]);
+const [openParentNotifications, setOpenParentNotifications] = useState(false);
+
+// Open/Close dialogs
+const handleParentMessageClickOpen = () => {
+  setOpenParentMessageBox(true);
+};
+const handleParentMessageClickClose = () => {
+  setOpenParentMessageBox(false);
+};
+const handleParentNotificationsClickOpen = () => {
+  fetchParentNotifications();
+  setOpenParentNotifications(true);
+};
+const handleParentNotificationsClickClose = () => {
+  setOpenParentNotifications(false);
+};
+
+// Fetch parent notifications
+const fetchParentNotifications = useCallback(async () => {
+  try {
+    const fetchParentNotifResponse = await fetch(
+      `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/notification/notify/`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      }
+    );
+
+    if (fetchParentNotifResponse.ok) {
+      const parentNotifData = await fetchParentNotifResponse.json();
+      setParentNotifications(parentNotifData);
+    } else {
+      console.error('Failed to fetch parent notifications');
+    }
+  } catch (error) {
+    console.error('Error fetching parent notifications:', error);
+  }
+}, []);
+
+
+// Send notification to parents
+const handleSendParentMessage = async (e) => {
+  handleParentMessageClickClose();
+  e.preventDefault();
+  try {
+    const submitParentNotifResponse = await fetch(
+      `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/notification/add_notification/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          message: parentMessage,
+        }),
+      }
+    );
+
+    if (!submitParentNotifResponse.ok) {
+      const errorData = await submitParentNotifResponse.json();
+      Swal.fire('Error', errorData.message || 'Failed to send notification.', 'error');
+    } else {
+      Swal.fire('Success', 'Notification sent to parents!', 'success');
+    }
+  } catch (error) {
+    Swal.fire('Error', 'Server error or network issue.', 'error');
+    console.error('Error:', error);
+  }
+  setParentMessage('');
+};
+
+
+
   const formatDatetime = (datetime) => {
      const date = new Date(datetime);
     return `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)} ${('0' + date.getHours()).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}:${('0' + date.getSeconds()).slice(-2)}`;
@@ -289,6 +368,8 @@ useEffect(() => {
   const [sentNotifications, setSentNotifications] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
+  const sortedParentNotifications = [...parentNotifications].sort((a, b) => new Date(b.date) - new Date(a.date));
+
   const handleSentNotificationsClickOpen = () => {
     fetchSentNotifications();
     setOpenSentNotifications(true);
@@ -678,6 +759,13 @@ const formatDate = (dateString) => {
                     <Typography variant="subtitle1">Calendar</Typography>
                   </NavigationBox>
                 </Grid>
+                <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
+  <NavigationBox elevation={3} onClick={handleParentMessageClickOpen}>
+    <NotificationAdd fontSize="large" />
+    <Typography variant="subtitle1">Send Parent Notifications</Typography>
+  </NavigationBox>
+</Grid>
+
               </Grid>
             </TabPanel>
             <TabPanel value={tabvalue} index={3}>
@@ -976,6 +1064,69 @@ const formatDate = (dateString) => {
                     </Button>
                 </DialogActions>
             </Dialog>
+            <Dialog open={openParentMessageBox} onClose={handleParentMessageClickClose}>
+  <DialogTitle>Send Notification to Parents</DialogTitle>
+  <DialogContent>
+    <ReactQuill value={parentMessage} onChange={setParentMessage} />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleParentMessageClickClose} color="secondary">
+      Cancel
+    </Button>
+    <Button onClick={handleSendParentMessage} color="primary">
+      Send
+    </Button>
+    <Button variant="contained" color="primary" onClick={handleParentNotificationsClickOpen}>
+      View Sent Notifications
+    </Button>
+  </DialogActions>
+</Dialog>
+<Dialog open={openParentNotifications} onClose={handleParentNotificationsClickClose} maxWidth="md" fullWidth>
+  <DialogTitle style={styles.dialogTitle}>Sent Notifications to Parents</DialogTitle>
+  <DialogContent style={styles.dialogContent}>
+  {selectedNotification ? (
+    <Box style={styles.messageContainer}>
+      <Button onClick={() => setSelectedNotification(null)} color="primary">Back</Button>
+      <div dangerouslySetInnerHTML={{ __html: selectedNotification.message }} />
+      <Typography variant="body2" style={styles.dateText}>
+        {formatDate(selectedNotification.date)}
+      </Typography>
+    </Box>
+  ) : (
+    <List style={styles.list}>
+      {sortedParentNotifications.map((notification) => (
+        <ListItem 
+          key={notification.id} 
+          button 
+          onClick={() => setSelectedNotification(notification)}
+          style={styles.listItem}
+        >
+          <ListItemText
+            primary={
+              <>
+                <Typography style={styles.dateText}>
+                  {formatDate(notification.date)}
+                </Typography>
+                <Typography style={styles.listItemText}>
+                  {createPreview(notification.message)}
+                </Typography>
+              </>
+            }
+          />
+        </ListItem>
+      ))}
+    </List>
+  )}
+</DialogContent>
+
+  <DialogActions>
+    <Button onClick={handleParentNotificationsClickClose} color="primary">
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
       </Box>
     </ThemeProvider>
   );
