@@ -140,73 +140,6 @@ function LandingPage() {
         </picture>
       </div>
     </section>
-    <section data-aos="zoom-in-up" className="block container block-domain">
-        <h2> Bring your staff and students along</h2>
-        <p>
-        You can signup your <strong>Students</strong> & <strong>Instructors</strong>  along side with your school itself. 
-        </p>
-    </section>
-    <section data-aos="fade-up" className="block container block-plans">
-      <div className="grid grid--1x3">
-        <div className="plan">
-          <div className="card card--secondary">
-            <header className="card__header">
-              <h3 className="plan__name">Dashboard for</h3>
-              <span className="plan__price">Pricipals</span>
-              <span className="plan__description">We can offer these parts in you Dashboard:</span>
-            </header>
-            <div className="card__body">
-              <ul className="list list--tick">
-                <li className="list__item">Signup your Students and Instructors</li>
-                <li className="list__item">Make & Manage Classes</li>
-                <li className="list__item">Disciplinary management</li>
-                <li className="list__item">School Calendar</li>
-                <li className="list__item">Notification System</li>
-                <li className="list__item">And more...</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="plan plan--popular">
-          <div className="card card--primary">
-            <header className="card__header">
-              <h3 className="plan__name">Dashboard for</h3>
-              <span className="plan__price">Students</span>
-              <span className="plan__description">Your students have accses to these sections:</span>
-            </header>
-            <div className="card__body">
-              <ul className="list list--tick">
-                <li className="list__item">Homework & Quiezzes</li>
-                <li className="list__item">Academic Planning</li>
-                <li className="list__item">Class Chat rooms</li>
-                <li className="list__item">Educational Contents</li>
-                <li className="list__item">Attendence Status</li>
-                <li className="list__item">And more...</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="plan">
-          <div className="card card--secondary">
-            <header className="card__header">
-              <h3 className="plan__name">Dashboard for</h3>
-              <span className="plan__price">Instructors</span>
-              <span className="plan__description">Your Instructors Dashboard supports these sections:</span>
-            </header>
-            <div className="card__body">
-              <ul className="list list--tick">
-                <li className="list__item">Manage Homeworks & Quiezzes</li>
-                <li className="list__item">Manage Class Attendence</li>
-                <li className="list__item">Manage Student Plannings</li>
-                <li className="list__item">Upload Educational Content</li>
-                <li className="list__item">Manage Class Chat room</li>
-                <li className="list__item">And more...</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
     <section className="block container">
       <header className="block__header">
         <h2>Meet All Your Academic needs</h2>
@@ -331,6 +264,73 @@ function LandingPage() {
           <img className="feature__image" src="./assets/images/support@2x.jpg" alt="" />
         </picture>
       </article>
+    </section>
+    <section data-aos="zoom-in-up" className="block container block-domain">
+        <h2> Bring your staff and students along</h2>
+        <p>
+        You can signup your <strong>Students</strong> & <strong>Instructors</strong>  along side with your school itself. 
+        </p>
+    </section>
+    <section data-aos="fade-up" className="block container block-plans">
+      <div className="grid grid--1x3">
+        <div className="plan">
+          <div className="card card--secondary">
+            <header className="card__header">
+              <h3 className="plan__name">Dashboard for</h3>
+              <span className="plan__price">Pricipals</span>
+              <span className="plan__description">We can offer these parts in you Dashboard:</span>
+            </header>
+            <div className="card__body">
+              <ul className="list list--tick">
+                <li className="list__item">Signup your Students and Instructors</li>
+                <li className="list__item">Make & Manage Classes</li>
+                <li className="list__item">Disciplinary management</li>
+                <li className="list__item">School Calendar</li>
+                <li className="list__item">Notification System</li>
+                <li className="list__item">And more...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="plan plan--popular">
+          <div className="card card--primary">
+            <header className="card__header">
+              <h3 className="plan__name">Dashboard for</h3>
+              <span className="plan__price">Students</span>
+              <span className="plan__description">Your students have accses to these sections:</span>
+            </header>
+            <div className="card__body">
+              <ul className="list list--tick">
+                <li className="list__item">Homework & Quiezzes</li>
+                <li className="list__item">Academic Planning</li>
+                <li className="list__item">Class Chat rooms</li>
+                <li className="list__item">Educational Contents</li>
+                <li className="list__item">Attendence Status</li>
+                <li className="list__item">And more...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="plan">
+          <div className="card card--secondary">
+            <header className="card__header">
+              <h3 className="plan__name">Dashboard for</h3>
+              <span className="plan__price">Instructors</span>
+              <span className="plan__description">Your Instructors Dashboard supports these sections:</span>
+            </header>
+            <div className="card__body">
+              <ul className="list list--tick">
+                <li className="list__item">Manage Homeworks & Quiezzes</li>
+                <li className="list__item">Manage Class Attendence</li>
+                <li className="list__item">Manage Student Plannings</li>
+                <li className="list__item">Upload Educational Content</li>
+                <li className="list__item">Manage Class Chat room</li>
+                <li className="list__item">And more...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
     <section className="block block--dark block--skewed-right block-showcase">
       <header className="block__header">
