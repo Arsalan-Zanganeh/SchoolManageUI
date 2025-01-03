@@ -118,10 +118,10 @@ function LandingPage() {
           <h1 data-aos="zoom-in-up" className="block__heading">
             Bright Campus
           </h1>
-          <p className="hero__tagline" >
+          <p data-aos="zoom-in-up" className="hero__tagline" >
             Make Your School<strong> SMART</strong> Today!
           </p>
-          <a
+          <a data-aos="zoom-in-up"
             href="/signup-login"
             className="btn btn--accent btn--stretched"
             >Get Started
