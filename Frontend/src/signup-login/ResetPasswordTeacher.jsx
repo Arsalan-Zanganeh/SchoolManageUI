@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, CircularProgress, Box, Container, Alert, useTheme, useMediaQuery } from '@mui/material';
+import { TextField, Button, Typography, CircularProgress, Box, Container, Alert, useTheme, useMediaQuery, Link } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const ResetPasswordTeacher = () => {
     const [National_ID, setNationalId] = useState('');
@@ -9,6 +10,7 @@ const ResetPasswordTeacher = () => {
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const navigate = useNavigate(); // For navigation to Login page after password reset
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,7 +18,7 @@ const ResetPasswordTeacher = () => {
         setMessage('');
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-reset-email/`, { 
+            const response = await fetch('http://127.0.0.1:8000/api/teacher-reset-email/', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -39,24 +41,36 @@ const ResetPasswordTeacher = () => {
     };
 
     return (
-        <Container maxWidth="md">
-            <Box 
-                sx={{ 
-                    width: isMobile ? '90%' : '400px', 
-                    mx: 'auto', 
-                    mt: isMobile ? 0 : 5, 
-                    p: isMobile ? 2 : 4,
-                    bgcolor: '#007BFF', 
-                    borderRadius: 2,
-                    boxShadow: 3,
+        <Container maxWidth="lg"> {/* Larger container width */}
+            <Box
+                sx={{
+                    width: isMobile ? '90%' : '600px', // Wider layout for larger screens
+                    mx: 'auto',
+                    mt: isMobile ? 0 : 5,
+                    p: isMobile ? 3 : 5, // More padding for a spacious look
+                    bgcolor: '#f5f5f5', // Light gray background
+                    borderRadius: 3, // Rounded corners
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 255, 0.3)', // Glowing shadow
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
+                    alignItems: 'center', // Center the content
+                    transition: 'box-shadow 0.3s ease-in-out', // Smooth transition for hover effect
+                    '&:hover': {
+                        boxShadow: '0 4px 40px rgba(0, 0, 255, 0.5)', // Glowing effect on hover
+                    },
                 }}
             >
-                <Typography variant={isMobile ? "h4" : "h3"} gutterBottom color="white" align="center">
+                {/* Changed header text */}
+                <Typography variant={isMobile ? "h4" : "h2"} gutterBottom color="primary" align="center">
+                    Welcome back!
+                </Typography>
+                
+                {/* Changed subheading text */}
+                <Typography variant="body1" color="textSecondary" align="center" sx={{ mb: 4 }}>
                     Reset Password for Teacher
                 </Typography>
+                
                 <form onSubmit={handleSubmit}>
                     <TextField
                         label="National ID"
@@ -66,8 +80,9 @@ const ResetPasswordTeacher = () => {
                         value={National_ID}
                         onChange={(e) => setNationalId(e.target.value)}
                         required
-                        sx={{ 
+                        sx={{
                             bgcolor: 'white',
+                            borderRadius: 2,
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
                                     borderColor: 'white',
@@ -90,8 +105,9 @@ const ResetPasswordTeacher = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        sx={{ 
+                        sx={{
                             bgcolor: 'white',
+                            borderRadius: 2,
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
                                     borderColor: 'white',
@@ -105,13 +121,13 @@ const ResetPasswordTeacher = () => {
                             },
                         }}
                     />
-                    <Button 
-                        type="submit" 
-                        variant="contained" 
-                        color="secondary"
-                        fullWidth 
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary" // Blue button color
+                        fullWidth
                         disabled={loading}
-                        sx={{ mt: 3, py: isMobile ? 1 : 1.5, fontSize: isMobile ? '1rem' : '1.1rem' }}
+                        sx={{ mt: 4, py: 1.5, fontSize: isMobile ? '1rem' : '1.2rem', borderRadius: 2 }}
                     >
                         {loading ? <CircularProgress size={24} /> : 'Send Reset Link'}
                     </Button>
@@ -121,6 +137,14 @@ const ResetPasswordTeacher = () => {
                         {message}
                     </Alert>
                 )}
+
+                <Link
+                    href="/signup-login"
+                    underline="hover"
+                    sx={{ mt: 2, fontSize: '1rem', color: 'primary.main' }}
+                >
+                    Return to LoginPage
+                </Link>
             </Box>
         </Container>
     );

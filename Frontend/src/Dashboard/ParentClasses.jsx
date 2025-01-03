@@ -14,7 +14,7 @@ const ParentClasses = ({ goBack }) => {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-classes/`, {
+        const response = await fetch('http://127.0.0.1:8000/student/parent-classes/', {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -37,7 +37,7 @@ const ParentClasses = ({ goBack }) => {
       const teacherData = {};
       for (const classItem of classData) {
         try {
-          const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/othersides-watch-teacher-info/`, {
+          const response = await fetch('http://127.0.0.1:8000/api/othersides-watch-teacher-info/', {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
@@ -59,7 +59,7 @@ const ParentClasses = ({ goBack }) => {
 
   const handleEnterClass = async (classItem) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-enter-class/`, {
+      const response = await fetch('http://127.0.0.1:8000/student/parent-enter-class/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

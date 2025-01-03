@@ -54,7 +54,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import ChatIcon from '@mui/icons-material/Chat';
 import BookIcon from '@mui/icons-material/Book';
 import Attendance from "../Attendence";
-import AppWrapper from './chatpage';
+import AppWrapper from '../chat/chatpage';
 import ClassList from "../Dashboard/Planning/ClassList";
 import TeacherViewPlanner from "../Dashboard/Planning/teacherWatchPlan";
 import TeacherEssayQuiz from "../quiz/TeacherEssayQuiz";

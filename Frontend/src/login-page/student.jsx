@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useStudent } from '../context/StudentContext'; 
+import './login.css';
 
 function LoginStudent() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function LoginStudent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/login/`, {
+      const response = await fetch("http://127.0.0.1:8000/student/login/", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -26,6 +27,22 @@ function LoginStudent() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('Login response:', data);
+
+        // Extract National_ID from JWT
+        const jwt = data.jwt;
+        const payload = JSON.parse(atob(jwt.split('.')[1]));
+        console.log('JWT payload:', payload);
+  
+        // Create student object with National_ID
+        const studentData = {
+          National_ID: payload.National_ID,
+          jwt: jwt
+        };
+  
+        console.log('Student data to save:', studentData);
+        loginStudent(studentData);
+  
         Swal.fire({
           title: 'Success',
           text: 'Login successful!',

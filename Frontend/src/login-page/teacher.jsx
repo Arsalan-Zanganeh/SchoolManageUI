@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useTeacher } from '../context/TeacherContext';
+import './login.css';
 
 function LoginTeacher() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function LoginTeacher() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/login/`, {
+      const response = await fetch("http://127.0.0.1:8000/teacher/login/", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -29,13 +30,29 @@ function LoginTeacher() {
       });
       if (response.ok) {
         const data = await response.json();
+        console.log('Login response:', data);
+
+        // Extract National_ID from JWT
+        const jwt = data.jwt;
+        const payload = JSON.parse(atob(jwt.split('.')[1]));
+        console.log('JWT payload:', payload);
+
+        // Create teacher object with National_ID
+        const teacherData = {
+          National_ID: payload.National_ID,
+          jwt: jwt
+        };
+
+        console.log('Teacher data to save:', teacherData);
+        loginTeacher(teacherData);
+
         Swal.fire({
           title: 'Success',
           text: 'Login successful!',
           icon: 'success',
           confirmButtonText: 'OK',
         });
-        loginTeacher(data);
+
         navigate('/teacher-dashboard');
       } else {
         const errorData = await response.json();
