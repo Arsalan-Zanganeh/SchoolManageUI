@@ -7,6 +7,9 @@ import SchoolIcon from '@mui/icons-material/SchoolOutlined';
 import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
 import WorkIcon from '@mui/icons-material/WorkOutlineOutlined';
 import SupervisedUserCircle from '@mui/icons-material/SupervisedUserCircleOutlined';
+import MobileFriendlyOutlinedIcon from '@mui/icons-material/MobileFriendlyOutlined';
+import LaptopChromebookOutlinedIcon from '@mui/icons-material/LaptopChromebookOutlined';
+import DesktopMacOutlinedIcon from '@mui/icons-material/DesktopMacOutlined';
 import './styles.css'
 import BreadCrumps from '../components/BreadCrumps'
 window.addEventListener('load', function() { AOS.init(); });
@@ -153,6 +156,7 @@ function LandingPage() {
             <SchoolIcon sx={{color:"#2584ff"}} fontSize="large" />
             </svg>
           </span>
+          <h3 className="feature__heading">Improve & Learn Easy. </h3>
           <p>
           We offer you a modern and user-friendly dashboard where you can submit your homework and quizzes, 
           access your teachers' educational content, check your class status, 
@@ -183,6 +187,7 @@ function LandingPage() {
               <FamilyRestroomIcon sx={{color:"#2584ff"}} fontSize="large" />
             </svg>
           </span>
+          <h3 className="feature__heading">Monitor Progress</h3>
           <p>
           Access your personal dashboard by entering the secret password to monitor your child's progress in school.
            You can also handle all school-related payments directly from your panel.
@@ -212,7 +217,7 @@ function LandingPage() {
             <WorkIcon sx={{color:"#2584ff"}} fontSize="large" />
             </svg>
           </span>
-          <h3 className="feature__heading">As a Innovative Teacher...</h3>
+          <h3 className="feature__heading">Dont worry about your class</h3>
           <p>
           You can be completely confident in your ability to manage your classes with ease using our modern, user-friendly, and fast interface.
           </p>
@@ -241,7 +246,7 @@ function LandingPage() {
               <SupervisedUserCircle  sx={{color:"#2584ff"}} fontSize="large" />
             </svg>
           </span>
-          <h3 className="feature__heading">As a Dedicated Principal...</h3>
+          <h3 className="feature__heading">Your School Your Way</h3>
           <p>
           You will have the power to streamline and enhance every facet of school administration. 
           You can efficiently oversee staff schedules, and ensure adherence to educational policies with ease.
@@ -351,14 +356,14 @@ function LandingPage() {
         <ul className="list" data-aos="fade-up">
           <li>
             <div className="media">
-              <div className="media__image">
-                <svg className="icon icon--primary">
-                  <use href="./assets/images/sprite.svg#growth"></use>
-                </svg>
-              </div>
               <div className="media__body">
+              <div className="media__image">
+              </div>
+              <DesktopMacOutlinedIcon sx={{fill:"white", mr:1}} fontSize='large'/>
+                  <LaptopChromebookOutlinedIcon sx={{fill:"white", mr:1}} fontSize='large'/>
+                  <MobileFriendlyOutlinedIcon sx={{fill:"white", mr:1}} fontSize='large'/>
                 <h3 className="media__title">Simple Design</h3>
-                <p>
+                <p className='simple__design'>
                 Our platform features a clean and straightforward design that ensures a seamless user experience. The minimalist interface eliminates unnecessary clutter, making it easy to find what you need without confusion. With thoughtfully organized elements and intuitive navigation, you can effortlessly access all the system's functionalities. This simple yet effective design enhances productivity and reduces the learning curve, allowing you to focus on what's important.
                 </p>
               </div>

@@ -392,7 +392,7 @@ const StudentDashboard = () => {
 
       const data = await response.json();
       console.log("Success:", data);
-      Swal.fire("Success", "Notification marked as seen.", "success");
+      //Swal.fire("Success", "Notification marked as seen.", "success");
     } catch (error) {
       Swal.fire(
         "Error",
