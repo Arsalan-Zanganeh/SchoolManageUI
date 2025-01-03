@@ -69,7 +69,7 @@
 }
 
 .list--tick {
-  list-style-image: url(../images/tick.svg);
+  list-style-image: url(assets/images/tick.svg);
   padding-left: 3rem;
   color: var(--color-headings);
 }
@@ -304,7 +304,7 @@
 }
 
 .plan--popular .card__header::before {
-  content: url(../images/popular.svg);
+  content: url(assets/images/popular.svg);
   width: 40px;
   display: inline-block;
   position: absolute;
@@ -546,7 +546,7 @@
 }
 
 .block--dark {
-  background: #000;
+  background: #0051FF;
   color: #7b858b;
 }
 
@@ -572,7 +572,7 @@
 /* Navigation Bar */
 
 .nav {
-  background: #000;
+  background: #00184d;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;

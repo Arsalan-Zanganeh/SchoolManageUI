@@ -3,8 +3,13 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { display, GlobalStyles } from '@mui/system';
 import { Box } from '@mui/material';
+import SchoolIcon from '@mui/icons-material/SchoolOutlined';
+import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
+import WorkIcon from '@mui/icons-material/WorkOutlineOutlined';
+import SupervisedUserCircle from '@mui/icons-material/SupervisedUserCircleOutlined';
 import './styles.css'
-
+import BreadCrumps from '../components/BreadCrumps'
+window.addEventListener('load', function() { AOS.init(); });
 const globalStyles = (
   <GlobalStyles
     styles={{
@@ -113,12 +118,11 @@ function LandingPage() {
           <h1 data-aos="zoom-in-up" className="block__heading">
             Bright Campus
           </h1>
-          <p className="hero__tagline">
-            .
+          <p className="hero__tagline" >
+            Make Your School<strong> SMART</strong> Today!
           </p>
           <a
-            target="_blank"
-            href="https://codewithmosh.com"
+            href="/signup-login"
             className="btn btn--accent btn--stretched"
             >Get Started
           </a>
@@ -137,95 +141,67 @@ function LandingPage() {
       </div>
     </section>
     <section data-aos="zoom-in-up" className="block container block-domain">
-      <header className="block__header">
-        <h2>Starting at $10 per month</h2>
+        <h2> Bring your staff and students along</h2>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
-          exercitationem?
+        You can signup your <strong>Students</strong> & <strong>Instructors</strong>  along side with your school itself. 
         </p>
-      </header>
-      <div className="input-group">
-        <input
-          aria-label="Domain"
-          type="text"
-          class="input"
-          placeholder="Enter domain name here..."
-        />
-        <button className="btn btn--accent">
-          <svg className="icon icon--white">
-            <use href="./assets/images/sprite.svg#search"></use>
-            </svg>
-            Search
-        </button>
-      </div>
-      <ul className="list block-domain__prices">
-        <li><span className="badge badge--secondary">.com $9</span></li>
-        <li>.sg $10</li>
-        <li>.space $11</li>
-        <li>.info $14</li>
-        <li>.net $10</li>
-        <li>.xyz $10</li>
-      </ul>
     </section>
     <section data-aos="fade-up" className="block container block-plans">
       <div className="grid grid--1x3">
         <div className="plan">
           <div className="card card--secondary">
             <header className="card__header">
-              <h3 className="plan__name">Entry</h3>
-              <span className="plan__price">$14</span>
-              <span className="plan__billing-cycle">/month</span>
-              <span className="badge badge--secondary badge--small">10% OFF</span>
-              <span className="plan__description">Easy start on the cloud</span>
+              <h3 className="plan__name">Dashboard for</h3>
+              <span className="plan__price">Pricipals</span>
+              <span className="plan__description">We can offer these parts in you Dashboard:</span>
             </header>
             <div className="card__body">
               <ul className="list list--tick">
-                <li className="list__item">Unlimited Websites</li>
-                <li className="list__item">Unlimited Bandwidth</li>
-                <li className="list__item">100 GB SSD Sotrage</li>
-                <li className="list__item">3 GB RAM</li>
+                <li className="list__item">Signup your Students and Instructors</li>
+                <li className="list__item">Make & Manage Classes</li>
+                <li className="list__item">Disciplinary management</li>
+                <li className="list__item">School Calendar</li>
+                <li className="list__item">Notification System</li>
+                <li className="list__item">And more...</li>
               </ul>
-              <button className="btn btn--outline btn--block">Buy Now</button>
             </div>
           </div>
         </div>
         <div className="plan plan--popular">
           <div className="card card--primary">
             <header className="card__header">
-              <h3 className="plan__name">Entry</h3>
-              <span className="plan__price">$14</span>
-              <span className="plan__billing-cycle">/month</span>
-              <span className="badge badge--primary badge--small">10% OFF</span>
-              <span className="plan__description">Easy start on the cloud</span>
+              <h3 className="plan__name">Dashboard for</h3>
+              <span className="plan__price">Students</span>
+              <span className="plan__description">Your students have accses to these sections:</span>
             </header>
             <div className="card__body">
               <ul className="list list--tick">
-                <li className="list__item">Unlimited Websites</li>
-                <li className="list__item">Unlimited Bandwidth</li>
-                <li className="list__item">100 GB SSD Sotrage</li>
-                <li className="list__item">3 GB RAM</li>
+                <li className="list__item">Homework & Quiezzes</li>
+                <li className="list__item">Academic Planning</li>
+                <li className="list__item">Class Chat rooms</li>
+                <li className="list__item">Educational Contents</li>
+                <li className="list__item">Attendence Status</li>
+                <li className="list__item">And more...</li>
               </ul>
-              <button className="btn btn--outline btn--block">Buy Now</button>
             </div>
           </div>
         </div>
         <div className="plan">
           <div className="card card--secondary">
             <header className="card__header">
-              <h3 className="plan__name">Entry</h3>
-              <span className="plan__price">$14</span>
-              <span className="plan__billing-cycle">/month</span>
-              <span className="badge badge--secondary badge--small">10% OFF</span>
-              <span className="plan__description">Easy start on the cloud</span>
+              <h3 className="plan__name">Dashboard for</h3>
+              <span className="plan__price">Instructors</span>
+              <span className="plan__description">Your Instructors Dashboard supports these sections:</span>
             </header>
             <div className="card__body">
               <ul className="list list--tick">
-                <li className="list__item">Unlimited Websites</li>
-                <li className="list__item">Unlimited Bandwidth</li>
-                <li className="list__item">100 GB SSD Sotrage</li>
-                <li className="list__item">3 GB RAM</li>
+                <li className="list__item">Manage Homeworks & Quiezzes</li>
+                <li className="list__item">Manage Class Attendence</li>
+                <li className="list__item">Manage Student Plannings</li>
+                <li className="list__item">Upload Educational Content</li>
+                <li className="list__item">Manage Class Chat room</li>
+                <li className="list__item">And more...</li>
               </ul>
-              <button className="btn btn--outline btn--block">Buy Now</button>
             </div>
           </div>
         </div>
@@ -233,27 +209,26 @@ function LandingPage() {
     </section>
     <section className="block container">
       <header className="block__header">
-        <h2>Host on the Cloud to Keep Growing</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed,
-          voluptatem.
-        </p>
+        <h2>Meet All Your Academic needs</h2>
       </header>
+      <BreadCrumps  page="Stu"  title="As a Bright Student..."  />
       <article className="grid grid--1x2 feature">
         <div className="feature__content" data-aos="fade-right">
-          <span className="icon-container">
+          
+        <span className="icon-container">
             <svg className="icon icon--primary">
-              <use href="./assets/images/sprite.svg#easy"></use>
+            <SchoolIcon sx={{color:"#2584ff"}} fontSize="large" />
             </svg>
           </span>
-          <h3 className="feature__heading">Super Easy to Use</h3>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam
-            obcaecati vel ad unde est illo at. Labore excepturi officia dolores!
+          We offer you a modern and user-friendly dashboard where you can submit your homework and quizzes, 
+          access your teachers' educational content, check your class status, 
+          and manage everything a student needs in a school!
           </p>
+          {/*
           <a href="https://codewithmosh.com" target="_blank" className="link-arrow"
             >Learn More
-          </a>
+          </a> */}
         </div>
         <picture data-aos="zoom-in-left">
           <source
@@ -267,23 +242,24 @@ function LandingPage() {
           <img className="feature__image" src="./assets/images/easy@2x.jpg" alt="" />
         </picture>
       </article>
+      <BreadCrumps  page="Par"  title="As a Caring Parent..."  />
       <article className="grid grid--1x2 feature">
         <div className="feature__content" data-aos="fade-up">
           <span className="icon-container">
             <svg className="icon icon--primary">
-              <use href="./assets/images/sprite.svg#computer"></use>
+              <FamilyRestroomIcon sx={{color:"#2584ff"}} fontSize="large" />
             </svg>
           </span>
-          <h3 className="feature__heading">Simply Fast Websites</h3>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam
-            obcaecati vel ad unde est illo at. Labore excepturi officia dolores!
-          </p>
+          Access your personal dashboard by entering the secret password to monitor your child's progress in school.
+           You can also handle all school-related payments directly from your panel.
+            </p>
+          {/*
           <a href="https://codewithmosh.com" target="_blank" className="link-arrow"
             >Learn More
-          </a>
+          </a> */}
         </div>
-        <picture>
+        <picture data-aos="fade-down">
           <source
             type="image/webp"
             srcset="./assets/images/fast.webp 1x, ./assets/images/fast@2x.webp 2x"
@@ -295,23 +271,24 @@ function LandingPage() {
           <img className="feature__image" src="./assets/images/fast@2x.jpg" alt="" />
         </picture>
       </article>
+      <BreadCrumps page="Tea"  title="As a Innovative Teacher..."  />
       <article className="grid grid--1x2 feature">
         <div className="feature__content" data-aos="fade-up">
           <span className="icon-container">
             <svg className="icon icon--primary">
-              <use href="./assets/images/sprite.svg#wordpress"></use>
+            <WorkIcon sx={{color:"#2584ff"}} fontSize="large" />
             </svg>
           </span>
-          <h3 className="feature__heading">Wordpress Made Easy</h3>
+          <h3 className="feature__heading">As a Innovative Teacher...</h3>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam
-            obcaecati vel ad unde est illo at. Labore excepturi officia dolores!
+          You can be completely confident in your ability to manage your classes with ease using our modern, user-friendly, and fast interface.
           </p>
+          {/*
           <a href="https://codewithmosh.com" target="_blank" className="link-arrow"
             >Learn More
-          </a>
+          </a> */}
         </div>
-        <picture>
+        <picture data-aos="fade-down">
           <source
             type="image/webp"
             srcset="./assets/images/wordpress.webp 1x, ./assets/images/wordpress@2x.webp 2x"
@@ -323,21 +300,24 @@ function LandingPage() {
           <img className="feature__image" src="./assets/images/wordpress@2x.jpg" alt="" />
         </picture>
       </article>
+      <BreadCrumps  page="Pri"  title="As a Dedicated Principal..."  />
       <article className="grid grid--1x2 feature">
         <div className="feature__content" data-aos="fade-left">
           <span className="icon-container">
             <svg className="icon icon--primary">
-              <use href="./assets/images/sprite.svg#clock"></use>
+              <SupervisedUserCircle  sx={{color:"#2584ff"}} fontSize="large" />
             </svg>
           </span>
-          <h3 className="feature__heading">24/7 Expert Support</h3>
+          <h3 className="feature__heading">As a Dedicated Principal...</h3>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam
-            obcaecati vel ad unde est illo at. Labore excepturi officia dolores!
+          You will have the power to streamline and enhance every facet of school administration. 
+          You can efficiently oversee staff schedules, and ensure adherence to educational policies with ease.
+             Communication with parents, teachers, and students is simplified, fostering a supportive and connected school community.
           </p>
+          {/*
           <a href="https://codewithmosh.com" target="_blank" className="link-arrow"
             >Learn More
-            </a>
+          </a> */}
         </div>
         <picture data-aos="fade-right">
           <source
@@ -354,7 +334,7 @@ function LandingPage() {
     </section>
     <section className="block block--dark block--skewed-right block-showcase">
       <header className="block__header">
-        <h2>User-friendly Control Panel</h2>
+        <h2>Compability with all devices!</h2>
       </header>
       <div className="container grid grid--1x2">
         <picture data-aos="fade-right" className="block-showcase__image">
@@ -373,49 +353,13 @@ function LandingPage() {
             <div className="media">
               <div className="media__image">
                 <svg className="icon icon--primary">
-                  <use href="./assets/images/sprite.svg#snap"></use>
-                </svg>
-              </div>
-              <div className="media__body">
-                <h3 className="media__title">Easy Start & Managed Updates</h3>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Veniam quisquam, ex nostrum vero voluptates dicta excepturi
-                  vel perspiciatis consequuntur ab.
-                </p>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div className="media">
-              <div className="media__image">
-                <svg className="icon icon--primary">
                   <use href="./assets/images/sprite.svg#growth"></use>
                 </svg>
               </div>
               <div className="media__body">
-                <h3 className="media__title">Staging, GIT & WP-CLI</h3>
+                <h3 className="media__title">Simple Design</h3>
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Veniam quisquam, ex nostrum vero voluptates dicta excepturi
-                  vel perspiciatis consequuntur ab.
-                </p>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div className="media">
-              <div className="media__image">
-                <svg className="icon icon--primary">
-                  <use href="./assets/images/sprite.svg#wordpress"></use>
-                </svg>
-              </div>
-              <div className="media__body">
-                <h3 className="media__title">Dynamic Caching & More</h3>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Veniam quisquam, ex nostrum vero voluptates dicta excepturi
-                  vel perspiciatis consequuntur ab.
+                Our platform features a clean and straightforward design that ensures a seamless user experience. The minimalist interface eliminates unnecessary clutter, making it easy to find what you need without confusion. With thoughtfully organized elements and intuitive navigation, you can effortlessly access all the system's functionalities. This simple yet effective design enhances productivity and reduces the learning curve, allowing you to focus on what's important.
                 </p>
               </div>
             </div>
@@ -427,7 +371,7 @@ function LandingPage() {
       <header className="block__header">
         <h2>What our Customers are Saying</h2>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut, ipsam.
+          We are proud to announce that 95% of our customers are happy with our services.
         </p>
       </header>
       <div className="container">
@@ -446,9 +390,7 @@ function LandingPage() {
             </div>
             <blockquote className="quote">
               <p className="quote__text">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Incidunt optio officiis dolore earum error eaque perferendis
-                laudantium sed praesentium dolorum.
+              I've had the pleasure of using Bright Campus for the past six months, and I must say, it has completely revolutionized the way we manage our school operations. From streamlining administrative tasks to enhancing communication, this system has exceeded all our expectations.
               </p>
               <footer>
                 <div className="media">
@@ -458,8 +400,8 @@ function LandingPage() {
                     </svg>
                   </div>
                   <div className="media__body">
-                    <h3 className="media__title quote__author">John Smith</h3>
-                    <p className="quote__organization">ABC Company</p>
+                    <h3 className="media__title quote__author">Dr. MoienFar</h3>
+                    <p className="quote__organization">Principal of Allameh Helli 7</p>
                   </div>
                 </div>
               </footer>
@@ -474,14 +416,11 @@ function LandingPage() {
           <div className="callout__content">
             <h2 className="callout__heading">Ready to Get Started?</h2>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi
-              voluptate tempora qui distinctio consequatur aliquid pariatur
-              cupiditate quas cum fugit.
+              Sign up Now and Make your school fully online.
             </p>
           </div>
           <a
-            target="_blank"
-            href="https://codewithmosh.com"
+            href="/signup-login"
             className="btn btn--secondary btn--stretched"
             >Get Started
           </a>
@@ -490,69 +429,9 @@ function LandingPage() {
     </div>
     <footer className="block block--dark footer">
       <div className="container grid footer__sections">
-        <section className="collapsible collapsible--expanded footer__section">
-          <div className="collapsible__header">
-            <h2 className="collapsible__heading footer__heading">Products</h2>
-            <svg className="icon icon--white collapsible__chevron">
-              <use href="./assets/images/sprite.svg#chevron"></use>
-            </svg>
-          </div>
-          <div className="collapsible__content">
-            <ul className="list">
-              <li><a href="#">Website Hosting</a></li>
-              <li><a href="#">Free Automated Wordpress</a></li>
-              <li><a href="#">Migrations</a></li>
-            </ul>
-          </div>
-        </section>
-        <section className="collapsible footer__section">
-          <div className="collapsible__header">
-            <h2 className="collapsible__heading footer__heading">Company</h2>
-            <svg className="icon icon--white collapsible__chevron">
-              <use href="./assets/images/sprite.svg#chevron"></use>
-            </svg>
-          </div>
-          <div className="collapsible__content">
-            <ul className="list">
-              <li><a href="#">About</a></li>
-              <li><a href="#">Affiliates</a></li>
-              <li><a href="#">Blog</a></li>
-            </ul>
-          </div>
-        </section>
-        <section className="collapsible footer__section">
-          <div className="collapsible__header">
-            <h2 className="collapsible__heading footer__heading">Support</h2>
-            <svg className="icon icon--white collapsible__chevron">
-              <use href="./assets/images/sprite.svg#chevron"></use>
-            </svg>
-          </div>
-          <div className="collapsible__content">
-            <ul className="list">
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Knowledge Base</a></li>
-              <li><a href="#">FAQ</a></li>
-            </ul>
-          </div>
-        </section>
-        <section className="collapsible footer__section">
-          <div className="collapsible__header">
-            <h2 className="collapsible__heading footer__heading">Domains</h2>
-            <svg className="icon icon--white collapsible__chevron">
-              <use href="./assets/images/sprite.svg#chevron"></use>
-            </svg>
-          </div>
-          <div className="collapsible__content">
-            <ul className="list">
-              <li><a href="#">Domain Checker</a></li>
-              <li><a href="#">Domain Transfer</a></li>
-              <li><a href="#">Free Domain</a></li>
-            </ul>
-          </div>
-        </section>
         <div className="footer__brand">
           <img src="./assets/images/logo.svg" alt="" />
-          <p className="footer__copyright">Copyright 2020 Mosh Hamedani</p>
+          <p className="footer__copyright">Copyright 2025 SheshAbarGhahreman</p>
         </div>
       </div>
     </footer>
