@@ -22,6 +22,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Collapse,
 } from "@mui/material";
 import {
   ExitToApp,
@@ -35,6 +36,10 @@ import {
   NotificationAdd,
   PermContactCalendar,
   Security,
+  QueryBuilder,
+  ExpandMore,
+  ExpandLess,
+  HideImageTwoTone,
 } from "@mui/icons-material";
 import QuizIcon from "@mui/icons-material/Quiz";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -166,7 +171,16 @@ const StudentDashboard = () => {
   const [profileImage, setProfileImage] = useState(null);
   const isDesktop = useMediaQuery("(min-width:600px)");
   const token = student?.jwt;
+  const [homeworks, setHomeworks] = useState([]);
+  const [quizTests, setQuizTests] = useState([]);
+  const [quizExplans, setQuizExplans] = useState([]);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const [showDescriptiveQuizzes, setShowDescriptiveQuizzes] = useState(false);
+  const [showTestQuizzes, setShowTestQuizzes] = useState(false);
+  const [showHomeworks, setShowHomeworks] = useState(false);
+  const toggleDescriptiveQuizzes = () => setShowDescriptiveQuizzes(!showDescriptiveQuizzes);
+  const toggleTestQuizzes = () => setShowTestQuizzes(!showTestQuizzes);
+  const toggleHomeworks = () => setShowHomeworks(!showHomeworks);
   const drawerProps = isDesktop
     ? { variant: "permanent", open: true }
     : { open: sidebarOpen, onClose: toggleSidebar };
@@ -418,6 +432,195 @@ const StudentDashboard = () => {
   const sortedNotifications = [...unreadNotifications].sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
+
+  const fetchRecentHomework = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/recent-homework/`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setHomeworks(data);
+      } else {
+        console.error('Failed to fetch recent homework');
+      }
+    } catch (error) {
+      console.error('Error fetching recent homework:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchQuizTests = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/recent-quiz-test/`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setQuizTests(data);
+      } else {
+        console.error('Failed to fetch recent quiz tests');
+      }
+    } catch (error) {
+      console.error('Error fetching recent quiz tests:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchQuizExplans = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/recent-quiz-explan/`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setQuizExplans(data);
+      } else {
+        console.error('Failed to fetch recent quiz tests');
+      }
+    } catch (error) {
+      console.error('Error fetching recent quiz tests:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecentHomework();
+    fetchQuizTests();
+    fetchQuizExplans();
+  }, []);
+
+  const getRemainingTimeQ = (startTime, durationHours, durationMinutes) => {
+    const now = new Date();
+    const start = new Date(startTime);
+    const endTime = new Date(start.getTime() + durationHours * 60 * 60 * 1000 + durationMinutes * 60 * 1000);
+    const timeDiff = start - now;
+  
+    if (timeDiff > 0) {
+      // Before the quiz starts
+      const seconds = Math.floor(timeDiff / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      const months = Math.floor(days / 30);
+  
+      if (months > 0) {
+        return `${months} months and ${days % 30} days to start`;
+      } else if (days > 0) {
+        return `${days} days and ${hours % 24} hours to start`;
+      } else if (hours > 0) {
+        return `${hours} hours and ${minutes % 60} minutes to start`;
+      } else if (minutes > 0) {
+        return `${minutes} minutes and ${seconds % 60} seconds to start`;
+      } else {
+        return `${seconds} seconds to start`;
+      }
+    } else {
+      // After the quiz has started
+      const remainingTime = endTime - now;
+      if (remainingTime <= 0) {
+        return "Quiz has ended.";
+      }
+      const remainingSeconds = Math.floor(remainingTime / 1000);
+      const remainingMinutes = Math.floor(remainingSeconds / 60);
+      const remainingHours = Math.floor(remainingMinutes / 60);
+      const remainingDays = Math.floor(remainingHours / 24);
+      const remainingMonths = Math.floor(remainingDays / 30);
+  
+      if (remainingHours > 0) {
+        return `${remainingHours} hours and ${remainingMinutes % 60} minutes left`;
+      } else if (remainingMinutes > 0) {
+        return `${remainingMinutes} minutes and ${remainingSeconds % 60} seconds left`;
+      } else {
+        return `${remainingSeconds} seconds left`;
+      }
+    }
+  };  
+
+  const isStarted = (deadline) => {
+    return new Date() > new Date(deadline);
+  };
+
+  const getRemainingTimeHW = (deadline) => {
+    const now = new Date();
+    const endTime = new Date(deadline);
+    const timeDiff = endTime - now;
+  
+    const seconds = Math.floor(timeDiff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+  
+    if (months > 0) {
+      return `${months} months and ${days % 30} days left`;
+    } else if (days > 0) {
+      return `${days} days and ${hours % 24} hours left`;
+    } else if (hours > 0) {
+      return `${hours} hours and ${minutes % 60} minutes left`;
+    } else if (minutes > 0) {
+      return `${minutes} minutes left`;
+    } else {
+      return `${seconds} seconds left`;
+    }
+  }
+
+  const getDay = (dateString) => {
+    const date = new Date(dateString);
+    return date.getDate();
+  }
+  
+  const getMonth = (dateString) => {
+    const date = new Date(dateString);
+    const monthNames = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    return monthNames[date.getMonth()];
+  }
+  
+  const handleDescriptiveQuizClick = (cid, quiz) => {
+    const openTime = new Date(quiz.OpenTime);
+    const quizEnd = new Date(openTime);
+    quizEnd.setHours(quizEnd.getHours() + (quiz.DurationHour || 0));
+    quizEnd.setMinutes(quizEnd.getMinutes() + (quiz.DurationMinute || 0));
+
+    navigate(`/student-dashboard/student-classes/${cid}/descriptive-quiz/${quiz.id}`, {
+      state: { quizEndTime: quizEnd.toISOString(), cid }
+    });
+  };
+  
+  const handleTestQuizClick = (cid, quiz) => {
+    const openTime = new Date(quiz.OpenTime);
+    const quizEnd = new Date(openTime);
+    quizEnd.setHours(quizEnd.getHours() + quiz.DurationHour);
+    quizEnd.setMinutes(quizEnd.getMinutes() + quiz.DurationMinute);
+
+    navigate(`/student-dashboard/student-classes/${cid}/quiz/${quiz.id}`, {
+      state: { quizEndTime: quizEnd.toISOString(), cid }
+    });
+  };
+
+  const handleHomeworkClick = (cid, homeworkId) => {
+    // Find the homework details from the homeworks array
+    const homework = homeworks.find(hw => hw.id === homeworkId);
+    if (homework) {
+      // Navigate to the class details page with the homework dialog open
+      navigate(`/student-dashboard/student-classes/${cid}`, {
+        state: { openHomework: homework }
+      });
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -862,6 +1065,133 @@ const StudentDashboard = () => {
                 <ListItemText primary="Logout" />
               </ListItem>
             </List>
+            <Box>
+              <Typography sx={{ color: 'white', fontWeight: '600', textAlign: 'left', paddingLeft: '10px' }} variant='h5'>
+                Recent events:
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box onClick={toggleDescriptiveQuizzes} sx={{ display: 'flex', flexDirection: 'row', cursor: 'pointer', alignItems: 'center', margin: '2px' }}>
+                  <IconButton color="primary" sx={{width:'12%'}}>
+                    {showDescriptiveQuizzes ? <ExpandLess /> : <ExpandMore />}
+                  </IconButton>
+                  <Typography variant="button" sx={{ color: 'white', cursor: 'pointer' }}>
+                    {showDescriptiveQuizzes ? 'Hide Descriptive Quizzes' : 'Show Descriptive Quizzes'}
+                  </Typography>
+                </Box>
+                <Collapse in={showDescriptiveQuizzes}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+                    {quizExplans.length > 0 ? (
+                      quizExplans.map(qe => (
+                        <Box sx={{ display: 'flex', flexDirection: 'row', marginBlock: '5px' }} key={qe.id}>
+                          <Box sx={{ backgroundColor:'lavender', display: 'flex', flexDirection: 'column', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white', borderRadius: '1rem', minWidth: '60px' }}>
+                            <Typography variant='h3' sx={{ fontWeight: '550', alignSelf: 'center', color:'black' }}>{getDay(qe.OpenTime)}</Typography>
+                            <Typography sx={{ fontWeight: '550', alignSelf: 'center', color:'black' }}>{getMonth(qe.OpenTime)}</Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                            {isStarted(qe.OpenTime) ? (
+                              <Typography
+                                variant='h6'
+                                sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                                onClick={() => handleDescriptiveQuizClick(qe.class_id, qe)}>
+                                  {qe.Title}
+                              </Typography>
+                            ) : (
+                              <Typography
+                                variant='h6'
+                                sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>
+                                  {qe.Title}
+                              </Typography>
+                            )}
+                            <Typography sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>{qe.class_topic} class</Typography>
+                            <Typography sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>{getRemainingTimeQ(qe.OpenTime, qe.DurationHour, qe.DurationMinute)}</Typography>
+                          </Box>
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>There are no descriptive quizzes yet!</Typography>
+                    )}
+                  </Box>
+                </Collapse>
+
+                <Box onClick={toggleTestQuizzes} sx={{ display: 'flex', flexDirection: 'row', cursor:  'pointer', alignItems: 'center', margin: '2px' }}>
+                  <IconButton color="primary" sx={{width:'12%'}}>
+                    {showTestQuizzes ? <ExpandLess /> : <ExpandMore />}
+                  </IconButton>
+                  <Typography variant="button" sx={{ color: 'white', cursor: 'pointer' }}>
+                    {showTestQuizzes ? 'Hide Test Quizzes' : 'Show Test Quizzes'}
+                  </Typography>
+                </Box>
+                <Collapse in={showTestQuizzes}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    {quizTests.length > 0 ? (
+                      quizTests.map(qt => (
+                        <Box sx={{ display: 'flex', flexDirection: 'row', marginBlock: '5px' }} key={qt.id}>
+                          <Box sx={{ backgroundColor:'lavender', display: 'flex', flexDirection: 'column', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white', borderRadius: '1rem', minWidth: '60px' }}>
+                            <Typography variant='h3' sx={{ fontWeight: '550', alignSelf: 'center', color:'black' }}>{getDay(qt.OpenTime)}</Typography>
+                            <Typography sx={{ fontWeight: '550', alignSelf: 'center', color:'black' }}>{getMonth(qt.OpenTime)}</Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                            {isStarted(qt.OpenTime) ? (
+                                <Typography
+                                  variant='h6'
+                                  sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                                  onClick={() => handleTestQuizClick(qt.class_id, qt)}>
+                                    {qt.Title}
+                                </Typography>
+                              ) : (
+                                <Typography
+                                  variant='h6'
+                                  sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>
+                                    {qt.Title}
+                                </Typography>
+                            )}
+                            <Typography sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>{qt.class_topic} class</Typography>
+                            <Typography sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>{getRemainingTimeQ(qt.OpenTime, qt.DurationHour, qt.DurationMinute)}</Typography>
+                          </Box>
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>There are no test quizzes yet!</Typography>
+                    )}
+                  </Box>
+                </Collapse>
+
+                <Box onClick={toggleHomeworks} sx={{ display: 'flex', flexDirection: 'row', cursor: 'pointer', alignItems: 'center', margin: '2px' , marginInline:'' }}>
+                  <IconButton color="primary" sx={{width:'12%'}}>
+                    {showHomeworks ? <ExpandLess /> : <ExpandMore />}
+                  </IconButton>
+                  <Typography variant="button" sx={{ color: 'white', cursor: 'pointer' }}>
+                    {showHomeworks ? 'Hide Homeworks' : 'Show Homeworks'}
+                  </Typography>
+                </Box>
+                <Collapse in={showHomeworks}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    {homeworks.length > 0 ? (
+                      homeworks.map(hw => (
+                        <Box sx={{ display: 'flex', flexDirection: 'row', marginBlock: '5px' }} key={hw.id}>
+                          <Box sx={{ backgroundColor:'lavender', display: 'flex', flexDirection: 'column', borderStyle: 'solid', borderWidth: '1px', borderColor: 'white', borderRadius: '1rem', minWidth: '60px' }}>
+                            <Typography variant='h3' sx={{ fontWeight: '550', alignSelf: 'center', color:'black' }}>{getDay(hw.DeadLine)}</Typography>
+                            <Typography sx={{ fontWeight: '550', alignSelf: 'center', color:'black' }}>{getMonth(hw.DeadLine)}</Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                            <Typography
+                              variant='h6'
+                              sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                              onClick={() => handleHomeworkClick(hw.class_id, hw.id)}>
+                                {hw.Title}
+                            </Typography>
+                            <Typography sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>{hw.class_topic} class</Typography>
+                            <Typography sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>{getRemainingTimeHW(hw.DeadLine)}</Typography>
+                          </Box>
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography sx={{ color: 'white', textAlign: 'left', paddingLeft: '5px' }}>There are no homeworks yet!</Typography>
+                    )}
+                  </Box>
+                </Collapse>
+              </Box>
+            </Box>
           </Drawer>
         </Box>
       </Box>

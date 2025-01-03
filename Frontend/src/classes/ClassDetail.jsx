@@ -1,5 +1,5 @@
 import React, { useEffect, useState  , useCallback} from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
   Box, Menu , Typography, Button, Tabs, Tab, Card, CardContent, AppBar, Toolbar,
   Grid, Divider, Paper, Dialog, DialogTitle, DialogContent, IconButton,Drawer,ListItemIcon,
@@ -115,6 +115,7 @@ const theme = createTheme({
 const ClassDetails = () => {
   const { cid } = useParams(); 
   const navigate = useNavigate();
+  const location = useLocation();
   const [classList, setClassList] = useState([]); 
   const [classDetails, setClassDetails] = useState(null); 
   const [tabValue, setTabValue] = useState(() => {
@@ -145,7 +146,6 @@ const ClassDetails = () => {
   //   setTabValue(newValue); // تغییر مقدار تب
   //   localStorage.setItem("activeClassTab", newValue); // ذخیره مقدار در localStorage
   // };
-  
   useEffect(() => {
     const savedTab = localStorage.getItem("activeClassTab");
     if (savedTab !== null) {
@@ -635,6 +635,34 @@ useEffect(() => {
   const removeMediaPrefix = (fileUrl) => {
     return fileUrl.replace('/media/profile_image/', '');
   };
+
+  useEffect(() => {
+    // Handle homework dialog opening
+    if (location.state?.openHomework && homeworks.length > 0) {
+      const homework = location.state.openHomework; // Use the passed homework object directly
+      if (homework) {
+        setSelectedHomework(homework);
+        setOpenDialog(true);
+        // Clear the state by replacing it
+        navigate('.', { replace: true });
+      }
+    }
+
+    // Handle test quiz navigation
+    if (location.state?.openTestQuiz && quizzes.length > 0) {
+      const quiz = quizzes.find(q => q.id === location.state.openTestQuiz);
+      if (quiz) {
+        const quizEnd = new Date(quiz.OpenTime);
+        quizEnd.setHours(quizEnd.getHours() + (quiz.DurationHour || 0));
+        quizEnd.setMinutes(quizEnd.getMinutes() + (quiz.DurationMinute || 0));
+        
+        navigate(`/student-dashboard/student-classes/${cid}/quiz/${quiz.id}`, {
+          replace: true,
+          state: { quizEndTime: quizEnd.toISOString() }
+        });
+      }
+    }
+  }, [homeworks, quizzes]); // Depend on both arrays changing
 
   if (!classDetails) {
     return (
