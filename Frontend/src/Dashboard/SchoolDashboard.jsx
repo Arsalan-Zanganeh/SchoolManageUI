@@ -818,7 +818,7 @@ const formatDate = (dateString) => {
                 </ListItemIcon>
                 <ListItemText primary="Switch School" />
               </ListItem>
-              <ListItem button onClick={() => handleTabChange(0)}
+              <ListItem button onClick={() => handleTabChange(0)} 
                   sx={{
                     '&:hover': {
                       backgroundColor: theme.palette.primary.light, 

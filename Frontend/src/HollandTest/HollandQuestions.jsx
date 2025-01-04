@@ -380,18 +380,21 @@ const HollandQuestions = ({gotoAnalize}) => {
 
   return (
     <Box
-      sx={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#dce8fd",
-        padding: "20px",
-      }}
+    sx={{   position: { xs: "relative", sm: "absolute" },
+    left: { xs: "0px", sm: "190px" },
+    right: { xs: "10px", sm: "80px" },
+    // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+    // maxWidth: { xs: "100%", sm: "1400px" },
+    height: { xs: "auto", sm: "auto" },
+    margin: "0 auto",
+    paddingTop: "30px",
+    // backgroundColor: "#fff",
+    // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    borderRadius: "8px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center", }}
     >
       <Card
         sx={{

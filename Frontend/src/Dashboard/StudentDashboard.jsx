@@ -773,7 +773,21 @@ const StudentDashboard = () => {
         </AppBar>
 
         <Toolbar />
-        <Box sx={{ display: "flex", flexGrow: 1 }}>
+        <Box sx={{   position: { xs: "relative", sm: "absolute" },
+        left: { xs: "0px", sm: "270px" },
+        right: { xs: "10px", sm: "30px" },
+        // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+        // maxWidth: { xs: "100%", sm: "1400px" },
+        height: { xs: "auto", sm: "auto" },
+        margin: "0 auto",
+        paddingTop: "30px",
+        // backgroundColor: "#fff",
+        // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        borderRadius: "8px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center", }}>
           <Box component="main" sx={{ flexGrow: 1, mt: 4 }}>
             <Container maxWidth="lg">
               <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>

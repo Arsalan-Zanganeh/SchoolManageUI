@@ -332,79 +332,84 @@ const TeacherEssayQuizList = () => {
 
               {/* Buttons based on status */}
               <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  mt: 2,
-                }}
-              >
-                {/* اگر کوییز هنوز منتشر نشده */}
-                {!quiz.Is_Published && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<PublishIcon />}
-                    onClick={() => handleOpenPublishDialog(quiz)}
-                  >
-                    Publish
-                  </Button>
-                )}
+  sx={{
+    display: 'flex',
+    flexDirection: { xs: 'column', sm: 'row' }, // عمودی در موبایل، افقی در دسکتاپ
+    justifyContent: { xs: 'center', sm: 'space-between' }, // وسط‌چین در موبایل
+    alignItems: 'center',
+    gap: 2, // فاصله بین دکمه‌ها
+    mt: 2,
+  }}
+>
+  {/* دکمه‌های مختلف */}
+  {!quiz.Is_Published && (
+    <Button
+      variant="contained"
+      color="primary"
+      startIcon={<PublishIcon />}
+      fullWidth={window.innerWidth <= 600} // عرض کامل در موبایل
+      onClick={() => handleOpenPublishDialog(quiz)}
+    >
+      Publish
+    </Button>
+  )}
 
-                {/* اگر منتشر شده و زمانش آینده است (Scheduled) */}
-                {quiz.Is_Published && isScheduled && (
-                  <Button
-                    variant="contained"
-                    disabled
-                    sx={{
-                      backgroundColor: 'gray',
-                      color: 'white',
-                      cursor: 'not-allowed',
-                    }}
-                  >
-                    Scheduled
-                  </Button>
-                )}
+  {quiz.Is_Published && isScheduled && (
+    <Button
+      variant="contained"
+      disabled
+      sx={{
+        backgroundColor: 'gray',
+        color: 'white',
+        cursor: 'not-allowed',
+        fullWidth: { xs: true, sm: false }, // عرض کامل در موبایل
+      }}
+    >
+      Scheduled
+    </Button>
+  )}
 
-                {/* اگر منتشر شده و زمانش در حال حاضر فعال است */}
-                {quiz.Is_Published && isBeforeEnd && (
-                  <Button
-                    variant="contained"
-                    disabled
-                    sx={{
-                      backgroundColor: 'gray',
-                      color: 'white',
-                      cursor: 'not-allowed',
-                    }}
-                  >
-                    Published (Active)
-                  </Button>
-                )}
+  {quiz.Is_Published && isBeforeEnd && (
+    <Button
+      variant="contained"
+      disabled
+      sx={{
+        backgroundColor: 'gray',
+        color: 'white',
+        cursor: 'not-allowed',
+        fullWidth: { xs: true, sm: false }, // عرض کامل در موبایل
+      }}
+    >
+      Published (Active)
+    </Button>
+  )}
 
-                {/* اگر منتشر شده و زمانش تمام شده است */}
-                {quiz.Is_Published && isFinished && (
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={() =>
-                      navigate(`/teacher-dashboard/teacher-classes/${tcid}/essay-quizzes/${quiz.id}/results`)
-                    }
-                    
-                  >
-                    View Results
-                  </Button>
-                )}
+  {quiz.Is_Published && isFinished && (
+    <Button
+      variant="contained"
+      color="success"
+      fullWidth={window.innerWidth <= 600} // عرض کامل در موبایل
+      onClick={() =>
+        navigate(
+          `/teacher-dashboard/teacher-classes/${tcid}/essay-quizzes/${quiz.id}/results`
+        )
+      }
+    >
+      View Results
+    </Button>
+  )}
 
-                {/* Edit Button */}
-                <IconButton
-                  color="secondary"
-                  onClick={() =>
-                    navigate(`/teacher-dashboard/teacher-classes/${tcid}/essay-quizzes/${quiz.id}`)
-                  }
-                >
-                  <EditIcon />
-                </IconButton>
-              </Box>
+  {/* دکمه ویرایش */}
+  <IconButton
+    color="secondary"
+    onClick={() =>
+      navigate(`/teacher-dashboard/teacher-classes/${tcid}/essay-quizzes/${quiz.id}`)
+    }
+  >
+    <EditIcon />
+  </IconButton>
+</Box>
+
             </Paper>
           );
         })}

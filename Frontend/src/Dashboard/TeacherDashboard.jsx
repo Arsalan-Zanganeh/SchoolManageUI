@@ -297,13 +297,13 @@ const TeacherDashboard = () => {
       </Grid>
 
       {/* ستون سوم */}
-      <Grid item sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      {/* <Grid item sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <IconButton edge="end" color="inherit" aria-label="notifications">
           <Badge badgeContent={nofunseen} color="error">
             <NotificationsIcon />
           </Badge>
         </IconButton>
-      </Grid>
+      </Grid> */}
     </Grid>
   </Toolbar>
 </AppBar>
@@ -313,7 +313,21 @@ const TeacherDashboard = () => {
 
 
         <Toolbar />
-        <Box sx={{ display: 'flex', flexGrow: 1 }}>
+        <Box sx={{   position: { xs: "relative", sm: "absolute" },
+        left: { xs: "0px", sm: "190px" },
+        right: { xs: "10px", sm: "80px" },
+        // width: { xs: "calc(100% - 20px)", sm: "calc(100% - 40px)" },
+        // maxWidth: { xs: "100%", sm: "1400px" },
+        height: { xs: "auto", sm: "auto" },
+        margin: "0 auto",
+        paddingTop: "30px",
+        // backgroundColor: "#fff",
+        // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        borderRadius: "8px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center", }}>
           <Box component="main" sx={{ flexGrow: 1, mt : 4 }}>
             <Container maxWidth="lg">
               <TabPanel value={tabvalue} index={0}>

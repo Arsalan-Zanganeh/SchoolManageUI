@@ -1404,45 +1404,51 @@ const TeacherClassDetail = () => {
                   }}
                 >
                   <Stack spacing={2}>
-                    {publishedHomeworks.map((homework) => (
-                      <Card key={homework.Homework_ID} variant="outlined">
-                        <CardContent>
-                          <Box
-                            display="flex"
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
-                            <Box>
-                              <Typography variant="body1">
-                                {homework.Title}
-                              </Typography>
-                              <Typography variant="body2" color="textSecondary">
-                                Due on {homework.DeadLine}
-                              </Typography>
-                            </Box>
-                            <Box sx={{display:'flex', flexDirection:'row', gap:'15px'}}>
-                              <Button 
-                                variant="contained" 
-                                color="primary" 
-                                size="small"
-                                onClick={() => navigate(`/teacher-dashboard/teacher-classes/${tcid}/submitted-assignments/${homework.id}`)}
-                              >
-                                View submitted assignments
-                              </Button>
-                              <IconButton
-                                color="primary"
-                                onClick={() =>
-                                  handleDeleteAssignment(homework.id)
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Box>
-                          </Box>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </Stack>
+  {publishedHomeworks.map((homework) => (
+    <Card key={homework.Homework_ID} variant="outlined">
+      <CardContent>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          flexDirection={{ xs: 'column', sm: 'row' }} // تغییر جهت در حالت موبایل
+          gap={{ xs: 2, sm: 0 }} // فاصله بین آیتم‌ها در حالت موبایل
+        >
+          <Box>
+            <Typography variant="body1">
+              {homework.Title}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Due on {homework.DeadLine}
+            </Typography>
+          </Box>
+          <Box
+            display="flex"
+            flexDirection={{ xs: 'column', sm: 'row' }} // عمودی در موبایل، افقی در دسکتاپ
+            gap="8px" // فاصله بین دکمه‌ها
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => navigate(`/teacher-dashboard/teacher-classes/${tcid}/submitted-assignments/${homework.id}`)}
+              fullWidth={window.innerWidth <= 600} // پر کردن عرض در موبایل
+            >
+              View submitted assignments
+            </Button>
+            <IconButton
+              color="primary"
+              onClick={() => handleDeleteAssignment(homework.id)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  ))}
+</Stack>
+
                 </Box>
                 
               )}
