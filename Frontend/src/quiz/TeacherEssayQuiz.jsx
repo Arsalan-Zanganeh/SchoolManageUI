@@ -121,7 +121,7 @@ const TeacherEssayQuizList = () => {
       if (resp.ok) {
         const newQuiz = await resp.json();
         setEssayQuizzes((prev) => [...prev, newQuiz]);
-        setMessage('Essay quiz created successfully');
+        // setMessage('Essay quiz created successfully');
         handleCloseCreateDialog();
       } else {
         const errData = await resp.json();
@@ -197,7 +197,7 @@ const TeacherEssayQuizList = () => {
               : quiz
           )
         );
-        setMessage('Quiz published successfully');
+        // setMessage('Quiz published successfully');
         handleClosePublishDialog();
       } else {
         const errData = await resp.json();

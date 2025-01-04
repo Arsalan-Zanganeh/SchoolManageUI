@@ -394,7 +394,7 @@ const TeacherClassDetail = () => {
       if (response.ok) {
         const data = await response.json();
         setFiles((prevFiles) => [...prevFiles, data]);
-        setMessage('File uploaded successfully.');
+        // setMessage('File uploaded successfully.');
         setOpenFileDialog(false);
       } else {
         const errorData = await response.json();
@@ -434,7 +434,7 @@ const TeacherClassDetail = () => {
       if (response.ok) {
         const data = await response.json();
         setVideos((prevVideos) => [...prevVideos, data]);
-        setMessage('Video uploaded successfully.');
+        // setMessage('Video uploaded successfully.');
         setOpenVideoDialog(false);
       } else {
         const errorData = await response.json();
@@ -466,7 +466,7 @@ const TeacherClassDetail = () => {
 
       if (response.ok) {
         setFiles((prevFiles) => prevFiles.filter(file => file.id !== fileId));
-        setMessage('File deleted successfully.');
+        // setMessage('File deleted successfully.');
       } else {
         const errorData = await response.json();
         setMessage(`Failed to delete file: ${errorData.error}`);
@@ -495,7 +495,7 @@ const TeacherClassDetail = () => {
 
       if (response.ok) {
         setVideos((prevVideos) => prevVideos.filter(video => video.id !== videoId));
-        setMessage('Video deleted successfully.');
+        // setMessage('Video deleted successfully.');
       } else {
         const errorData = await response.json();
         setMessage(`Failed to delete video: ${errorData.error}`);
@@ -733,7 +733,7 @@ const TeacherClassDetail = () => {
         setAssignments((prev) => [...prev, data]);
         setOpenDialog(false);
         setNewAssignment({ Title: "", Description: "", DeadLine: "" });
-        setMessage("Homework added successfully");
+        // setMessage("Homework added successfully");
       } else {
         setMessage("Failed to add homework");
       }
@@ -778,9 +778,9 @@ const TeacherClassDetail = () => {
           ...prev,
           { ...homeworkToPublish, Is_Published: true },
         ]);
-        setMessage(
-          `Homework "${homeworkToPublish.Title}" published successfully`
-        );
+        // setMessage(
+        //   `Homework "${homeworkToPublish.Title}" published successfully`
+        // );
         setTimeout(() => {
           setMessage("");
         }, 3000);
@@ -842,7 +842,7 @@ const TeacherClassDetail = () => {
         setQuizzes((prevQuizzes) => [...prevQuizzes, newQuiz]);
         setQuizTitle("");
         handleQuizDialogClose();
-        setMessage("Quiz created successfully");
+        // setMessage("Quiz created successfully");
       } else {
         const errorData = await response.json();
         setMessage(`Failed to create quiz: ${errorData.error}`);
@@ -888,10 +888,9 @@ const TeacherClassDetail = () => {
         setPublishedHomeworks((prev) => 
           prev.filter((homework) => homework.id !== HomeworkID)
         )
-        set
-        setMessage(
-          `Homework "${homeworkToDelete.Title}" deleted successfully!`
-        );
+        // setMessage(
+        //   `Homework "${homeworkToDelete.Title}" deleted successfully!`
+        // );
         setTimeout(() => {
           setMessage("");
         }, 3000);
