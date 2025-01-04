@@ -29,6 +29,9 @@ body.classes-list {
   max-width: 200px;
   background-color: #ffffff;
   transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensures space between content and button */
 }
 
 .class-box:hover {

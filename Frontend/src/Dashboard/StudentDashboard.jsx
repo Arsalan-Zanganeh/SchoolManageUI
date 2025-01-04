@@ -587,37 +587,93 @@ const StudentDashboard = () => {
     ];
     return monthNames[date.getMonth()];
   }
+  const handleClassLoginWithoutNavigate = async (id) => {
+    try {
+      const url = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-login-class/`;
+      console.log("Login request URL:", url);
   
-  const handleDescriptiveQuizClick = (cid, quiz) => {
-    const openTime = new Date(quiz.OpenTime);
-    const quizEnd = new Date(openTime);
-    quizEnd.setHours(quizEnd.getHours() + (quiz.DurationHour || 0));
-    quizEnd.setMinutes(quizEnd.getMinutes() + (quiz.DurationMinute || 0));
-
-    navigate(`/student-dashboard/student-classes/${cid}/descriptive-quiz/${quiz.id}`, {
-      state: { quizEndTime: quizEnd.toISOString(), cid }
-    });
-  };
-  
-  const handleTestQuizClick = (cid, quiz) => {
-    const openTime = new Date(quiz.OpenTime);
-    const quizEnd = new Date(openTime);
-    quizEnd.setHours(quizEnd.getHours() + quiz.DurationHour);
-    quizEnd.setMinutes(quizEnd.getMinutes() + quiz.DurationMinute);
-
-    navigate(`/student-dashboard/student-classes/${cid}/quiz/${quiz.id}`, {
-      state: { quizEndTime: quizEnd.toISOString(), cid }
-    });
-  };
-
-  const handleHomeworkClick = (cid, homeworkId) => {
-    // Find the homework details from the homeworks array
-    const homework = homeworks.find(hw => hw.id === homeworkId);
-    if (homework) {
-      // Navigate to the class details page with the homework dialog open
-      navigate(`/student-dashboard/student-classes/${cid}`, {
-        state: { openHomework: homework }
+      const loginResponse = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+        credentials: "include", 
       });
+  
+      if (loginResponse.ok) {
+        const token = await loginResponse.json();
+        console.log("Login successful:", token); // لاگ موفقیت
+        return token;
+      } else {
+        const errorDetails = await loginResponse.text();
+        console.error("Server returned an error:", loginResponse.status, errorDetails);
+        Swal.fire({
+          title: "Error",
+          text: `Failed to login to the class. Server returned: ${errorDetails}`,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        throw new Error(`Server error: ${errorDetails}`);
+      }
+    } catch (error) {
+      console.error("Network or unexpected error:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Network error or server is unavailable. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      throw error; 
+    }
+  };
+  
+  
+  
+  const handleDescriptiveQuizClick = async (cid, quiz) => {
+    try {
+      await handleClassLoginWithoutNavigate(cid);
+      
+      const openTime = new Date(quiz.OpenTime);
+      const quizEnd = new Date(openTime);
+      quizEnd.setHours(quizEnd.getHours() + (quiz.DurationHour || 0));
+      quizEnd.setMinutes(quizEnd.getMinutes() + (quiz.DurationMinute || 0));
+  
+      navigate(`/student-dashboard/student-classes/${cid}/descriptive-quiz/${quiz.id}`, {
+        state: { quizEndTime: quizEnd.toISOString(), cid },
+      });
+    } catch (error) {
+      console.error("Error logging into class:", error);
+    }
+  };
+  
+  const handleTestQuizClick = async (cid, quiz) => {
+    try {
+      await handleClassLoginWithoutNavigate(cid);
+  
+      const openTime = new Date(quiz.OpenTime);
+      const quizEnd = new Date(openTime);
+      quizEnd.setHours(quizEnd.getHours() + quiz.DurationHour);
+      quizEnd.setMinutes(quizEnd.getMinutes() + quiz.DurationMinute);
+  
+      navigate(`/student-dashboard/student-classes/${cid}/quiz/${quiz.id}`, {
+        state: { quizEndTime: quizEnd.toISOString(), cid },
+      });
+    } catch (error) {
+      console.error("Error logging into class:", error);
+    }
+  };
+
+  const handleHomeworkClick = async (cid, homeworkId) => {
+    try {
+      await handleClassLoginWithoutNavigate(cid);
+  
+      const homework = homeworks.find((hw) => hw.id === homeworkId);
+      if (homework) {
+        navigate(`/student-dashboard/student-classes/${cid}`, {
+          state: { openHomework: homework },
+        });
+      }
+    } catch (error) {
+      console.error("Error logging into class:", error);
     }
   };
 

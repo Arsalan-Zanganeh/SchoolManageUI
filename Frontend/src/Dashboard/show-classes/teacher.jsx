@@ -139,6 +139,72 @@ const TeacherClassList = ({goBack}) => {
       });
     }
   };
+  const handleClassLoginWithoutNavigate = async (id) => {
+    try {
+      const loginResponse = await fetch(
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/teacher-login-class/`, 
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+          credentials: "include",
+        }
+      );
+  
+      if (loginResponse.ok) {
+        const token = await loginResponse.json();
+        loginClass(token); // لاگین به کلاس بدون هدایت
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Failed to login to the class. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Network error or server is unavailable. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+  
+
+  const fetchGoogleMeetLink = async (classId) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/meet/teacher-enter/`, {
+        headers: {
+          'Authorization': `Bearer ${teacherToken}`,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        const meetLink = data.message;
+        window.open(meetLink, '_blank'); 
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Failed to fetch Google Meet link. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Network error or server is unavailable. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+  
 
   return (
     <div className="student-classes">
@@ -153,6 +219,33 @@ const TeacherClassList = ({goBack}) => {
             <h2>{cls.Topic}</h2>
             <p>{cls.Session1Day} {cls.Session1Time}</p>
             <p>{cls.Session2Day} {cls.Session2Time}</p>
+            <button 
+  className="enter-class-btn" 
+  onClick={async (e) => {
+    e.stopPropagation(); // جلوگیری از اجرای onClick باکس
+    try {
+      // استفاده از نسخه بدون هدایت
+      await handleClassLoginWithoutNavigate(cls.id);
+      // باز کردن لینک گوگل میت
+      await fetchGoogleMeetLink(cls.id);
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Failed to login or fetch Google Meet link. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  }}
+>
+  Join Class
+</button>
+
+
+
+
+
+
           </div>
         ))}
       </div>
