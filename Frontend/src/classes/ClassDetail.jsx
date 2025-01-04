@@ -142,6 +142,12 @@ const ClassDetails = () => {
   const [educationalVideos, setEducationalVideos] = useState([]);
   const [educationalFiles, setEducationalFiles] = useState([]);
   const [descriptiveQuizzes, setDescriptiveQuizzes] = useState([]);
+const [contentTabValue, setContentTabValue] = useState(0);
+
+const handleContentTabChange = (event, newValue) => {
+  setContentTabValue(newValue);
+};
+
   // const handleTabChange = (event, newValue) => {
   //   setTabValue(newValue); // تغییر مقدار تب
   //   localStorage.setItem("activeClassTab", newValue); // ذخیره مقدار در localStorage
@@ -1033,152 +1039,200 @@ onClick={() => {
           }} 
         />
       </TabPanel>
-{tabValue === 3 && (
-  <Box sx={{ padding: 2 }}>
-    {/* Container for Files and Videos */}
-    <Grid container spacing={2}>
-      {/* Left Side: Educational Files */}
-      <Grid item xs={12} md={6}>
-        <Typography variant="h6" fontWeight="bold" color="primary" sx={{ mb: 2 }}>
-          Educational Files
-        </Typography>
-        <Box sx={{
-          borderRight: '2px solid #ccc', // Add a border between the two sides
-          height: '100%', // Make sure the border stretches to the full height
-          paddingRight: 2, // Add some padding on the right of this section
-        }}>
-          <Grid container spacing={2}>
-            {educationalFiles.length > 0 ? (
-              educationalFiles.map((file) => {
-                // Debugging: Log each file to ensure we have the correct data
-                console.log('File Data:', file); // Check the data structure
+      {tabValue === 3 && (
+  <Box
+    sx={{
+      p: 2,
+      backgroundColor: 'rgba(255,255,255,0.8)',
+      borderRadius: 2,
+      boxShadow: 1,
+    }}
+  >
+    <Typography
+      variant="h5"
+      color="primary"
+      sx={{ marginBottom: 2, fontWeight: 'bold' }}
+    >
+      Educational Content
+    </Typography>
 
-                return (
-                  <Grid item xs={6} sm={4} md={3} key={file.id}>
-                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-                        {/* File Icon */}
-                        <InsertDriveFile sx={{ fontSize: 40, mb: 1 }} />
-                        
-                        {/* Display the file name under the icon */}
-                        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-                          {file.Title} {/* Fixed here to match the correct field from API */}
-                        </Typography>
-                        
-                        {/* Button to download the file */}
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          size="small" // Make button smaller
-                          onClick={() => {
-                            if (file.file) {
-                              const fileUrl = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${file.file}`;
-                              window.open(fileUrl, '_blank');
-                            } else {
-                              console.error('File path not available');
-                            }
-                          }}
-                        >
-                          Download File
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                );
-              })
-            ) : (
-              <Typography>No educational files available.</Typography>
-            )}
-          </Grid>
-        </Box>
+    {/* Tabs برای مدیریت فایل و ویدیو */}
+    <Tabs
+      value={contentTabValue}
+      onChange={handleContentTabChange}
+      variant="fullWidth"
+      textColor="primary"
+      indicatorColor="primary"
+      sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}
+    >
+      <Tab label="Educational Files" />
+      <Tab label="Educational Videos" />
+    </Tabs>
+
+    {/* نمایش فایل ها */}
+    <TabPanel value={contentTabValue} index={0}>
+      <Typography variant="h6" fontWeight="bold" color="primary" sx={{ mb: 2 }}>
+        Educational Files
+      </Typography>
+      <Grid container spacing={2}>
+        {educationalFiles.length > 0 ? (
+          educationalFiles.map((file) => (
+            <Grid item xs={6} sm={4} md={3} key={file.id}>
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <CardContent
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    height: '100%',
+                  }}
+                >
+                  {/* آیکن فایل */}
+                  <InsertDriveFile sx={{ fontSize: 40, mb: 1 }} />
+
+                  {/* نام فایل */}
+                  <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                    {file.Title}
+                  </Typography>
+
+                  {/* دکمه دانلود فایل */}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => {
+                      if (file.file) {
+                        const fileUrl = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${file.file}`;
+                        window.open(fileUrl, '_blank');
+                      } else {
+                        console.error('File path not available');
+                      }
+                    }}
+                  >
+                    Download File
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        ) : (
+          <Typography>No educational files available.</Typography>
+        )}
+      </Grid>
+    </TabPanel>
+
+    {/* نمایش ویدیوها */}
+    <TabPanel value={contentTabValue} index={1}>
+      <Typography variant="h6" fontWeight="bold" color="primary" sx={{ mb: 2 }}>
+        Educational Videos
+      </Typography>
+      <Grid container spacing={2}>
+        {educationalVideos.length > 0 ? (
+          educationalVideos.map((video) => (
+            <Grid item xs={6} sm={4} md={3} key={video.id}>
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <CardContent
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    height: '100%',
+                  }}
+                >
+                  {/* iframe ویدیو */}
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: 0,
+                      paddingTop: '100%',
+                      position: 'relative',
+                    }}
+                  >
+                    <iframe
+                      src={video.src}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={video.Title}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: '8px',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  </Box>
+
+                  {/* عنوان ویدیو */}
+                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                    {video.Title}
+                  </Typography>
+
+                  {/* دکمه نمایش تمام صفحه */}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => {
+                      setSelectedVideoUrl(video.src);
+                      setOpenVideoModal(true);
+                    }}
+                    startIcon={<PlayArrow />}
+                  >
+                    Watch Video
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        ) : (
+          <Typography>No educational videos available.</Typography>
+        )}
       </Grid>
 
-      {/* Right Side: Educational Videos */}
-      <Grid item xs={12} md={6}>
-        <Typography variant="h6" fontWeight="bold" color="primary" sx={{ mb: 2 }}>
-          Educational Videos
-        </Typography>
-        <Box sx={{
-          height: '100%',
-          paddingLeft: 2, // Add some padding on the left of this section
-        }}>
-          <Grid container spacing={2}>
-            {educationalVideos.length > 0 ? (
-              educationalVideos.map((video) => (
-                <Grid item xs={6} sm={4} md={3} key={video.id}>
-                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-                      {/* Video */}
-                      <Box sx={{ 
-                        width: '100%', 
-                        height: 0, 
-                        paddingTop: '100%', // Aspect ratio 1:1 for square
-                        position: 'relative' 
-                      }}>
-                        <iframe
-                          src={video.src}
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          title={video.Title}
-                          style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            borderRadius: '8px',
-                            objectFit: 'cover', // Ensures the video covers the area uniformly
-                          }}
-                        />
-                      </Box>
-
-                      <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                        {video.Title}
-                      </Typography>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small" // Make button smaller
-                        onClick={() => {
-                          setSelectedVideoUrl(video.src);
-                          setOpenVideoModal(true);
-                        }}
-                        startIcon={<PlayArrow />}
-                      >
-                        Watch Video
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))
-            ) : (
-              <Typography>No educational videos available.</Typography>
-            )}
-          </Grid>
-        </Box>
-      </Grid>
-    </Grid>
-
-    {/* Full-Screen Video Modal */}
-    <Dialog open={openVideoModal} onClose={() => setOpenVideoModal(false)} fullWidth maxWidth="lg">
-      <DialogTitle>Watch Full-Screen Video</DialogTitle>
-      <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
-        <iframe
-          width="100%"
-          height="500"
-          src={selectedVideoUrl} // Use the selected video URL
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setOpenVideoModal(false)}>Close</Button>
-      </DialogActions>
-    </Dialog>
+      {/* دیالوگ تمام صفحه برای ویدیو */}
+      <Dialog
+        open={openVideoModal}
+        onClose={() => setOpenVideoModal(false)}
+        fullWidth
+        maxWidth="lg"
+      >
+        <DialogTitle>Watch Full-Screen Video</DialogTitle>
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+          <iframe
+            width="100%"
+            height="500"
+            src={selectedVideoUrl}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenVideoModal(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </TabPanel>
   </Box>
 )}
+
 {tabValue === 5 && ( // مقدار جدید تب
   <Box
     sx={{
