@@ -52,7 +52,7 @@
   color: #eee; }
 
 .breadcrumb-bg-about {
-  background: url(assets/images/banner1.jpg) no-repeat center;
+  background: url(../../public/assets/images/banner1.jpg) no-repeat center;
   background-size: cover;
   -webkit-background-size: cover;
   -o-background-size: cover;
@@ -75,7 +75,7 @@
   opacity: .8; }
 
   .breadcrumb-bg-teacher {
-    background: url(assets/images/banner2.jpg) no-repeat center;
+    background: url(../../public/assets/images/banner2.jpg) no-repeat center;
     background-size: cover;
     -webkit-background-size: cover;
     -o-background-size: cover;
@@ -98,7 +98,7 @@
     opacity: .8; }
 
 .breadcrumb-bg-principal {
-    background: url(assets/images/banner3.jpg) no-repeat center;
+    background: url(../../public/assets/images/banner3.jpg) no-repeat center;
     background-size: cover;
     -webkit-background-size: cover;
     -o-background-size: cover;
@@ -121,7 +121,7 @@
     opacity: .8; }
 
 .breadcrumb-bg-parent {
-    background: url(assets/images/banner4.jpg) no-repeat center;
+    background: url(../../public/assets/images/banner4.jpg) no-repeat center;
     background-size: cover;
     -webkit-background-size: cover;
     -o-background-size: cover;

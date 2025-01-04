@@ -24,7 +24,7 @@ const ParentWallet = ({ goBack }) => {
   // Fetch wallet balance
   const fetchBalance = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/student/parent-view-wallet/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-view-wallet/`, {
         credentials: 'include',
       });
       
@@ -62,7 +62,7 @@ const ParentWallet = ({ goBack }) => {
 
     setIsCharging(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/student/parent-chargewallet/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-chargewallet/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -27,7 +27,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import BookIcon from '@mui/icons-material/Book';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import AppWrapper from '../chat/chatpage2';
+import AppWrapper from '../Chat/chatpage2';
 
 import AttendanceStatus from "../Attendence-stu";
 

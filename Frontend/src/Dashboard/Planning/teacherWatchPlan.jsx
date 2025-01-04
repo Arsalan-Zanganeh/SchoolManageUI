@@ -82,7 +82,7 @@ const TeacherViewPlanner = ({ onBack, studentid }) => {
 
     const fetchPlans = async (startDate, endDate) => {
         try {
-            const response = await fetch(`${apiBaseUrl}/teacher-watch-student-plans/`, {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-watch-student-plans/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ const TeacherViewPlanner = ({ onBack, studentid }) => {
 
     const fetchComments = async (planId) => {
         try {
-            const response = await fetch(`${apiBaseUrl}/teacher-watch-feedbacks/`, {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-watch-feedbacks/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -126,7 +126,7 @@ const TeacherViewPlanner = ({ onBack, studentid }) => {
 
     const addPlan = async (plan) => {
         try {
-            const response = await fetch(`${apiBaseUrl}/teacher-add-student-plan/`, {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-add-student-plan/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -148,7 +148,7 @@ const TeacherViewPlanner = ({ onBack, studentid }) => {
 
     const deletePlan = async () => {
         try {
-            await fetch(`${apiBaseUrl}/teacher-delete-plan/`, {
+            await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-delete-plan/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -182,7 +182,7 @@ const TeacherViewPlanner = ({ onBack, studentid }) => {
 
     const handleAddComment = async () => {
         try {
-            const response = await fetch(`${apiBaseUrl}/teacher-add-feed-back/`, {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-add-feed-back/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -203,7 +203,7 @@ const TeacherViewPlanner = ({ onBack, studentid }) => {
 
     const handleDeleteComment = async (commentId) => {
         try {
-            const response = await fetch(`${apiBaseUrl}/teacher-delete-feedback/`, {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-delete-feedback/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

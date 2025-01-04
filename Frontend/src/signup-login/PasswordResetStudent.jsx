@@ -29,7 +29,7 @@ const PasswordResetStudent = () => {
         setMessage('');
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/student-reset-complete/', {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-reset-complete/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

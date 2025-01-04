@@ -83,7 +83,7 @@ const Planner = ({ onBack }) => {
     
     const fetchPlans = async (startDate, endDate) => {
         try {
-            const response = await fetch(`${apiBaseUrl}/student-watch-plans/`, {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/student-watch-plans/`, {
                 headers: {
                   'Content-Type': 'application/json',
                 },
@@ -107,7 +107,7 @@ const Planner = ({ onBack }) => {
 
     const fetchComments = async (planId) => {
             try {
-                const response = await fetch(`${apiBaseUrl}/teacher-watch-feedbacks/`, {
+                const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/teacher-watch-feedbacks/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -127,7 +127,7 @@ const Planner = ({ onBack }) => {
 
     const addPlan = async (plan) => {
         try {
-            const response = await fetch(`${apiBaseUrl}/student-add-plan/`, {
+            const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/student-add-plan/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -149,7 +149,7 @@ const Planner = ({ onBack }) => {
 
     const deletePlan = async () => {
         try {
-            await fetch(`${apiBaseUrl}/student-delete-plan/`, {
+            await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/discipline/student-delete-plan/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
