@@ -167,6 +167,7 @@ const StudentDashboard = () => {
   const { student, logoutStudent } = useStudent();
   const [name, setName] = useState(student ? student.first_name : "");
   const [nofunseen, setcount] = useState(0);
+  const [nofrecent, setnofrecent] = useState(0);
   const [lastName, setLastName] = useState(student ? student.last_name : "");
   const [profileImage, setProfileImage] = useState(null);
   const isDesktop = useMediaQuery("(min-width:600px)");
@@ -443,6 +444,12 @@ const StudentDashboard = () => {
       if (response.ok) {
         const data = await response.json();
         setHomeworks(data);
+        if(data.length > 0)
+        {
+          setShowHomeworks(true);
+          setnofrecent(nofrecent + data.length)
+        }
+          
       } else {
         console.error('Failed to fetch recent homework');
       }
@@ -463,6 +470,11 @@ const StudentDashboard = () => {
       if (response.ok) {
         const data = await response.json();
         setQuizTests(data);
+        if(data.length > 0)
+        {
+          setShowTestQuizzes(true);
+          setnofrecent(nofrecent + data.length)
+        }
       } else {
         console.error('Failed to fetch recent quiz tests');
       }
@@ -483,6 +495,11 @@ const StudentDashboard = () => {
       if (response.ok) {
         const data = await response.json();
         setQuizExplans(data);
+        if(data.length > 0)
+        {
+          setShowDescriptiveQuizzes(true);
+          setnofrecent(nofrecent + data.length)
+        }
       } else {
         console.error('Failed to fetch recent quiz tests');
       }
@@ -698,11 +715,13 @@ const StudentDashboard = () => {
           <Toolbar>
             <Grid container alignItems="center" justifyContent="space-between">
               {/* دکمه همبرگری در حالت موبایل */}
+              
               {!isDesktop && (
                 <Grid
                   item
                   sx={{ display: "flex", justifyContent: "flex-start" }}
                 >
+                  <Badge badgeContent={nofrecent} overlap="circular" variant="dot" color="error">
                   <IconButton
                     edge="start"
                     color="inherit"
@@ -715,7 +734,9 @@ const StudentDashboard = () => {
                   >
                     <Menu />
                   </IconButton>
+                  </Badge>
                 </Grid>
+                
               )}
 
               {/* آواتار و نام */}
@@ -1137,7 +1158,7 @@ const StudentDashboard = () => {
             </List>
             <Box>
               <Typography sx={{ color: 'white', fontWeight: '600', textAlign: 'left', paddingLeft: '10px' }} variant='h5'>
-                Recent events:
+                Upcoming Events:
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Box onClick={toggleDescriptiveQuizzes} sx={{ display: 'flex', flexDirection: 'row', cursor: 'pointer', alignItems: 'center', margin: '2px' }}>
