@@ -20,6 +20,10 @@ import {
   ListItemIcon,
   Button,
   Badge,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import {
   ExitToApp,
@@ -53,23 +57,32 @@ function TabPanel(props) {
 }
 
 const styles = {
-  list: {
-    width: '95%',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    padding: '8px',
-  },
   listItem: {
-    borderBottom: '1px solid #ddd',
-    padding: '16px',
-    cursor: 'pointer',
-    '&:hover': {
-      backgroundColor: '#f1f1f1',
-    },
+    padding: "16px",
+    cursor: "pointer",
+    borderBottom: "1px solid #ddd",
   },
-  listItemText: {
-    fontWeight: 500,
+  listItemUnread: {
+    backgroundColor: "#e3f2fd", // رنگ زمینه آبی کم‌رنگ برای پیام‌های نخوانده
+    borderLeft: "4px solid #1976d2", // هایلایت آبی برای پیام‌های نخوانده
+    fontWeight: "bold", // برجسته‌تر کردن متن پیام نخوانده
+  },
+  listItemRead: {
+    backgroundColor: "#ffffff", // زمینه سفید برای پیام‌های خوانده‌شده
+    color: "#757575", // متن خاکستری کم‌رنگ برای پیام‌های خوانده‌شده
+    fontWeight: "normal",
+  },
+  previewTextUnread: {
+    color: "#000", // متن مشکی برای پیام نخوانده
+    fontWeight: "bold",
+  },
+  previewTextRead: {
+    color: "#757575", // متن خاکستری برای پیام خوانده‌شده
+    fontWeight: "normal",
+  },
+  dateText: {
+    color: "#757575",
+    fontSize: "0.9rem",
   },
 };
 
@@ -109,6 +122,87 @@ const ParentDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [nofunseen, setcount] = useState(0);
   const { logoutParent } = useParent();
+  const [unreadNotifications, setUnreadNotifications] = useState([]);
+const [selectedNotification, setSelectedNotification] = useState(null);
+// const [nofunseen, setCount] = useState(0); // تعداد پیام‌های دیده‌نشده
+const [open, setOpen] = useState(false); 
+
+const fetchUnseenCount = async () => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/notification/unseen_notifications/`, {
+      credentials: 'include',
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setcount(data.count); 
+    }
+  } catch (error) {
+    console.error("Error fetching unseen notifications count:", error);
+  }
+};
+
+const fetchNotifications = async () => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/notification/notifications/`, {
+      credentials: 'include',
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setUnreadNotifications(data);
+    }
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+  }
+};
+
+const markAsSeen = async (id) => {
+  try {
+    await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/notification/student-single-notif-seen/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: 'include',
+      body: JSON.stringify({ id }),
+    });
+  } catch (error) {
+    console.error("Error marking notification as seen:", error);
+  }
+};
+
+useEffect(() => {
+  fetchUnseenCount(); // بارگذاری تعداد پیام‌های دیده‌نشده
+}, []);
+const handleNotificationClick = (notification) => {
+  setSelectedNotification(notification);
+  if (!notification.seen) {
+    markAsSeen(notification.id);
+    notification.seen = true;
+    setcount((prevCount) => prevCount - 1);
+  }
+};
+
+const handleBackClick = () => {
+  setSelectedNotification(null);
+};
+
+const handleClickOpen = () => {
+  fetchNotifications(); // بارگذاری لیست پیام‌ها
+  setOpen(true); // باز کردن دیالوگ
+};
+
+const handleClose = () => {
+  setOpen(false); // بستن دیالوگ
+};
+
+const createPreview = (message) => {
+  const plainText = message.replace(/<[^>]+>/g, ""); // حذف تگ‌های HTML
+  return plainText.split(" ").slice(0, 10).join(" ") + "...";
+};
+
+const sortedNotifications = [...unreadNotifications].sort(
+  (a, b) => new Date(b.date) - new Date(a.date)
+);
 
   // Load saved tab value from localStorage
   useEffect(() => {
@@ -169,10 +263,11 @@ const ParentDashboard = () => {
     zIndex: theme.zIndex.drawer + 1,
   }}
 >
-  <Toolbar>
-    {!isDesktop && (
-      <Grid container alignItems="center" sx={{ width: '100%' }}>
-        <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+<Toolbar>
+    <Grid container alignItems="center" justifyContent="space-between">
+      {/* منوی همبرگری در حالت موبایل */}
+      {!isDesktop && (
+        <Grid item>
           <IconButton
             edge="start"
             color="inherit"
@@ -182,18 +277,34 @@ const ParentDashboard = () => {
             <Menu />
           </IconButton>
         </Grid>
-        <Grid item xs={10} sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Typography variant="h6" noWrap>
-            Parent Dashboard
-          </Typography>
-        </Grid>
+      )}
+      {/* عنوان داشبورد */}
+      <Grid item xs>
+        <Typography
+          variant="h6"
+          noWrap
+          sx={{
+            textAlign: isDesktop ? 'left' : 'center',
+            flexGrow: 1,
+          }}
+        >
+          Parent Dashboard
+        </Typography>
       </Grid>
-    )}
-    {isDesktop && (
-      <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Parent Dashboard
-      </Typography>
-    )}
+      {/* آیکون زنگوله */}
+      <Grid item>
+      <IconButton
+  edge="end"
+  color="inherit"
+  onClick={handleClickOpen}
+>
+  <Badge badgeContent={nofunseen} color="error">
+    <NotificationsIcon />
+  </Badge>
+</IconButton>
+
+      </Grid>
+    </Grid>
   </Toolbar>
 </AppBar>
 
@@ -316,6 +427,99 @@ const ParentDashboard = () => {
           </Box>
         </Box>
       </Box>
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+  <DialogTitle style={{ textAlign: 'center', fontWeight: 'bold' }}>
+    Notifications
+  </DialogTitle>
+  <DialogContent>
+    {selectedNotification ? (
+      <Box>
+        {/* دکمه BACK در بالا و سمت چپ */}
+        <Button
+          onClick={handleBackClick}
+          style={{
+            color: '#1976d2',
+            textTransform: 'none',
+            marginBottom: '16px',
+          }}
+        >
+          Back
+        </Button>
+
+        {/* محتوای پیام */}
+        <div
+          style={{ marginBottom: '16px', fontSize: '1rem' }}
+          dangerouslySetInnerHTML={{
+            __html: selectedNotification.message,
+          }}
+        />
+
+        {/* تاریخ پیام */}
+        <Typography
+          variant="body2"
+          style={{
+            color: '#757575',
+            fontSize: '0.9rem',
+            textAlign: 'left',
+          }}
+        >
+          {new Date(selectedNotification.date).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+          })}
+        </Typography>
+      </Box>
+    ) : (
+      <List style={{ maxHeight: "400px", overflow: "auto" }}>
+  {sortedNotifications.map((notification) => (
+    <ListItem
+      key={notification.id}
+      button
+      onClick={() => handleNotificationClick(notification)}
+      style={
+        notification.seen ? styles.listItemRead : styles.listItemUnread
+      }
+    >
+      <ListItemText
+        primary={
+          <Typography
+            style={
+              notification.seen
+                ? styles.previewTextRead
+                : styles.previewTextUnread
+            }
+          >
+            {createPreview(notification.message)}
+          </Typography>
+        }
+        secondary={
+          <Typography style={styles.dateText}>
+            {new Date(notification.date).toLocaleString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            })}
+          </Typography>
+        }
+      />
+    </ListItem>
+  ))}
+</List>
+
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleClose} style={{ color: '#1976d2' }}>
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
+
     </ThemeProvider>
   );
 };
