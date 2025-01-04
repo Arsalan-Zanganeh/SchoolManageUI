@@ -1272,17 +1272,17 @@ const TeacherClassDetail = () => {
 )}
 
       <TabPanel value={tabValue} index={7}>
-                  <AppWrapper/>
+        <AppWrapper classId={tcid} />
       </TabPanel>
 
       <TabPanel value={tabValue} index={12}>
-                  <ClassList gotoplanning={gotoPlanningStudent}/>
+        <ClassList gotoplanning={gotoPlanningStudent} />
       </TabPanel>
       <TabPanel value={tabValue} index={13}>
-                  <TeacherViewPlanner onBack={() => {
-        setTabValue(12);
-        localStorage.setItem("activeTeacherTab", 12);
-      }} studentid={selectedStudentPlan}/>
+        <TeacherViewPlanner onBack={() => {
+          setTabValue(12);
+          localStorage.setItem("activeTeacherTab", 12);
+        }} studentid={selectedStudentPlan} />
       </TabPanel>
 {tabValue === 1 && (
   <Box>

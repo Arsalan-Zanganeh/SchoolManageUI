@@ -14,7 +14,7 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import Picker from 'emoji-picker-react';
 import { useTeacher } from '../context/TeacherContext';
 
-const ChatPage = () => {
+const ChatPage = ({ classId }) => {
   const { teacher } = useTeacher();
   const messagesEndRef = useRef(null);
   const [socket, setSocket] = useState(null);
@@ -22,7 +22,7 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [chatroomId, setChatroomId] = useState(1);
+  const [chatroomId, setChatroomId] = useState(classId);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

@@ -1025,10 +1025,13 @@ onClick={() => {
         )}
 
       <TabPanel value={tabValue} index={4}>
-                        <AppWrapper onBack={() => {
-  localStorage.setItem("activeClassTab", 0); // ذخیره مقدار در localStorage
-  setTabValue(0); // تنظیم مقدار جدید
-}} /> {/* ارسال تابع بک */}
+        <AppWrapper 
+          classId={cid} 
+          onBack={() => {
+            localStorage.setItem("activeClassTab", 0);
+            setTabValue(0);
+          }} 
+        />
       </TabPanel>
 {tabValue === 3 && (
   <Box sx={{ padding: 2 }}>
