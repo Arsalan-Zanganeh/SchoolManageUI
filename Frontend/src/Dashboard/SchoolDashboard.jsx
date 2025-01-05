@@ -21,6 +21,9 @@ import 'react-quill/dist/quill.snow.css';
 import { usePrincipal } from '../context/PrincipalContext';
 import './SchoolDashboard.css';
 import Discipline from "../discipline/Discipline"
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import CloseIcon from '@mui/icons-material/Close';
+import { DataGrid } from '@mui/x-data-grid';
 
 
 function TabPanel(props) {
@@ -536,6 +539,137 @@ const formatDate = (dateString) => {
   const isFormValid = () => {
     return eventFlag !== '' && description !== '' && startDatetime !== '' && endDatetime !== '';
   };
+
+  // Add these state variables
+const [showFeeDialog, setShowFeeDialog] = useState(false);
+const [fees, setFees] = useState([]);
+const [feePayments, setFeePayments] = useState([]);
+const [newFee, setNewFee] = useState({
+  Year: new Date().getFullYear(),
+  Month: new Date().getMonth() + 1,
+  Amount: '',
+});
+
+// Add these handler functions
+const handleFeeDialogOpen = () => {
+  fetchFees();
+  fetchFeePayments();
+  setShowFeeDialog(true);
+};
+
+const handleFeeDialogClose = () => {
+  setShowFeeDialog(false);
+  setNewFee({
+    Year: new Date().getFullYear(),
+    Month: new Date().getMonth() + 1,
+    Amount: '',
+  });
+};
+
+const handleAddChangeFee = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/principal-add-change-fee/`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(newFee),
+      }
+    );
+
+    if (response.ok) {
+      Swal.fire('Success', 'Fee has been added/updated successfully', 'success');
+      fetchFees();
+      handleFeeDialogClose();
+    } else {
+      const errorData = await response.json();
+      Swal.fire('Error', errorData.message || 'Failed to add/update fee', 'error');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire('Error', 'Server error or network issue', 'error');
+  }
+};
+
+const fetchFees = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/principal-fee-list/`,
+      {
+        credentials: 'include',
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Raw fee data:', data);
+      // Transform the data to ensure it has all required fields
+      const transformedData = data.map((fee, index) => ({
+        id: fee.id || index, // Ensure each row has a unique id
+        Year: fee.Year || '',
+        Month: fee.Month || '',
+        Amount: fee.Amount || 0,
+        Is_Sent: fee.Is_Sent || false
+      }));
+      setFees(transformedData);
+    }
+  } catch (error) {
+    console.error('Error fetching fees:', error);
+  }
+};
+
+const fetchFeePayments = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/principal-fee-paid-list/`,
+      {
+        method: 'POST',
+        credentials: 'include',
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      // Transform the data to ensure it has all required fields
+      const transformedData = data.map((payment, index) => ({
+        id: payment.id || index,
+        last_name: payment.last_name || '',
+        National_ID: payment.National_ID || '',
+        Year: payment.Year || '',
+        Month: payment.Month || '',
+        Amount: payment.Amount || 0,
+        Is_Paid: payment.Is_Paid || false
+      }));
+      setFeePayments(transformedData);
+    }
+  } catch (error) {
+    console.error('Error fetching fee payments:', error);
+  }
+};
+
+const handleSendFee = async (feeId) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/principal-send-fee/`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ id: feeId }),
+      }
+    );
+    if (response.ok) {
+      
+      fetchFees();
+      fetchFeePayments();
+    } else {
+      const errorData = await response.json();
+      
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire('Error', 'Server error or network issue', 'error');
+  }
+};
   
   return (
     <ThemeProvider theme={theme}>
@@ -763,6 +897,16 @@ const formatDate = (dateString) => {
   <NavigationBox elevation={3} onClick={handleParentMessageClickOpen}>
     <NotificationAdd fontSize="large" />
     <Typography variant="subtitle1">Send Parent Notifications</Typography>
+  </NavigationBox>
+</Grid>
+<Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
+  <NavigationBox elevation={3}
+    onClick={handleFeeDialogOpen}
+  >
+    <MonetizationOnIcon sx={{ fontSize: 40, mb: 1 }} />
+    <Typography variant="h6" gutterBottom>
+      Fee & Payments
+    </Typography>
   </NavigationBox>
 </Grid>
 
@@ -1121,6 +1265,173 @@ const formatDate = (dateString) => {
 
   <DialogActions>
     <Button onClick={handleParentNotificationsClickClose} color="primary">
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
+
+<Dialog 
+  open={showFeeDialog} 
+  onClose={handleFeeDialogClose}
+  maxWidth="md"
+  fullWidth
+>
+  <DialogTitle sx={{ 
+    bgcolor: theme.palette.primary.main, 
+    color: 'white',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }}>
+    Fee & Payments Management
+    <IconButton
+      edge="end"
+      color="inherit"
+      onClick={handleFeeDialogClose}
+      aria-label="close"
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+  <DialogContent sx={{ mt: 2 }}>
+    <Grid container spacing={3}>
+      {/* Fee Management Form */}
+      <Grid item xs={12} md={6}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Add/Change Fee
+          </Typography>
+          <TextField
+            fullWidth
+            label="Year"
+            type="number"
+            value={newFee.Year}
+            onChange={(e) => setNewFee({ ...newFee, Year: e.target.value })}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="Month"
+            type="number"
+            value={newFee.Month}
+            onChange={(e) => setNewFee({ ...newFee, Month: Math.min(12, Math.max(1, e.target.value)) })}
+            inputProps={{ min: 1, max: 12 }}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="Amount"
+            type="number"
+            value={newFee.Amount}
+            onChange={(e) => setNewFee({ ...newFee, Amount: e.target.value })}
+            sx={{ mb: 2 }}
+          />
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={handleAddChangeFee}
+            startIcon={<MonetizationOnIcon />}
+          >
+            Add/Change Fee
+          </Button>
+        </Paper>
+      </Grid>
+
+      {/* Fee List */}
+      <Grid item xs={12} md={6}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Fee List
+          </Typography>
+          <Box sx={{ height: 400 }}>
+          <DataGrid
+  rows={fees}
+  columns={[
+    { field: 'Year', headerName: 'Year', width: 100 },
+    { field: 'Month', headerName: 'Month', width: 100 },
+    { 
+      field: 'Amount', 
+      headerName: 'Amount', 
+      width: 130,
+      // Simplified valueFormatter
+      renderCell: (params) => (
+        <Typography>
+          ${params.row.Amount}
+        </Typography>
+      )
+    },
+    { 
+      field: 'Is_Sent', 
+      headerName: 'Status', 
+      width: 130,
+      renderCell: (params) => (
+        params.row.Is_Sent ? 
+        <Button disabled variant="contained" color="success" size="small">
+          Sent
+        </Button> :
+        <Button 
+          variant="contained" 
+          color="primary" 
+          size="small"
+          onClick={() => handleSendFee(params.row.id)}
+        >
+          Send
+        </Button>
+      )
+    }
+  ]}
+  pageSize={5}
+  disableSelectionOnClick
+/>
+          </Box>
+        </Paper>
+      </Grid>
+
+      {/* Payment Status */}
+      <Grid item xs={12}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Payment Status
+          </Typography>
+          <Box sx={{ height: 400 }}>
+          <DataGrid
+  rows={feePayments}
+  columns={[
+    { field: 'last_name', headerName: 'last_name', width: 200 },
+    { field: 'Year', headerName: 'Year', width: 100 },
+    { field: 'Month', headerName: 'Month', width: 100 },
+    { 
+      field: 'National_ID', 
+      headerName: 'National_ID', 
+      width: 130 
+    },
+
+    { 
+      field: 'Is_Paid', 
+      headerName: 'Status', 
+      width: 130,
+      renderCell: (params) => (
+        <Button 
+          variant="contained" 
+          color={params.row.Is_Paid ? "success" : "error"}
+          size="small"
+          disabled
+        >
+          {params.row.Is_Paid ? "Paid" : "Unpaid"}
+        </Button>
+      )
+    }
+  ]}
+  pageSize={5}
+  disableSelectionOnClick
+/>
+          </Box>
+        </Paper>
+      </Grid>
+    </Grid>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleFeeDialogClose} color="primary">
       Close
     </Button>
   </DialogActions>

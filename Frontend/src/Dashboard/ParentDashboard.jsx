@@ -24,6 +24,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
 } from '@mui/material';
 import {
   ExitToApp,
@@ -34,12 +41,15 @@ import {
   Notifications as NotificationsIcon,
   ArrowBack,
   AccountBalanceWallet as WalletIcon,
+  Payment as PaymentIcon,
 } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/system';
 import { useMediaQuery } from '@mui/material';
 import { useParent } from '../context/ParentContext';
 import ParentClasses from './ParentClasses';
 import ParentWallet from '../Wallet&Payments/wallet';
+import Swal from 'sweetalert2';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -245,6 +255,75 @@ const sortedNotifications = [...unreadNotifications].sort(
 
   const goBack = () => handleTabChange(0);
 
+
+  // Add these state variables
+const [showFeeDialog, setShowFeeDialog] = useState(false);
+const [fees, setFees] = useState([]);
+
+// Add these handler functions
+const handleFeeDialogOpen = () => {
+  fetchFees();
+  setShowFeeDialog(true);
+};
+
+const handleFeeDialogClose = () => setShowFeeDialog(false);
+
+const fetchFees = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-fee-list/`,
+      {
+        credentials: 'include',
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      setFees(data);
+    }
+  } catch (error) {
+    console.error('Error fetching fees:', error);
+  }
+};
+
+const handlePayFee = async (feeId) => {
+  try {
+   
+
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-pay-fee/`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ id: feeId }),
+      }
+    );
+    
+    const data = await response.json();
+    
+    if (response.ok && data.message !== "Not enough money") {
+      setFees(prevFees => 
+        prevFees.map(fee => 
+          fee.id === feeId 
+            ? { ...fee, Is_Paid: 1 }
+            : fee
+        )
+      );
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Server error or network issue',
+      confirmButtonColor: '#d33',
+      customClass: {
+        container: 'my-swal-container'
+      }
+    });
+  }
+};
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -412,6 +491,12 @@ const sortedNotifications = [...unreadNotifications].sort(
                       <Typography variant="subtitle1">Logout</Typography>
                     </NavigationBox>
                   </Grid>
+                  <Grid item xs={6} sm={4} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <NavigationBox elevation={3} onClick={handleFeeDialogOpen}>
+                      <PaymentIcon fontSize="large" />
+                      <Typography variant="subtitle1">Fees</Typography>
+                    </NavigationBox>
+                  </Grid>
                 </Grid>
               </TabPanel>
               <TabPanel value={tabValue} index={1}>
@@ -518,6 +603,85 @@ const sortedNotifications = [...unreadNotifications].sort(
       Close
     </Button>
   </DialogActions>
+</Dialog>
+// Add this Dialog component before the closing ThemeProvider tag
+<Dialog
+  open={showFeeDialog}
+  onClose={handleFeeDialogClose}
+  maxWidth="md"
+  fullWidth
+>
+  <DialogTitle sx={{ 
+    bgcolor: theme.palette.primary.main, 
+    color: 'white',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }}>
+    Fee Management
+    <IconButton
+      edge="end"
+      color="inherit"
+      onClick={handleFeeDialogClose}
+      aria-label="close"
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+  <DialogContent sx={{ mt: 2 }}>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Fee List
+          </Typography>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Year</TableCell>
+                  <TableCell>Month</TableCell>
+                  <TableCell>Amount</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {fees.map((fee) => (
+                  <TableRow key={fee.id}>
+                    <TableCell>{fee.Year}</TableCell>
+                    <TableCell>{fee.Month}</TableCell>
+                    <TableCell>
+                      ${fee.Amount}
+                    </TableCell>
+                    <TableCell>
+                      <Chip 
+                        label={fee.Is_Paid ? "Paid" : "Unpaid"}
+                        color={fee.Is_Paid ? "success" : "error"}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {!fee.Is_Paid && (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={() => handlePayFee(fee.id)}
+                          startIcon={<PaymentIcon />}
+                        >
+                          Pay
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
+    </Grid>
+  </DialogContent>
 </Dialog>
 
     </ThemeProvider>
