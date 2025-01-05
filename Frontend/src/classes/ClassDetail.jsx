@@ -1077,10 +1077,12 @@ onClick={() => {
       <Grid container spacing={2}>
         {educationalFiles.length > 0 ? (
           educationalFiles.map((file) => (
-            <Grid item xs={6} sm={4} md={3} key={file.id}>
+            <Grid item xs={6} sm={4} md={2} key={file.id}>
               <Card
                 sx={{
                   height: '100%',
+                  backgroundColor: 'transparent',
+                  boxShadow: 0,
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
@@ -1095,18 +1097,10 @@ onClick={() => {
                   }}
                 >
                   {/* آیکن فایل */}
-                  <InsertDriveFile sx={{ fontSize: 40, mb: 1 }} />
-
-                  {/* نام فایل */}
-                  <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-                    {file.Title}
-                  </Typography>
-
-                  {/* دکمه دانلود فایل */}
-                  <Button
+                  <IconButton
                     variant="contained"
-                    color="primary"
                     size="small"
+                    sx={{color:'black'}}
                     onClick={() => {
                       if (file.file) {
                         const fileUrl = `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${file.file}`;
@@ -1115,9 +1109,15 @@ onClick={() => {
                         console.error('File path not available');
                       }
                     }}
-                  >
-                    Download File
-                  </Button>
+                    >
+                      <InsertDriveFile sx={{ fontSize: 40, mb: 1 }} />
+                    </IconButton>   
+
+                  {/* نام فایل */}
+                  <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                    {file.Title}
+                  </Typography>
+
                 </CardContent>
               </Card>
             </Grid>
