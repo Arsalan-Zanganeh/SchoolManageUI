@@ -72,7 +72,7 @@ const ChatPage = ({ classId }) => {
     }
   }, [teacher, chatroomId]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = () => { 
     if (socket && isSocketOpen && teacher?.National_ID && newMessage.trim()) {
       const messageData = {
         type: 'chat_message',
@@ -198,31 +198,37 @@ const ChatPage = ({ classId }) => {
               position: 'relative',
             }}
           >
-            <TextField
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-              fullWidth
-              label="Type a message"
-              variant="outlined"
-              multiline
-              rows={3}
-              sx={{ mr: 2 }}
-            />
-            <IconButton 
-              color="primary" 
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)} 
-              sx={{ ml: 1 }}
-            >
-              😊
-            </IconButton>
-            <IconButton 
-              color="primary" 
-              onClick={handleSendMessage} 
-              sx={{ ml: 1 }}
-            >
-              <SendIcon />
-            </IconButton>
+            <Box sx={{ flex: 1, mr: 2 }}>
+              <TextField
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                fullWidth
+                label="Type a message"
+                variant="outlined"
+                multiline
+                rows={3}
+              />
+            </Box>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'center',
+              gap: 1 
+            }}>
+              <IconButton 
+                color="primary" 
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)} 
+              >
+                😊
+              </IconButton>
+              <IconButton 
+                color="primary" 
+                onClick={handleSendMessage} 
+              >
+                <SendIcon />
+              </IconButton>
+            </Box>
 
             {showEmojiPicker && (
               <Box sx={{ 
