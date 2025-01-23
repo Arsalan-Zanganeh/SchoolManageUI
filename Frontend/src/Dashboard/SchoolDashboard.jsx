@@ -24,6 +24,8 @@ import Discipline from "../discipline/Discipline"
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import CloseIcon from '@mui/icons-material/Close';
 import { DataGrid } from '@mui/x-data-grid';
+import StudentList from "./StudentList";
+import TeacherList from './TeacherList';
 
 
 function TabPanel(props) {
@@ -869,17 +871,19 @@ const handleSendFee = async (feeId) => {
 
               <Grid container spacing={2}>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" href="https://example.com/page1" >
+                <NavigationBox elevation={3} component="a" onClick={() => handleTabChange(8)}>
                     <Person fontSize="large" />
                     <Typography variant="subtitle1">Student Files</Typography>
-                  </NavigationBox>
+                </NavigationBox>
+
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <NavigationBox elevation={3} component="a" href="https://example.com/page2" >
-                    <Person4 fontSize="large" />
-                    <Typography variant="subtitle1">Teacher Files</Typography>
-                  </NavigationBox>
-                </Grid>
+  <NavigationBox elevation={3} component="a" onClick={() => handleTabChange(9)}>
+    <Person4 fontSize="large" />
+    <Typography variant="subtitle1">Teacher Files</Typography>
+  </NavigationBox>
+</Grid>
+
                 <Grid item xs={6} sm={4} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
                   <NavigationBox elevation={3} onClick={() => handleTabChange(7)}>
                     <Security fontSize="large" />
@@ -939,6 +943,14 @@ const handleSendFee = async (feeId) => {
             <Discipline onBack={() => handleTabChange(2)} />
 
 </TabPanel>
+<TabPanel value={tabvalue} index={8}>
+  <StudentList onBack={() => handleTabChange(2)} />
+</TabPanel>
+<TabPanel value={tabvalue} index={9}>
+  <TeacherList onBack={() => handleTabChange(2)} />
+</TabPanel>
+
+
 
             </Container>
           </Box>
