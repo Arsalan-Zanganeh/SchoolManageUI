@@ -233,10 +233,15 @@ const TeacherDashboard = () => {
   
 
   const handleLogout = () => {
-    logoutTeacher();
-    localStorage.removeItem('activeTeacherTab'); // حذف تب ذخیره‌شده هنگام خروج
-    navigate('/');
+    localStorage.removeItem("activeTeacherTab"); // حذف وضعیت تب‌ها از localStorage
+  
+    // ذخیره پیام خروج در localStorage
+    localStorage.setItem("logoutMessage", "You have successfully logged out.");
+  
+    logoutTeacher(); // فراخوانی تابع لاگ‌اوت
+    navigate("/"); // انتقال به صفحه اصلی
   };
+  
 
   useEffect(() => {
     if (token) {

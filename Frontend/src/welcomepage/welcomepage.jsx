@@ -12,6 +12,8 @@ import LaptopChromebookOutlinedIcon from '@mui/icons-material/LaptopChromebookOu
 import DesktopMacOutlinedIcon from '@mui/icons-material/DesktopMacOutlined';
 import './styles.css'
 import BreadCrumps from '../components/BreadCrumps'
+import Swal from 'sweetalert2';
+
 window.addEventListener('load', function() { AOS.init(); });
 const globalStyles = (
   <GlobalStyles
@@ -95,6 +97,31 @@ const globalStyles = (
 
 
 function LandingPage() {
+  useEffect(() => {
+    const logoutMessage = localStorage.getItem('logoutMessage');
+    if (logoutMessage) {
+      // نمایش پیام با SweetAlert2
+      Swal.fire({
+        toast: true,
+        position: 'top-center',
+        icon: 'success',
+        title: 'You have successfully logged out!',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        showCloseButton: true,
+        customClass: {
+          container: 'swal-toast-custom', // کلاس سفارشی
+          title: 'swal-toast-title', // سفارشی کردن عنوان
+          closeButton: 'swal-toast-close-button', // سفارشی کردن دکمه ضربدر
+        },
+      });
+      
+      
+      // حذف پیام از localStorage
+      localStorage.removeItem('logoutMessage');
+    }
+  }, []);
   AOS.init();
   return (
     <>

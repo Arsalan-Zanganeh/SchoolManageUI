@@ -817,3 +817,30 @@
 .callout-signup {
   transform: translateY(5rem);
 }
+.swal-toast-overlay {
+  z-index: 9999 !important; /* اطمینان از نمایش روی همه عناصر */
+  font-family: 'Arial', sans-serif; /* تغییر فونت (اختیاری) */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* سایه برای زیبایی */
+}
+.swal-toast-custom {
+  top: 60px !important; /* فاصله از بالا */
+  width: 399px !important; /* تنظیم عرض */
+  max-width: 60%; /* تنظیم برای صفحه‌های کوچک */
+  padding: 20px !important; /* فاصله داخلی */
+  text-align: center; /* وسط‌چین کردن متن */
+  font-size: 18px; /* اندازه متن کلی */
+}
+
+.swal-toast-title {
+  font-size: 20px !important; /* اندازه فونت عنوان */
+  font-weight: bold; /* برجسته‌تر کردن متن */
+  color: #333; /* رنگ متن */
+}
+
+.swal-toast-close-button {
+  font-size: 20px !important; /* اندازه دکمه ضربدر */
+  color: #333 !important; /* رنگ دکمه ضربدر */
+}
+
+
+

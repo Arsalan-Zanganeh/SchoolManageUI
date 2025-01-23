@@ -53,3 +53,15 @@
     font-size: 0.9rem; /* Smaller font size for very small devices */
   }
 }
+.swal-toast-overlay {
+  z-index: 9999 !important; /* اطمینان از نمایش روی همه عناصر */
+  font-family: 'Arial', sans-serif; /* تغییر فونت (اختیاری) */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* سایه برای زیبایی */
+}
+.swal-toast-custom {
+  top: 60px !important; /* فاصله از بالا */
+}
+.swal-toast-close-button {
+  font-size: 30px !important; /* اندازه دکمه ضربدر */
+  color: #333 !important; /* رنگ دکمه ضربدر */
+}

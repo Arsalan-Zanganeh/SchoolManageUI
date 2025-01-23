@@ -254,18 +254,18 @@ const AdminSchoolPage = () => {
           credentials: "include",
         }
       );
-
+  
       if (!schoolLogoutResponse.ok) {
         throw new Error("Failed to logout school");
       }
+  
+      // ذخیره پیام خروج در localStorage
+      localStorage.setItem("logoutMessage", "You have been logged out successfully.");
+  
       logoutPrincipal();
       logoutSchool();
-      Swal.fire({
-        title: "Logged Out",
-        text: "You have been logged out successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
+  
+      // انتقال به صفحه اصلی
       navigate("/");
     } catch (error) {
       Swal.fire({
@@ -276,6 +276,7 @@ const AdminSchoolPage = () => {
       });
     }
   };
+  
 
   return (
 

@@ -413,47 +413,48 @@ const formatDate = (dateString) => {
       console.error('Error fetching notif list:', error);
     }}, [schoolId, schoolToken]);
 
-  const handleLogout = async () => {
-    try {
-      const adminLogoutResponse = await fetch(
-        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/logout_school/`,
-        {
-          method: "POST",
-          credentials: "include",
+    const handleLogout = async () => {
+      try {
+        const adminLogoutResponse = await fetch(
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/logout_school/`,
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
+        if (!adminLogoutResponse.ok) {
+          throw new Error("Failed to logout admin");
         }
-      );
-      if (!adminLogoutResponse.ok) {
-        throw new Error("Failed to logout admin");
-      }
-      const schoolLogoutResponse = await fetch(
-        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/logout/`,
-        {
-          method: "POST",
-          credentials: "include",
+        const schoolLogoutResponse = await fetch(
+          `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/logout/`,
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
+    
+        if (!schoolLogoutResponse.ok) {
+          throw new Error("Failed to logout school");
         }
-      );
-
-      if (!schoolLogoutResponse.ok) {
-        throw new Error("Failed to logout school");
+    
+        // ذخیره پیام خروج در localStorage
+        localStorage.setItem("logoutMessage", "You have been logged out successfully.");
+    
+        logoutPrincipal();
+        logoutSchool();
+    
+        // انتقال به صفحه اصلی
+        navigate("/");
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: "Failed to logout completely. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
-      logoutPrincipal();
-      logoutSchool();
-      Swal.fire({
-        title: "Logged Out",
-        text: "You have been logged out successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-      navigate("/");
-    } catch (error) {
-      Swal.fire({
-        title: "Error",
-        text: "Failed to logout completely. Please try again.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
-    }
-  };
+    };
+    
 
   const fetchSchoolData = useCallback(async () => {
     if (!schoolToken) return;

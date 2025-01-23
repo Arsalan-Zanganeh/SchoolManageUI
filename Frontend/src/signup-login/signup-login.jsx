@@ -120,11 +120,21 @@ const PrincipalForm = ({ onSignUpClick }) => {
       if (response.ok) {
         const data = await response.json();
         Swal.fire({
-          title: 'Success',
-          text: 'Login successful!',
+          toast: true,
+          position: 'top-end', // موقعیت اولیه
           icon: 'success',
-          confirmButtonText: 'OK',
+          title: 'Login successful!',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          showCloseButton: true,
+          customClass: {
+            container: 'swal-toast-custom', // اضافه کردن کلاس برای تنظیم دقیق
+            closeButton: 'swal-toast-close-button', // سفارشی کردن دکمه ضربدر
+
+          },
         });
+        
         loginPrincipal(data); 
         navigate('/admin-school');  
       } else {
@@ -183,11 +193,22 @@ const StudentForm = () => {
       if (response.ok) {
         const data = await response.json();
         Swal.fire({
-          title: 'Success',
-          text: 'Login successful!',
+          toast: true,
+          position: 'top-end', // موقعیت اولیه
           icon: 'success',
-          confirmButtonText: 'OK',
+          title: 'Login successful!',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          showCloseButton: true,
+
+          customClass: {
+            container: 'swal-toast-custom', // اضافه کردن کلاس برای تنظیم دقیق
+            closeButton: 'swal-toast-close-button', // سفارشی کردن دکمه ضربدر
+
+          },
         });
+        
         loginStudent(data); 
         navigate('/student-dashboard'); 
       } else {
@@ -243,11 +264,22 @@ const TeacherForm = () => {
       if (response.ok) {
         const data = await response.json();
         Swal.fire({
-          title: 'Success',
-          text: 'Login successful!',
+          toast: true,
+          position: 'top-end', // موقعیت اولیه
           icon: 'success',
-          confirmButtonText: 'OK',
+          title: 'Login successful!',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          showCloseButton: true,
+
+          customClass: {
+            container: 'swal-toast-custom', // اضافه کردن کلاس برای تنظیم دقیق
+            closeButton: 'swal-toast-close-button', // سفارشی کردن دکمه ضربدر
+
+          },
         });
+        
         loginTeacher(data);
         navigate('/teacher-dashboard');
       } else {
@@ -328,11 +360,21 @@ const SignUpLogin = () => {
         if (response.ok) {
           const data = await response.json();
           Swal.fire({
-            title: 'Success',
-            text: 'Login successful!',
+            toast: true,
+            position: 'top-end', // موقعیت اولیه
             icon: 'success',
-            confirmButtonText: 'OK',
+            title: 'Login successful!',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            showCloseButton: true,
+            customClass: {
+              container: 'swal-toast-custom', // اضافه کردن کلاس برای تنظیم دقیق
+              closeButton: 'swal-toast-close-button', // سفارشی کردن دکمه ضربدر
+
+            },
           });
+          
           loginParent(data);
           navigate('/parent-dashboard');
         } else {

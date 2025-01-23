@@ -268,9 +268,14 @@ const StudentDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("student-dashboard-tab"); // حذف وضعیت تب‌ها از localStorage
-    logoutStudent();
-    navigate("/");
+  
+    // ذخیره پیام خروج در localStorage
+    localStorage.setItem("logoutMessage", "You have successfully logged out.");
+  
+    logoutStudent(); // فراخوانی تابع لاگ‌اوت
+    navigate("/"); // انتقال به صفحه اصلی
   };
+  
 
   const fetchCalendar = useCallback(async () => {
     try {

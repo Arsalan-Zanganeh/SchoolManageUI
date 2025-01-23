@@ -230,16 +230,19 @@ const sortedNotifications = [...unreadNotifications].sort(
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-logout/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-logout/`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        }
+      );
       if (response.ok) {
+        // ذخیره پیام در localStorage
+        localStorage.setItem('logoutMessage', 'You have successfully logged out.');
         logoutParent();
-        window.location.href = '/';
+        window.location.href = '/'; // انتقال به صفحه اصلی
       } else {
         console.error('Logout failed');
       }
@@ -247,6 +250,7 @@ const sortedNotifications = [...unreadNotifications].sort(
       console.error('Error during logout:', error);
     }
   };
+  
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const drawerProps = isDesktop
