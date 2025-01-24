@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Container, Box, Typography, Button, Tabs, Tab, Paper, TextField, IconButton, InputAdornment } from '@mui/material';
+import { 
+  Container, Box, Typography, Button, Tabs, Tab, Paper, TextField, 
+  IconButton, InputAdornment, CircularProgress, Link
+} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link } from '@mui/material';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { usePrincipal } from '../context/PrincipalContext';  
 import { useStudent } from '../context/StudentContext'; 
 import { useTeacher } from '../context/TeacherContext';
-import {useParent} from '../context/ParentContext' ;
-import './sl.css'
+import { useParent } from '../context/ParentContext' ;
+import './sl.css';
 
 const theme = createTheme({
   palette: {
@@ -33,6 +35,7 @@ const PrincipalSignUpForm = ({ onBackClick }) => {
     first_name: '', last_name: '', National_ID: '', Phone_Number: '', password: '', password2: '', email: ''
   });
 
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPasswordToggle = () => setShowPassword(!showPassword);
 
@@ -41,6 +44,7 @@ const PrincipalSignUpForm = ({ onBackClick }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);  // شروع لودینگ
     try {
       const submit = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/register/`, {
         method: "POST",
@@ -77,10 +81,24 @@ const PrincipalSignUpForm = ({ onBackClick }) => {
       Swal.fire('Error', 'Server error or network issue. Please try again.', 'error');
       console.error('Error:', error);
     }
+    finally {
+      setLoading(false); // پایان لودینگ
+    }
   };
 
   return (
     <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit}>
+       {loading && (
+        <Box
+          sx={{
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 9999
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       <TextField margin="normal" required fullWidth label="Principal ID" name="National_ID" autoFocus value={formData.National_ID} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Name" name="first_name" value={formData.first_name} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Last Name" name="last_name" value={formData.last_name} onChange={handleChange} />
@@ -105,11 +123,14 @@ const PrincipalForm = ({ onSignUpClick }) => {
   const [formData, setFormData] = useState({ National_ID: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPasswordToggle = () => setShowPassword(!showPassword);
+  const [loading, setLoading] = useState(false);
+
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // شروع لودینگ
     try {
       const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/login/`, {
         method: "POST",
@@ -154,10 +175,24 @@ const PrincipalForm = ({ onSignUpClick }) => {
         confirmButtonText: 'OK',
       });
     }
+    finally {
+      setLoading(false); // پایان لودینگ
+    }
   };
 
   return (
     <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit}>
+      {loading && (
+        <Box
+          sx={{
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 9999
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       <TextField margin="normal" required fullWidth label="Principal ID" name="National_ID" autoFocus value={formData.National_ID} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Password" type={showPassword ? 'text' : 'password'} name="password" autoComplete="current-password" value={formData.password} onChange={handleChange}/>
       <Button type="button" fullWidth variant="outlined" color="primary" sx={{ mt: 3, mb: 2 }} onClick={onSignUpClick}>Sign Up</Button>
@@ -173,6 +208,7 @@ const StudentForm = () => {
   const [formData, setFormData] = useState({ National_ID: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPasswordToggle = () => setShowPassword(!showPassword);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -182,6 +218,7 @@ const StudentForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // شروع لودینگ
     try {
       const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/login/`, {
         method: "POST",
@@ -228,10 +265,24 @@ const StudentForm = () => {
         confirmButtonText: 'OK',
       });
     }
+    finally {
+      setLoading(false); // پایان لودینگ
+    }
   };
 
   return (
     <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit}>
+       {loading && (
+        <Box
+          sx={{
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 9999
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       <TextField margin="normal" required fullWidth label="Student ID" name="National_ID" autoFocus value={formData.National_ID} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Password" type={showPassword ? 'text' : 'password'} name="password" autoComplete="current-password" value={formData.password} onChange={handleChange}/>
       <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 1 }}>Login</Button>
@@ -245,6 +296,8 @@ const TeacherForm = () => {
   const [formData, setFormData] = useState({ National_ID: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPasswordToggle = () => setShowPassword(!showPassword);
+  const [loading, setLoading] = useState(false);
+
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -254,6 +307,7 @@ const TeacherForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // شروع لودینگ
     try {
       const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/teacher/login/`, {
         method: "POST",
@@ -299,10 +353,24 @@ const TeacherForm = () => {
         confirmButtonText: 'OK',
       });
     }
+    finally {
+      setLoading(false); // پایان لودینگ
+    }
   };
 
   return (
     <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit}>
+       {loading && (
+        <Box
+          sx={{
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 9999
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       <TextField margin="normal" required fullWidth label="Teacher ID" name="National_ID" autoFocus value={formData.National_ID} onChange={handleChange} />
       <TextField margin="normal" required fullWidth label="Password" type={showPassword ? 'text' : 'password'} name="password" autoComplete="current-password" value={formData.password} onChange={handleChange}/>
       <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 1 }}>Login</Button>
@@ -344,11 +412,14 @@ const SignUpLogin = () => {
     const navigate = useNavigate();
     const { loginParent } = useParent();
     const [formData, setFormData] = useState({ National_ID: '', Parent_password: '' });
-  
+    const [loading, setLoading] = useState(false);
+
     const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   
     const handleSubmit = async (e) => {
       e.preventDefault();
+      setLoading(true); // شروع لودینگ
+
       try {
         const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/student/parent-login/`, {
           method: "POST",
@@ -394,10 +465,24 @@ const SignUpLogin = () => {
           confirmButtonText: 'OK',
         });
       }
+      finally {
+        setLoading(false); // پایان لودینگ
+      }
     };
   
     return (
       <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit}>
+         {loading && (
+        <Box
+          sx={{
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 9999
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
         <TextField margin="normal" required fullWidth label="Parent National ID" name="National_ID" autoFocus value={formData.National_ID} onChange={handleChange} />
         <TextField margin="normal" required fullWidth label="Password" type="password" name="Parent_password" autoComplete="current-password" value={formData.Parent_password} onChange={handleChange} />
         <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 1 }}>Login</Button>
