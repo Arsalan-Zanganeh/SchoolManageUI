@@ -321,7 +321,7 @@ const QuizPageStudent = () => {
         </Card>
 
         {/* Navigation */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 , gap :2 }}>
           <Button
             variant="outlined"
             color="secondary"
