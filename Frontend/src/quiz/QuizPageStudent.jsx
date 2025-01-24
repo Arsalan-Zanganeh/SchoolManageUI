@@ -23,7 +23,11 @@ const QuizPageStudent = () => {
   const quizEndTime = new Date(location.state?.quizEndTime).getTime();
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  const [userAnswers, setUserAnswers] = useState([]);
+
   const [selectedOption, setSelectedOption] = useState(null);
+
   const [timeRemaining, setTimeRemaining] = useState(0);
 
   useEffect(() => {
@@ -41,7 +45,6 @@ const QuizPageStudent = () => {
         if (response.ok) {
           const data = await response.json();
           if (data.boolean) {
-            // اگر آزمون قبلاً پایان یافته بود، به صفحه کلاس هدایت کن
             navigate(`/student-dashboard/student-classes/${cid}`, { replace: true });
           }
         } else {
@@ -56,12 +59,11 @@ const QuizPageStudent = () => {
   }, [quizId, cid, navigate]);
   
   useEffect(() => {
-    // بررسی state
     if (!location.state?.quizEndTime || !location.state?.cid) {
-      // اگر اطلاعات ضروری نیست، یعنی کاربر مستقیم از URL وارد شده
       navigate(`/student-dashboard/student-classes/${cid}`, { replace: true });
     }
   }, [location.state, cid, navigate]);
+  
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -77,6 +79,8 @@ const QuizPageStudent = () => {
         if (response.ok) {
           const data = await response.json();
           setQuestions(data);
+
+          setUserAnswers(Array(data.length).fill(null));
         } else {
           console.error("Failed to fetch questions.");
         }
@@ -106,13 +110,39 @@ const QuizPageStudent = () => {
     return () => clearInterval(timer);
   }, [quizEndTime, navigate, quizId]);
 
-  const handleAnswerSelect = (optionNumber) => {
-    setSelectedOption((prev) => (prev === optionNumber ? null : optionNumber));
-  };
+ 
+  useEffect(() => {
+    if (userAnswers.length > 0) {
+      setSelectedOption(userAnswers[currentQuestionIndex]);
+    }
+  }, [currentQuestionIndex, userAnswers]);
 
+  
+  const handleAnswerSelect = (optionNumber) => {
+    setUserAnswers((prevAnswers) => {
+      const updatedAnswers = [...prevAnswers];
+  
+      // اگر همان گزینه‌ی قبلا انتخاب شده کلیک شد، خالی کن:
+      if (selectedOption === optionNumber) {
+        updatedAnswers[currentQuestionIndex] = null;
+        setSelectedOption(null);
+      } else {
+        updatedAnswers[currentQuestionIndex] = optionNumber;
+        setSelectedOption(optionNumber);
+      }
+  
+      return updatedAnswers;
+    });
+  };
+  
+
+ 
   const submitAnswer = async (isFinish = false) => {
     const currentQuestion = questions[currentQuestionIndex];
     try {
+      // پاسخ انتخابی را از آرایه‌ی userAnswers می‌خوانیم
+      const selected = userAnswers[currentQuestionIndex] ?? 0;
+
       await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-answer-question/`, {
         method: "POST",
         credentials: 'include',
@@ -120,13 +150,13 @@ const QuizPageStudent = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          StudentAnswer: selectedOption !== null ? selectedOption : 0, // ارسال 0 به جای null اگر هیچ گزینه‌ای انتخاب نشده باشد
+          StudentAnswer: selected,
           QuizQuestion_ID: currentQuestion.id,
         }),
       });
-  
-      setSelectedOption(null); // ریست کردن انتخاب
-  
+
+      // دیگر setSelectedOption(null) را حذف می‌کنیم تا وقتی به عقب برمی‌گردیم، مقدار بماند
+
       if (isFinish) {
         finishQuiz(); // پایان آزمون
       } else if (currentQuestionIndex < questions.length - 1) {
@@ -136,8 +166,10 @@ const QuizPageStudent = () => {
       console.error("Error submitting answer:", error);
     }
   };
-  
 
+  /**
+   * اتمام آزمون
+   */
   const finishQuiz = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/student-finish-exam/`, {
@@ -153,7 +185,7 @@ const QuizPageStudent = () => {
         alert("You have finished your exam.");
         navigate(`/student-dashboard/student-classes/${location.state.cid}`, {
           state: { finishedQuizId: quizId },
-          replace: true  // با این اضافه، لینک در تاریخچه جایگزین می‌شود
+          replace: true
         });
       } else {
         console.error("Error finishing quiz.");
@@ -162,15 +194,14 @@ const QuizPageStudent = () => {
       console.error("Error:", error);
     }
   };
-  
-  
+
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prev) => prev - 1);
-      setSelectedOption(null);
     }
   };
+
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -195,117 +226,122 @@ const QuizPageStudent = () => {
   }
 
   return (
-    <Container maxWidth="md" sx=
-    {{
-      position: { xs: 'relative', sm: 'absolute' },
-      top : 0 ,
-      left: { xs: '10px', sm: '20px' },
-      right: { xs: '10px', sm: '20px' },
-      width: { xs: 'calc(100% - 20px)', sm: 'calc(100% - 40px)' },
-      maxWidth: { xs: '100%', sm: '1600px' },
-      margin: '0 auto',
-      padding: '20px',
-      backgroundColor: '#fff',
-      // boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-      borderRadius: '8px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      // alignItems: 'center',
-      
-    }}>
-      {/* Timer */}
-      <Paper
-        elevation={5}
-        sx={{
-          mb: 3,
-          p: 3,
-          borderRadius: 3,
-          background: 'linear-gradient(135deg, #3f51b5, #1a237e)',
-          color: '#fff',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Box
+    <Box
+      sx={{
+        backgroundColor: '#DCE8FD',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        padding: '20px',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'flex-start',
+      }}
+    >
+      <Container maxWidth="md" sx={{ pt: 4, pb: 4 }}>
+        {/* Timer */}
+        <Paper
+          elevation={5}
           sx={{
+            mb: 3,
+            p: 3,
+            borderRadius: 3,
+            background: 'linear-gradient(135deg, #3f51b5, #1a237e)',
+            color: '#fff',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            gap: 2,
-            mb: 2,
+            justifyContent: 'center',
           }}
         >
-          <AccessTimeIcon sx={{ fontSize: 48, color: '#ffeb3b' }} />
-          <Typography
-            variant="h3"
+          <Box
             sx={{
-              fontWeight: 'bold',
-              fontFamily: 'Roboto Mono, monospace',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              mb: 2,
             }}
           >
-            {formatTime(timeRemaining)}
-          </Typography>
+            <AccessTimeIcon sx={{ fontSize: 48, color: '#ffeb3b' }} />
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 'bold',
+                fontFamily: 'Roboto Mono, monospace',
+              }}
+            >
+              {formatTime(timeRemaining)}
+            </Typography>
+          </Box>
+          <LinearProgress
+            variant="determinate"
+            value={(timeRemaining / ((quizEndTime - Date.now()) / 1000)) * 100}
+            sx={{
+              height: 10,
+              width: '100%',
+              borderRadius: 5,
+            }}
+          />
+        </Paper>
+
+        {/* Question */}
+        <Card elevation={4} sx={{ mb: 3, borderRadius: 3 }}>
+          <CardContent>
+            <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+              Question {currentQuestionIndex + 1} of {questions.length}
+            </Typography>
+            <Typography
+  variant="h5"
+  sx={{
+    mb: 3,
+    whiteSpace: "pre-wrap",
+    wordBreak: "break-word",
+    overflowWrap: "break-word",
+  }}
+>
+  {questions[currentQuestionIndex]?.Question}
+</Typography>
+
+            <Grid container spacing={2}>
+              {[1, 2, 3, 4].map((optionNumber) => (
+                <Grid item xs={12} sm={6} key={optionNumber}>
+                  <Button
+                    variant={selectedOption === optionNumber ? "contained" : "outlined"}
+                    color={selectedOption === optionNumber ? "primary" : "secondary"}
+                    fullWidth
+                    onClick={() => handleAnswerSelect(optionNumber)}
+                  >
+                    Option {optionNumber}: {questions[currentQuestionIndex][`Option${optionNumber}`]}
+                  </Button>
+                </Grid>
+              ))}
+            </Grid>
+          </CardContent>
+        </Card>
+
+        {/* Navigation */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            startIcon={<NavigateBeforeIcon />}
+            onClick={handlePreviousQuestion}
+            disabled={currentQuestionIndex === 0}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            endIcon={<NavigateNextIcon />}
+            onClick={() => submitAnswer(currentQuestionIndex === questions.length - 1)}
+          >
+            {currentQuestionIndex < questions.length - 1 ? 'Next' : 'Finish'}
+          </Button>
         </Box>
-        <LinearProgress
-          variant="determinate"
-          value={(timeRemaining / ((quizEndTime - Date.now()) / 1000)) * 100}
-          sx={{
-            height: 10,
-            width: '100%',
-            borderRadius: 5,
-          }}
-        />
-      </Paper>
-
-      {/* Question */}
-      <Card elevation={4} sx={{ mb: 3, borderRadius: 3 }}>
-        <CardContent>
-          <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-            Question {currentQuestionIndex + 1} of {questions.length}
-          </Typography>
-          <Typography variant="h5" sx={{ mb: 3 }}>
-            {questions[currentQuestionIndex]?.Question}
-          </Typography>
-          <Grid container spacing={2}>
-            {[1, 2, 3, 4].map((optionNumber) => (
-              <Grid item xs={12} sm={6} key={optionNumber}>
-                <Button
-                  variant={selectedOption === optionNumber ? "contained" : "outlined"}
-                  color={selectedOption === optionNumber ? "primary" : "secondary"}
-                  fullWidth
-                  onClick={() => handleAnswerSelect(optionNumber)}
-                >
-                  Option {optionNumber}: {questions[currentQuestionIndex][`Option${optionNumber}`]}
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
-        </CardContent>
-      </Card>
-
-      {/* Navigation */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-        <Button
-          variant="outlined"
-          color="secondary"
-          startIcon={<NavigateBeforeIcon />}
-          onClick={handlePreviousQuestion}
-          disabled={currentQuestionIndex === 0}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          endIcon={<NavigateNextIcon />}
-          onClick={() => submitAnswer(currentQuestionIndex === questions.length - 1)}
-        >
-          {currentQuestionIndex < questions.length - 1 ? 'Next' : 'Finish'}
-        </Button>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

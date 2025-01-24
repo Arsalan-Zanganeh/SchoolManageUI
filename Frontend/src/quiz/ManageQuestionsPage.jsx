@@ -267,7 +267,7 @@ const deleteQuestion = async (id) => {
           alignItems: 'flex-start',
         }}
       >
-        <Box sx={{ maxWidth: '1200px', width: '100%' }}>
+        <Box sx={{ p : 4 ,maxWidth: '100%', width: '100%' }}>
           <Paper elevation={3} sx={{ p: 4, backgroundColor: '#fff' }}>
             <Typography variant="h4" gutterBottom>
               Manage Questions for Quiz {quizId}
@@ -401,24 +401,46 @@ const deleteQuestion = async (id) => {
               {isAdding ? 'Add New Question' : 'Edit Question'}
             </DialogTitle>
             <DialogContent>
-              <TextField
-                label="Question"
-                name="Question"
-                value={currentQuestion.Question}
-                onChange={handleInputChange}
-                fullWidth
-                variant="outlined"
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Answer"
-                name="Answer"
-                value={currentQuestion.Answer}
-                onChange={handleInputChange}
-                fullWidth
-                variant="outlined"
-                sx={{ mb: 2 }}
-              />
+            <TextField
+  label="Question"
+  name="Question"
+  value={currentQuestion.Question}
+  onChange={handleInputChange}
+  variant="outlined"
+  multiline
+  minRows={4}
+  maxRows={10}
+  fullWidth
+  // افزایش فاصله پیش‌فرض
+  margin="normal"
+  // لیبل را به اجبار بالا ببریم و کمی فاصله به آن بدهیم
+  InputLabelProps={{
+    shrink: true,
+    style: { marginTop: '8px' },  // فاصله‌دهی از بالا
+  }}
+  sx={{ mb: 2 }}
+  inputProps={{
+    style: { resize: 'vertical' },
+  }}
+/>
+
+
+<TextField
+  label="Answer"
+  name="Answer"
+  value={currentQuestion.Answer}
+  onChange={handleInputChange}
+  fullWidth
+  variant="outlined"
+  multiline       // حالت چندخطی
+  minRows={4}     // حداقل 4 خط
+  maxRows={10}    // حداکثر 10 خط
+  sx={{ mb: 2 }}
+  inputProps={{
+    style: { resize: 'vertical' }, // برای اجازه‌ی کشیدن و تغییر اندازه
+  }}
+/>
+
               <TextField
                 label="Weight"
                 name="Zarib"

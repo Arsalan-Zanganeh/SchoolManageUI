@@ -11,7 +11,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 
 const StudentAnswersPage = () => {
-  const { recordId } = useParams(); // گرفتن recordId از URL
+  const { recordId } = useParams();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [scores, setScores] = useState({});
@@ -20,7 +20,6 @@ const StudentAnswersPage = () => {
   useEffect(() => {
     const fetchStudentAnswers = async () => {
       try {
-        // Fetch questions and answers
         const response = await fetch(
           `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-watch-student-answers/`,
           {
@@ -32,14 +31,14 @@ const StudentAnswersPage = () => {
         );
         const answers = await response.json();
 
-        // تنظیم مقدار اولیه نمره‌ها
+        // مقدار اولیه نمره‌ها
         const initialScores = {};
         answers.forEach((q) => {
-          initialScores[q.id] = q.Correctness || 0; // اگر Correctness وجود نداشت، مقدار اولیه 0 خواهد بود
+          initialScores[q.id] = q.Correctness || 0;
         });
 
         setScores(initialScores);
-        setQuestions(answers); // ذخیره مستقیم پاسخ‌ها
+        setQuestions(answers);
       } catch (error) {
         console.error("Error fetching questions or answers:", error);
       } finally {
@@ -59,28 +58,34 @@ const StudentAnswersPage = () => {
 
   const handleSubmitScores = async () => {
     try {
-      // Submit scores for each question
+      // ارسال نمرات برای هر سؤال
       await Promise.all(
         questions.map((q) =>
-          fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-mark-student-answer/`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-              QuizQuestionStudentExplan_ID: q.id,
-              Correctness: scores[q.id] || 0,
-            }),
-          })
+          fetch(
+            `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-mark-student-answer/`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({
+                QuizQuestionStudentExplan_ID: q.id,
+                Correctness: scores[q.id] || 0,
+              }),
+            }
+          )
         )
       );
 
-      // Finish marking
-      await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-finish-mark/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ QuizStudentRecordExplan_ID: recordId }),
-      });
+      // اتمام تصحیح
+      await fetch(
+        `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/quiz/teacher-finish-mark/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ QuizStudentRecordExplan_ID: recordId }),
+        }
+      );
 
       alert("Marking completed successfully!");
       navigate(-1); // بازگشت به صفحه قبلی
@@ -99,17 +104,16 @@ const StudentAnswersPage = () => {
 
   return (
     <Container
-    sx={{ 
-        position: 'absolute',
-        top: { xs: '10%', sm: '0' }, 
+      sx={{
+        // در صورت نیاز به موقعیت شناور در سایزهای مختلف:
+        position: { xs: "static", sm: "absolute" },
+        top: { xs: "auto", sm: "0" },
         left: 0,
         right: 0,
-        bottom: { xs: 'auto', sm: 0 }, 
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '20px',
-        
-      }}>
+        bottom: { xs: "auto", sm: 0 },
+        padding: 2,
+      }}
+    >
       <Typography variant="h5" align="center" gutterBottom>
         Student Answers
       </Typography>
@@ -122,29 +126,58 @@ const StudentAnswersPage = () => {
             marginBottom: 3,
             border: "1px solid #ccc",
             borderRadius: 4,
+            overflow: "hidden",
           }}
         >
+          {/* سؤال */}
           <Box>
             <Typography variant="h6" gutterBottom>
               Question:
             </Typography>
-            <Typography>{q.Question || "N/A"}</Typography>
+            <Typography
+              sx={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+            >
+              {q.Question || "N/A"}
+            </Typography>
           </Box>
 
+          {/* پاسخ صحیح */}
           <Box mt={2}>
             <Typography variant="body1" gutterBottom>
               Correct Answer:
             </Typography>
-            <Typography>{q.Answer || "N/A"}</Typography>
+            <Typography
+              sx={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+            >
+              {q.Answer || "N/A"}
+            </Typography>
           </Box>
 
+          {/* پاسخ دانش‌آموز */}
           <Box mt={2}>
             <Typography variant="body1" gutterBottom>
               Student Answer:
             </Typography>
-            <Typography>{q.StudentAnswer}</Typography>
+            <Typography
+              sx={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
+            >
+              {q.StudentAnswer}
+            </Typography>
           </Box>
 
+          {/* نمره‌دهی */}
           <Box mt={2} display="flex" alignItems="center">
             <Typography variant="body1" sx={{ marginRight: 2 }}>
               Maximum Score:
@@ -160,16 +193,17 @@ const StudentAnswersPage = () => {
               type="number"
               inputProps={{
                 min: 0,
-                max: q.Zarib, // محدود کردن نمره به مقدار Maximum Score
+                max: q.Zarib,
                 step: 0.1,
               }}
-              value={scores[q.id] || ""} // مقدار اولیه بر اساس Correctness
+              value={scores[q.id] || ""}
               onChange={(e) => handleScoreChange(q.id, e.target.value, q.Zarib)}
             />
           </Box>
         </Paper>
       ))}
 
+      {/* دکمه نهایی ارسال نمرات */}
       <Box textAlign="center" sx={{ mt: 4 }}>
         <Button variant="contained" color="primary" onClick={handleSubmitScores}>
           Submit Scores

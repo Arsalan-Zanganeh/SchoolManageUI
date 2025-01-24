@@ -128,7 +128,13 @@ const ClassDetails = () => {
   const [records, setRecords] = useState([]); 
   const [openDialog, setOpenDialog] = useState(false); 
   const [file, setFile] = useState(null); 
-  const [finishedQuizzes, setFinishedQuizzes] = useState([]);
+  // const [finishedQuizzes, setFinishedQuizzes] = useState([]);
+  // برای کوییزهای تستی
+const [finishedTestQuizzes, setFinishedTestQuizzes] = useState([]);
+
+// برای کوییزهای تشریحی
+const [finishedDescQuizzes, setFinishedDescQuizzes] = useState([]);
+
   const isDesktop = useMediaQuery('(min-width:600px)');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [name, setName] = useState("Loading...");
@@ -411,32 +417,37 @@ useEffect(() => {
 
   useEffect(() => {
     const fetchQuizStatuses = async () => {
-      const openQuizzes = quizzes.filter((quiz) => quiz.isQuizOpen || quiz.isQuizEnded === false);
-
+      // فیلتر کردن کوییزهایی که ممکن است هنوز باز یا تمام شده باشند
+      const openQuizzes = quizzes.filter(
+        (quiz) => quiz.isQuizOpen || quiz.isQuizEnded === false
+      );
+  
       if (openQuizzes.length === 0) {
         return;
       }
-
+  
       const statuses = await Promise.all(
         openQuizzes.map(async (quiz) => {
           const isFinished = await checkQuizStatus(quiz.id);
           return { id: quiz.id, finished: isFinished };
         })
       );
-
-      setFinishedQuizzes((prev) => {
-        const prevMap = new Map(prev.map(obj => [obj.id, obj.finished]));
-        statuses.forEach(s => {
+  
+      setFinishedTestQuizzes((prev) => {
+        // به کمک map، قبلی‌ها را حفظ می‌کنیم و مقدار کوییزهای جدید را اعمال می‌کنیم
+        const prevMap = new Map(prev.map((obj) => [obj.id, obj.finished]));
+        statuses.forEach((s) => {
           prevMap.set(s.id, s.finished);
         });
-        return Array.from(prevMap, ([id, finished]) => ({id, finished}));
+        return Array.from(prevMap, ([id, finished]) => ({ id, finished }));
       });
     };
-
+  
     if (quizzes.length > 0) {
       fetchQuizStatuses();
     }
-  }, [quizzes]); 
+  }, [quizzes]);
+  
 
   const checkQuizStatus = async (quizId) => {
     try {
@@ -464,7 +475,9 @@ useEffect(() => {
   };
   useEffect(() => {
     const fetchDescriptiveQuizStatuses = async () => {
-      const openQuizzes = descriptiveQuizzes.filter((quiz) => quiz.isQuizOpen || quiz.isQuizEnded === false);
+      const openQuizzes = descriptiveQuizzes.filter(
+        (quiz) => quiz.isQuizOpen || quiz.isQuizEnded === false
+      );
   
       if (openQuizzes.length === 0) {
         return;
@@ -477,9 +490,9 @@ useEffect(() => {
         })
       );
   
-      setFinishedQuizzes((prev) => {
-        const prevMap = new Map(prev.map(obj => [obj.id, obj.finished]));
-        statuses.forEach(s => {
+      setFinishedDescQuizzes((prev) => {
+        const prevMap = new Map(prev.map((obj) => [obj.id, obj.finished]));
+        statuses.forEach((s) => {
           prevMap.set(s.id, s.finished);
         });
         return Array.from(prevMap, ([id, finished]) => ({ id, finished }));
@@ -490,6 +503,7 @@ useEffect(() => {
       fetchDescriptiveQuizStatuses();
     }
   }, [descriptiveQuizzes]);
+  
   
   const checkDescriptiveQuizStatus = async (quizId) => {
     try {
@@ -883,7 +897,7 @@ onClick={() => {
             >
              {quizzes.length > 0 ? (
                quizzes.map((quiz) => {
-                 const quizStatus = finishedQuizzes.find((q) => q.id === quiz.id);
+                 const quizStatus = finishedTestQuizzes.find((q) => q.id === quiz.id);
                  const isQuizFinished = quizStatus ? quizStatus.finished : false;
 
                  const isQuizOpen = quiz.isQuizOpen;
@@ -1258,7 +1272,7 @@ onClick={() => {
     >
    {descriptiveQuizzes.length > 0 ? (
   descriptiveQuizzes.map((quiz) => {
-    const isQuizFinished = finishedQuizzes.find((q) => q.id === quiz.id)?.finished || false;
+    const isQuizFinished = finishedDescQuizzes.find((q) => q.id === quiz.id)?.finished || false;
 
     // محاسبه زمان پایان امتحان
     const openTime = new Date(quiz.OpenTime);

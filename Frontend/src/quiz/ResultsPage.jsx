@@ -15,9 +15,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const ResultsPage = () => {
   const { quizId, cid } = useParams();
   const navigate = useNavigate();
-  const [questions, setQuestions] = useState([]); // سؤالات و پاسخ‌های دانش آموز
-  const [record, setRecord] = useState(null); // شامل Degree و ...
-
+  const [questions, setQuestions] = useState([]); 
+  const [record, setRecord] = useState(null); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,16 +55,15 @@ const ResultsPage = () => {
         const answersData = await answersResponse.json();
         const prevAnswersData = await prevAnswersResponse.json();
         const recordData = await recordResponse.json();
-        console.log("Answers Data:", answersData);
-        console.log("Prev Answers Data:", prevAnswersData);
-        console.log("Record Data:", recordData);
 
         const combinedQuestions = answersData.map(question => {
           const studentAnswerObj = prevAnswersData.find(pa => pa.QuizQuestion === question.id);
           const studentAnswer = studentAnswerObj ? studentAnswerObj.StudentAnswer : null;
           const isCorrect = studentAnswer === question.Answer;
 
-          const studentAnswerText = studentAnswer ? question[`Option${studentAnswer}`] : 'Not Answered';
+          const studentAnswerText = studentAnswer 
+            ? question[`Option${studentAnswer}`] 
+            : 'Not Answered';
           const correctAnswerText = question[`Option${question.Answer}`];
 
           return {
@@ -164,7 +162,9 @@ const ResultsPage = () => {
               <LinearProgress variant="determinate" value={percentage} />
             </Box>
             <Box sx={{ minWidth:35 }}>
-              <Typography variant="body2" color="textSecondary">{`${Math.round(percentage)}%`}</Typography>
+              <Typography variant="body2" color="textSecondary">
+                {`${Math.round(percentage)}%`}
+              </Typography>
             </Box>
           </Box>
 
@@ -185,39 +185,84 @@ const ResultsPage = () => {
         {questions.map((question, index) => (
           <Grid item xs={12} key={index}>
             <Card elevation={2} sx={{ borderRadius: 3, mb: 2 }}>
-              <CardContent>
-                <Typography variant="h6" color="textPrimary" sx={{ mb:1 }}>
+              <CardContent sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                {/* Question title */}
+                <Typography
+                  variant="h6"
+                  color="textPrimary"
+                  sx={{ mb:1 }}
+                >
                   Q{index + 1}: {question.Question}
                 </Typography>
-                
-                <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
-                  Your Answer: <strong>
-                    {question.StudentAnswer ? `Option ${question.StudentAnswer}: ${question.StudentAnswerText}` : 'Not Answered'}
-                  </strong>
-                </Typography>
-                
-                <Typography variant="body1" color="textSecondary">
-                  Correct Answer: <strong>Option {question.CorrectAnswer}: {question.CorrectAnswerText}</strong>
-                </Typography>
 
+                {/* Student Answer */}
                 <Typography
                   variant="body1"
-                  sx={{ mt: 1, fontWeight:'bold', color: question.isCorrect ? 'green' : 'red' }}
+                  color="textSecondary"
+                  sx={{ mt: 1 }}
                 >
-                  {question.isCorrect ? 'Correct' : 'Incorrect'}
+                  Your Answer:{" "}
+                  <strong>
+                    {question.StudentAnswer
+                      ? `Option ${question.StudentAnswer}: ${question.StudentAnswerText}`
+                      : "Not Answered"}
+                  </strong>
                 </Typography>
 
+                {/* Correct Answer */}
+                <Typography variant="body1" color="textSecondary">
+                  Correct Answer:{" "}
+                  <strong>
+                    Option {question.CorrectAnswer}: {question.CorrectAnswerText}
+                  </strong>
+                </Typography>
+
+                {/* Is Correct or not */}
+                <Typography
+                  variant="body1"
+                  sx={{
+                    mt: 1,
+                    fontWeight: "bold",
+                    color: question.isCorrect ? "green" : "red"
+                  }}
+                >
+                  {question.isCorrect ? "Correct" : "Incorrect"}
+                </Typography>
+
+                {/* Explanation */}
                 {question.Explanation && (
-                  <Typography variant="body2" color="textSecondary" sx={{ mt:1 }}>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{
+                      mt: 1,
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word"
+                    }}
+                  >
                     Explanation: {question.Explanation}
                   </Typography>
                 )}
 
-                <Typography variant="body2" sx={{ mt: 2 }}>
-                  <strong>Options:</strong><br/>
-                  1: {question.Option1}<br/>
-                  2: {question.Option2}<br/>
-                  3: {question.Option3}<br/>
+                {/* Options */}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mt: 2,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                    overflowWrap: "break-word"
+                  }}
+                >
+                  <strong>Options:</strong>
+                  <br />
+                  1: {question.Option1}
+                  <br />
+                  2: {question.Option2}
+                  <br />
+                  3: {question.Option3}
+                  <br />
                   4: {question.Option4}
                 </Typography>
               </CardContent>

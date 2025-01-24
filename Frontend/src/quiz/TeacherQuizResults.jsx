@@ -152,8 +152,11 @@ const TeacherQuizResults = () => {
                   {record.marked === 1 ? "Yes" : "No"}
                 </TableCell>
                 <TableCell align="center">
-                  {record.Degree100 || "N/A"}
-                </TableCell>
+  {record.Degree100 != null
+    ? Number(record.Degree100).toFixed(3)
+    : "N/A"}
+</TableCell>
+
               </TableRow>
             ))}
           </TableBody>

@@ -86,18 +86,20 @@ const DescriptiveQuizResultsPage = () => {
   }
 
   return (
-    <Container sx={{ mt: 4  , 
-      position: 'absolute',
-      top: { xs: '10%', sm: '0' }, 
-      left: 0,
-      right: 0,
-      bottom: { xs: 'auto', sm: 0 }, 
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '20px',
-      minHeight: '120vh', 
-
-    }}>
+    <Container
+      sx={{
+        mt: 4,
+        position: "absolute",
+        top: { xs: "10%", sm: "0" },
+        left: 0,
+        right: 0,
+        bottom: { xs: "auto", sm: 0 },
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
+        minHeight: "120vh",
+      }}
+    >
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
         <Typography variant="h5" align="center" gutterBottom>
           Quiz Results
@@ -110,8 +112,8 @@ const DescriptiveQuizResultsPage = () => {
           quizRecord && (
             <Box>
               <Typography variant="h6" gutterBottom>
-                Total Score: {quizRecord.Degree100} / 100
-              </Typography>
+  Total Score: {Number(quizRecord.Degree100).toFixed(3)} / 100
+</Typography>
               <Typography variant="h6" gutterBottom>
                 Weight: {quizRecord.DegreeBarom} / {totalWeight}
               </Typography>
@@ -127,46 +129,90 @@ const DescriptiveQuizResultsPage = () => {
         <Typography variant="h6" gutterBottom>
           Questions and Answers:
         </Typography>
+
         {questionsAndAnswers.map((qa) => (
-          <Card key={qa.id} sx={{ mb: 2 }}>
-            <CardContent>
+          <Card
+            key={qa.id}
+            sx={{
+              mb: 2,
+              // overflow hidden برای جلوگیری از اسکرول افقی در صورت نیاز
+              overflow: "hidden",
+            }}
+          >
+            <CardContent
+              sx={{
+                // اختیاری: اگر می‌خواهید هنگام طولانی بودن متن اسکرول عمودی داشته باشید:
+                // maxHeight: 300, overflowY: "auto",
+              }}
+            >
+              {/* Question */}
               <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                 Question:
               </Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  mb: 2,
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                }}
+              >
                 {qa.Question}
               </Typography>
 
+              {/* Correct Answer */}
               <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                 Correct Answer:
               </Typography>
-              <Typography variant="body1" color="primary" sx={{ mb: 2 }}>
+              <Typography
+                variant="body1"
+                color="primary"
+                sx={{
+                  mb: 2,
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                }}
+              >
                 {qa.Answer}
               </Typography>
 
+              {/* Student Answer */}
               <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                 Student Answer:
               </Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  mb: 2,
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                }}
+              >
                 {qa.StudentAnswer}
               </Typography>
 
+              {/* Score */}
               <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                 Score (Correctness):
               </Typography>
-              <Typography variant="body1" color="success" sx={{ mb: 2 }}>
-                {qa.Correctness} / {qa.Zarib}
-              </Typography>
+              {/* Score (Correctness): */}
+<Typography variant="body1" color="success" sx={{ mb: 2 }}>
+  {Number(qa.Correctness).toFixed(3)} / {Number(qa.Zarib).toFixed(3)}
+</Typography>
 
+
+              {/* Correctness Percentage */}
               <Typography variant="body2" color="text.secondary">
-                Correctness Percentage: {qa.Correctness100}%
-              </Typography>
+  Correctness Percentage: {Number(qa.Correctness100).toFixed(3)}%
+</Typography>
+
             </CardContent>
           </Card>
         ))}
       </Box>
-
-     
     </Container>
   );
 };
