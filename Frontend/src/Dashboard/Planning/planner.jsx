@@ -271,7 +271,8 @@ const Planner = ({ onBack }) => {
                                 onChange={(newValue) => setSelectedDate(getStartOfWeek(newValue))}
                                 renderInput={(params) => <TextField {...params} helperText={formatWeekLabel(selectedDate)} />}
                             />
-                            <Box sx={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                            <Box sx={{display:'flex', flexDirection:'row', justifyContent:'space-between' ,    mt: 2 // به عنوان مثال 2 واحد فاصله بالایی
+}}>
                                 <Button variant="outlined" color="primary" onClick={handlePreviousWeek} style={{ marginRight: '5px' ,maxWidth: '50%',  }}>&lt; Prev</Button>
                                 <Button variant="outlined" color="primary" onClick={handleNextWeek} style={{ marginLeft: '5px' ,maxWidth: '50%'}}>Next &gt;</Button>
                             </Box>

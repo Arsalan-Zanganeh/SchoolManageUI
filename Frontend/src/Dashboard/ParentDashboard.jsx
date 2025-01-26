@@ -608,7 +608,6 @@ const handlePayFee = async (feeId) => {
     </Button>
   </DialogActions>
 </Dialog>
-// Add this Dialog component before the closing ThemeProvider tag
 <Dialog
   open={showFeeDialog}
   onClose={handleFeeDialogClose}
