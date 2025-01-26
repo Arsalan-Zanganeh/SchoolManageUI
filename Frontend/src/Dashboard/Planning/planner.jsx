@@ -263,15 +263,19 @@ const Planner = ({ onBack }) => {
                     </Box>
                     <Box>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <Button variant="outlined" color="primary" onClick={handlePreviousWeek} style={{ marginRight: '5px' ,maxWidth: '25px' }}>&lt; Prev</Button>
-                        <DatePicker
-                            views={['year', 'month','day']}
-                            label="Select Week"
-                            value={selectedDate}
-                            onChange={(newValue) => setSelectedDate(getStartOfWeek(newValue))}
-                            renderInput={(params) => <TextField {...params} helperText={formatWeekLabel(selectedDate)} />}
-                        />
-                    <Button variant="outlined" color="primary" onClick={handleNextWeek} style={{ marginLeft: '5px' ,maxWidth: '25px'}}>Next &gt;</Button>
+                        <Box sx={{display:'flex', flexDirection:'column'}}>
+                            <DatePicker
+                                views={['year', 'month','day']}
+                                label="Select Week"
+                                value={selectedDate}
+                                onChange={(newValue) => setSelectedDate(getStartOfWeek(newValue))}
+                                renderInput={(params) => <TextField {...params} helperText={formatWeekLabel(selectedDate)} />}
+                            />
+                            <Box sx={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                                <Button variant="outlined" color="primary" onClick={handlePreviousWeek} style={{ marginRight: '5px' ,maxWidth: '50%',  }}>&lt; Prev</Button>
+                                <Button variant="outlined" color="primary" onClick={handleNextWeek} style={{ marginLeft: '5px' ,maxWidth: '50%'}}>Next &gt;</Button>
+                            </Box>
+                        </Box>
                     </LocalizationProvider>
                     </Box>
                 </Box>

@@ -107,12 +107,12 @@ const ChatPage = ({ classId, onBack }) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 3,
-        mb : 2,
+        padding: { xs: 1, md: 3 },
+        mb: 2,
         position: 'absolute',
         width: '100%',
         top: 0,
-        left: 0,
+        left: { xs: '-8px', md: 0 },
         right: 0,
         bottom: 0,
       }}
@@ -124,7 +124,9 @@ const ChatPage = ({ classId, onBack }) => {
           borderRadius: 2,
           boxShadow: 3,
           py: { xs: 2, md: 3 },
-          px: { xs: 2, md: 4 },
+          px: { xs: 1, md: 4 },
+          width: { xs: '95%', md: '100%' },
+          margin: '0 auto',
         }}
       >
         <Paper

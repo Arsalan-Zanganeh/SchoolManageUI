@@ -129,7 +129,7 @@ const ClassList = ({ gotoplanning }) => {
           {isLoading ? (
             <Typography>Loading...</Typography>
           ) : (
-            <Grid container>
+            <Grid container sx={{ justifyContent:'center' }}>
               {/* اگر دانش‌آموز داریم */}
               {Object.keys(studentList).length > 0 ? (
                 Object.keys(studentList)
@@ -148,7 +148,7 @@ const ClassList = ({ gotoplanning }) => {
                     );
                   })
               ) : (
-                <Typography>No students in this class</Typography>
+                <Typography sx={{ paddingTop: '20px' }}>No students in this class</Typography>
               )}
             </Grid>
           )}
