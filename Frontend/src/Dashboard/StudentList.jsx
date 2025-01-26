@@ -26,7 +26,7 @@ const StudentList = ({ onBack }) => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/portfolio/student_files/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/portfolio/student_files/`, {
           credentials: "include",
         });
 
@@ -38,7 +38,7 @@ const StudentList = ({ onBack }) => {
           await Promise.all(
             data.map(async (student) => {
               const imageResponse = await fetch(
-                "http://127.0.0.1:8000/portfolio/StudentPicture_TeacherSideView/",
+                `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/portfolio/StudentPicture_TeacherSideView/`,
                 {
                   method: "POST",
                   headers: {
@@ -99,7 +99,7 @@ const StudentList = ({ onBack }) => {
       width: isMobile ? 80 : 100,
       renderCell: (params) => (
         <Avatar
-          src={images[params.row.national_id] ? `http://127.0.0.1:8000/api${images[params.row.national_id]}` : "/default-avatar.png"}
+          src={images[params.row.national_id] ? `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${images[params.row.national_id]}` : "/default-avatar.png"}
           alt="Student Photo"
           sx={{ width: isMobile ? 40 : 50, height: isMobile ? 40 : 50 }}
         />
@@ -166,7 +166,7 @@ const StudentList = ({ onBack }) => {
               <Avatar
                 src={
                   images[selectedStudent.national_id]
-                    ? `http://127.0.0.1:8000/api${images[selectedStudent.national_id]}`
+                    ? `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${images[selectedStudent.national_id]}`
                     : "/default-avatar.png"
                 }
                 alt="Student Photo"

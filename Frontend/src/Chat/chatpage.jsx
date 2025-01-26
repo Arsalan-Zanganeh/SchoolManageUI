@@ -31,7 +31,7 @@ const ChatPage = ({ classId }) => {
     if (userData[nationalId]) return;
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/portfolio/chat_info/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/portfolio/chat_info/`, {
         method: 'POST',
         credentials : 'include' ,
         headers: { 'Content-Type': 'application/json' },

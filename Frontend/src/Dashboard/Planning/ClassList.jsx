@@ -34,7 +34,7 @@ const StudentItem = ({ student, onClick }) => {
       <Avatar
         src={
           student.profile_image
-            ? `http://127.0.0.1:8000/api${student.profile_image}`
+            ? `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${student.profile_image}`
             : "/default-avatar.png"
         }
         alt={`${student.first_name} ${student.last_name}`}
@@ -83,7 +83,7 @@ const ClassList = ({ gotoplanning }) => {
           const student = data[key];
           try {
             const picRes = await fetch(
-              "http://127.0.0.1:8000/portfolio/StudentPicture_TeacherSideView/",
+              `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/portfolio/StudentPicture_TeacherSideView/`,
               {
                 method: "POST",
                 headers: {

@@ -26,7 +26,7 @@ const TeacherList = ({ onBack }) => {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/school-teachers/", {
+        const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api/school-teachers/`, {
           credentials: "include",
         });
 
@@ -38,7 +38,7 @@ const TeacherList = ({ onBack }) => {
           await Promise.all(
             data.map(async (teacher) => {
               const imageResponse = await fetch(
-                "http://127.0.0.1:8000/portfolio/TeacherPicture_PrincipalSideView/",
+                `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/portfolio/TeacherPicture_PrincipalSideView/`,
                 {
                   method: "POST",
                   headers: {
@@ -101,7 +101,7 @@ const TeacherList = ({ onBack }) => {
         <Avatar
           src={
             images[params.row.national_id]
-              ? `http://127.0.0.1:8000/api${images[params.row.national_id]}`
+              ? `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${images[params.row.national_id]}`
               : "/default-avatar.png"
           }
           alt="Teacher Photo"
@@ -173,7 +173,7 @@ const TeacherList = ({ onBack }) => {
               <Avatar
                 src={
                   images[selectedTeacher.national_id]
-                    ? `http://127.0.0.1:8000/api${images[selectedTeacher.national_id]}`
+                    ? `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${images[selectedTeacher.national_id]}`
                     : "/default-avatar.png"
                 }
                 alt="Teacher Photo"

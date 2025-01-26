@@ -64,7 +64,7 @@ const Attendance = () => {
         // برای هر دانش‌آموز، تصویرش رو هم بگیر
         await Promise.all(attendanceData.map(async (student) => {
           const imageResponse = await fetch(
-            "http://127.0.0.1:8000/portfolio/StudentPicture_TeacherSideView/",
+            `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/portfolio/StudentPicture_TeacherSideView/`,
             {
               method: "POST",
               headers: {
@@ -205,7 +205,7 @@ const Attendance = () => {
     {/* بخش سمت چپ: آواتار + نام دانش‌آموز */}
     <Grid item xs={8} container alignItems="center">
       <Avatar
-        src={images[National_ID] ? `http://127.0.0.1:8000/api${images[National_ID]}` : "/default-avatar.png"}
+        src={images[National_ID] ? `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${images[National_ID]}` : "/default-avatar.png"}
         alt="Student Photo"
         sx={{ width: isMobile ? 30 : 40, height: isMobile ? 30 : 40, marginRight: 2 }}
       />
@@ -254,7 +254,7 @@ const Attendance = () => {
               <Grid container spacing={2} justifyContent="center">
                 <Grid item xs={12} container justifyContent="center">
                   <Avatar
-                    src={images[selectedStudent.National_ID] ? `http://127.0.0.1:8000/api${images[selectedStudent.National_ID]}` : "/default-avatar.png"}
+                    src={images[selectedStudent.National_ID] ? `${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/api${images[selectedStudent.National_ID]}` : "/default-avatar.png"}
                     alt="Student Photo"
                     sx={{ width: 100, height: 100 }}
                   />

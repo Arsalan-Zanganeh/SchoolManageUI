@@ -31,7 +31,7 @@ const ChatPage = ({ classId, onBack }) => {
     if (userData[nationalId]) return;
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/portfolio/chat_info/', {
+      const response = await fetch(`${import.meta.env.VITE_APP_HTTP_BASE}://${import.meta.env.VITE_APP_URL_BASE}/portfolio/chat_info/`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -59,7 +59,7 @@ const ChatPage = ({ classId, onBack }) => {
 
   useEffect(() => {
     if (student?.National_ID && classId) {
-      const socketConnection = new WebSocket(`ws://127.0.0.1:8000/ws/${chatroomId}/`);
+      const socketConnection = new WebSocket(`ws://${import.meta.env.VITE_APP_URL_BASE}/ws/${chatroomId}/`);
 
       socketConnection.onopen = () => {
         console.log('WebSocket connection established');
