@@ -24,6 +24,30 @@ const ChatPage = ({ classId }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [chatroomId, setChatroomId] = useState(classId);
 
+  const [userData, setUserData] = useState({});
+
+  const fetchUserDataByNationalId = async (nationalId) => {
+    // اگر قبلا در userData هست، دیگر دوباره درخواست نمی‌دهیم
+    if (userData[nationalId]) return;
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/portfolio/chat_info/', {
+        method: 'POST',
+        credentials : 'include' ,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ National_ID: nationalId }),
+      });
+      const result = await response.json();
+
+      setUserData((prevData) => ({
+        ...prevData,
+        [nationalId]: result, // انتظار می‌رود result شامل first_name و last_name باشد
+      }));
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -47,15 +71,23 @@ const ChatPage = ({ classId }) => {
           console.log('Received message:', data);
 
           if (data.type === 'chat_history') {
-            setMessages(data.messages.map(msg => ({
-              ...msg,
-              isSent: msg.sender === teacher.National_ID
-            })));
+            setMessages(data.messages.map((msg) => {
+              fetchUserDataByNationalId(msg.sender);
+              return {
+                ...msg,
+                isSent: msg.sender === teacher.National_ID,
+              };
+            }));
           } else if (data.type === 'chat_message' || data.content) {
-            setMessages(prev => [...prev, {
-              ...data,
-              isSent: data.sender === teacher.National_ID
-            }]);
+            // برای پیام جدید هم همین کار را می‌کنیم
+            fetchUserDataByNationalId(data.sender);
+            setMessages((prev) => [
+              ...prev,
+              {
+                ...data,
+                isSent: data.sender === teacher.National_ID,
+              },
+            ]);
           }
         } catch (error) {
           console.error('Error parsing message:', error);
@@ -95,7 +127,7 @@ const ChatPage = ({ classId }) => {
   };
 
   const handleEmojiSelect = (emojiData, event) => {
-    setNewMessage(prev => prev + emojiData.emoji);
+    setNewMessage((prev) => prev + emojiData.emoji);
     setShowEmojiPicker(false);
   };
 
@@ -148,45 +180,64 @@ const ChatPage = ({ classId }) => {
             height: '250px',
             overflowY: 'auto', 
             mb: 2, 
-            mt: '-5px' ,// Add this line to move it down by 20px
+            mt: '-5px',
             paddingRight: 2, 
             width: '100%', 
             maxWidth: '800px', 
             display: 'flex', 
             flexDirection: 'column'
           }}>
-            {messages.map((msg, index) => (
-              <Box 
-                key={`${msg.content}-${index}`} 
-                sx={{ 
-                  display: 'flex',
-                  justifyContent: msg.isSent ? 'flex-end' : 'flex-start',
-                  width: '100%', 
-                  mb: 1,
-                }}
-              >
-                <Box sx={{
-                  padding: 1.5,
-                  backgroundColor: msg.isSent ? '#d1e7dd' : '#ffffff',
-                  borderRadius: 2,
-                  maxWidth: '70%',
-                  boxShadow: 1,
-                  width: 'auto',
-                }}>
-                  <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                    {msg.sender}
-                  </Typography>
-                  <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>
-                    {msg.content}
-                  </Typography>
-                  {msg.timestamp && (
-                    <Typography variant="caption" color="textSecondary">
-                      {new Date(msg.timestamp).toLocaleTimeString()}
-                    </Typography>
-                  )}
-                </Box>
-              </Box>
-            ))}
+           {messages.map((msg, index) => {
+  const senderInfo = userData[msg.sender];
+
+  const displayName = senderInfo
+    ? senderInfo.Type === 'Teacher'
+      ? `${senderInfo.first_name} ${senderInfo.last_name} (Teacher)`
+      : `${senderInfo.first_name} ${senderInfo.last_name}`
+    : msg.sender;
+
+
+  const isTeacher = senderInfo?.Type === 'Teacher';
+  const backgroundColor = msg.isSent 
+    ? '#d1e7dd' 
+    : isTeacher 
+      ? '#fdeef1'  // یا هر رنگ دیگری که بخواهید
+      : '#ffffff';
+
+  return (
+    <Box 
+      key={`${msg.content}-${index}`} 
+      sx={{ 
+        display: 'flex',
+        justifyContent: msg.isSent ? 'flex-end' : 'flex-start',
+        width: '100%', 
+        mb: 1,
+      }}
+    >
+      <Box sx={{
+        padding: 1.5,
+        backgroundColor,
+        borderRadius: 2,
+        maxWidth: '70%',
+        boxShadow: 1,
+        width: 'auto',
+      }}>
+        <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+          {displayName}
+        </Typography>
+        <Typography variant="body1" sx={{ wordBreak: 'break-word' }}>
+          {msg.content}
+        </Typography>
+        {msg.timestamp && (
+          <Typography variant="caption" color="textSecondary">
+            {new Date(msg.timestamp).toLocaleTimeString()}
+          </Typography>
+        )}
+      </Box>
+    </Box>
+  );
+})}
+
             <div ref={messagesEndRef} />
           </Box>
 
